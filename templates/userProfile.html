@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tab Navigation Example</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+        }
+        .sidebar {
+            width: 200px;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        .sidebar ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .sidebar li {
+            margin: 15px 0;
+        }
+        .sidebar a {
+            text-decoration: none;
+            color: #333;
+            display: block;
+            padding: 10px;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        .sidebar a:hover {
+            background-color: #ddd;
+        }
+        .content {
+            padding: 20px;
+            flex-grow: 1;
+            background-color: #fff;
+        }
+        .tab-content {
+            display: none; /* Hide by default */
+        }
+        .tab-content.active {
+            display: block; /* Show active content */
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h2>Menu</h2>
+        <ul class="menu">
+            <li><a href="#" onclick="openTab('dashboard', 'Dashboard')">Dashboard</a></li>
+            <li><a href="#" onclick="openTab('my-orders', 'My Orders')">My Orders</a></li>
+            <li><a href="#" onclick="openTab('cancellation', 'Cancellation')">Cancellation</a></li>
+            <li><a href="#" onclick="openTab('handover-center', 'Handover Center')">Handover Center</a></li>
+            <li><a href="#" onclick="openTab('my-products', 'My Products')">My Products</a></li>
+            <li><a href="#" onclick="openTab('add-new-product', 'Add New Product')">Add New Product</a></li>
+            <li><a href="#" onclick="openTab('sales-income', 'Sales & Income')">Sales & Income</a></li>
+        </ul>
+    </div>
+
+    <!-- Content Sections -->
+    <div class="content">
+        <div id="dashboard" class="tab-content active">
+            <h1>Dashboard Content</h1>
+            <p>Welcome to the Dashboard!</p>
+        </div>
+        <div id="my-orders" class="tab-content">
+             <!-- Navigation buttons for filtering orders -->
+         <div class="order-nav">
+            <button onclick="showOrderContent('all')">All</button>
+            <button onclick="showOrderContent('to-ship')">To Ship</button>
+            <button onclick="showOrderContent('to-receive')">To Receive</button>
+            <button onclick="showOrderContent('completed')">Completed</button>
+            <button onclick="showOrderContent('cancelled')">Cancelled</button>
+        </div>
+
+
+
+        <!-- Placeholder Content Sections -->
+        <div class="order-content-section active-content" id="order-content-all">
+            <h3>To Pay Orders</h3>
+            <p>This section will display orders that need payment.</p>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Product Image</th>
+                        <th>Product Name</th>
+                        <th>Business Name</th> <!-- Changed from Username to Business Name -->
+                        <th>Quantity</th>
+                        <th>Total</th>
+                        <th>Payment Method</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="to-pay-orders-body">
+                    <!-- To Pay orders will be populated here -->
+                </tbody>
+            </table>
+        </div>
+
+
+
+          <!-- To Ship Orders Section -->
+          <div class="order-content-section" id="order-content-to-ship">
+            <h3>To Ship Orders</h3>
+        </div>
+        </div>
+        <div id="cancellation" class="tab-content">
+            <h1>Cancellation</h1>
+            <p>Manage your cancellations here.</p>
+        </div>
+        <div id="handover-center" class="tab-content">
+            <h1>Handover Center</h1>
+            <p>Information about the handover center.</p>
+        </div>
+        <div id="my-products" class="tab-content">
+            <h1>My Products</h1>
+            <p>View your products here.</p>
+        </div>
+        <div id="add-new-product" class="tab-content">
+            <h1>Add New Product</h1>
+            <p>Form to add a new product will go here.</p>
+        </div>
+        <div id="sales-income" class="tab-content">
+            <h1>Sales & Income</h1>
+            <p>Your sales and income statistics.</p>
+        </div>
+    </div>
+
+    <script>
+        // JavaScript function to open tabs
+        function openTab(tabName, tabText) {
+            // Get all elements with class "tab-content"
+            const contents = document.querySelectorAll('.tab-content');
+            // Hide all content
+            contents.forEach(content => content.classList.remove('active'));
+
+            // Show the selected tab content
+            const activeContent = document.getElementById(tabName);
+            if (activeContent) {
+                activeContent.classList.add('active');
+                // Optionally, you can update the current tab text in the sidebar if needed
+                document.getElementById('current-tab').innerText = tabText; // Update current tab text
+            } else {
+                console.error('Tab not found:', tabName); // Log an error if the tab is not found
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            // Open the default tab (optional)
+            openTab('dashboard', 'Dashboard'); // Default tab
+        });
+    </script>
+
+</body>
+</html>

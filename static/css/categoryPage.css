@@ -1,0 +1,426 @@
+/* GLOBAL STYLES */
+*{
+    font-family: "Afacad Flux", sans-serif;
+    font-size: 18px;
+}
+body {
+    margin: 0;
+    padding-top: 100px; /* Same height as your navbar */
+    display: flex;
+    background-color: #f9f9f9;
+}
+
+
+/* SIDEBAR STYLES */
+/* SIDEBAR STYLES */
+.sidebar {
+    width: 220px;
+    color: black;
+    height: calc(100vh - 100px); /* Full height minus the height of the navbar */
+    position: fixed;
+    top: 100px; /* Start right after the navbar */
+    left: 0;
+    padding-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center items horizontally */
+}
+
+
+
+.sidebar a {
+    text-decoration: none;
+    color: black;
+    padding: 15px; /* Adjust padding if needed */
+    display: block;
+    width: 100%; /* Make links full width */
+    text-align: center; /* Center text inside links */
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+    box-sizing: border-box; /* Include padding and border in width */
+}
+
+.sidebar a:hover {
+    color: #d37389;
+}
+
+
+/* CONTENT STYLES */
+.content {
+    margin-left: 240px; /* Leave space for sidebar */
+    padding: 20px;
+    width: calc(100% - 240px);
+    height: calc(100vh - 120px); /* Adjust height to account for navbar height */
+    overflow: auto; /* Allow scrolling if content exceeds the height */
+}
+
+
+/* Product Navigation Styles */
+.product-nav {
+    display: flex;
+    justify-content: space-between; /* Adjust space between navigation and pagination */
+    align-items: center; /* Center items vertically */
+    margin-bottom: 20px; /* Space below the navigation */
+    margin-top: 10px;
+    background-color: white;
+    padding: 10px;
+}
+
+.nav-buttons {
+    display: flex;
+    align-items: center; /* Center items vertically */
+}
+
+.nav-button {
+    background-color: white; /* Button color */
+    color: black;
+    border: none;
+    padding: 10px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 10px; /* Space between buttons */
+    transition: background-color 0.3s ease;
+}
+
+.nav-button:hover {
+    color: #d37389;
+}
+
+
+
+
+/* Dropdown Styles */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropbtn {
+    background-color: white; /* Button color */
+    color: black;
+    padding: 10px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.dropbtn:hover{
+    color: #d37389;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9; /* Background color */
+    min-width: 160px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block; /* Show dropdown on hover */
+}
+
+.dropdown-content a {
+    color: black; /* Link color */
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-content a:hover {
+    background-color: #f1f1f1; /* Background on hover */
+}
+
+
+
+/* PRODUCTS STYLES */
+.products {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 4 equal-width columns */
+    grid-gap: 20px;
+}
+
+.product {
+    display: none; /* Hide products initially */
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+    text-align: left; /* Align text to the left */
+    transition: transform 0.2s;
+    max-width: 250px;
+    height: 330px; /* Increased height to accommodate button */
+    box-sizing: border-box; /* Include padding and border in element's dimensions */
+    padding-bottom: 10px; /* Add some space for button */
+    position: relative; /* Make sure the heart icon is positioned relative to the product */
+    padding: 10px; /* Add padding around the content */
+    text-decoration: none;
+    color: inherit;
+}
+
+.product:hover {
+    transform: scale(1.01);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.426);
+}
+
+.product a{
+    text-decoration: none;
+    color: black;
+}
+
+/* Heart icon hidden by default */
+.product .fa-heart {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-size: 1.5rem;
+    color: #d37389;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 50%;
+    opacity: 0; /* Initially hidden */
+    transition: opacity 0.3s ease, color 0.3s ease; /* Smooth transition for appearance */
+}
+
+/* Show heart icon on hover */
+.product:hover .fa-heart {
+    opacity: 1; /* Fade in the heart icon */
+}
+
+.product img {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.product h3 {
+    font-size: 0.9rem;
+    margin: 10px 0 5px 0;
+}
+
+.product p {
+    font-size: 0.80rem;
+    margin: 10px 0 5px 2px;
+    font-weight: bold;
+}
+
+/* Align description to the left */
+.product .desc {
+    margin: 10px 0; /* Adjust margin to your preference */
+}
+
+/* Add to Cart button styles */
+.add-to-cart-btn {
+    background-color: white;
+    color: black;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    width: 100%;
+    margin: 5px auto 0; /* Center the button and add spacing from content */
+    box-sizing: border-box; /* Include padding/border in the button size */
+    transition: background-color 0.3s ease;
+}
+
+
+
+
+
+.visible {
+    display: block; /* Show only visible products */
+}
+
+.pagination {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.pagination-top{
+    margin-top: -15px;
+}
+
+.pagination button {
+    padding: 5px 10px;
+    margin: 0 10px;
+    background-color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.pagination button:hover{
+    color: #d37389;
+}
+
+.pagination span {
+    font-size: 16px;
+}
+
+
+.pagination button:disabled {
+    background-color: white;
+    cursor: not-allowed;
+    color: black;
+}
+
+/* RESPONSIVE STYLES */
+@media (max-width: 1024px) {
+    .products {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .products {
+        grid-template-columns: repeat(1, 1fr);
+    }
+}
+
+
+
+/* Modal for Add to cart pop op Background Styling */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6); /* Darker, semi-transparent background */
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease; /* Fade-in effect for background */
+  }
+  
+  /* Modal Content Styling */
+  .modal-content {
+    background-color: #fff;
+    border-radius: 12px;
+    padding: 25px;
+    width: 320px;
+    text-align: center;
+    position: relative;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    transform: scale(0.9); /* Zoom-in effect */
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    border-top: 4px solid #d37389;
+  }
+  
+  /* Display Modal with Animation */
+  .modal-content.show {
+    opacity: 1;
+    transform: scale(1); /* Reset scale */
+  }
+  
+  /* Close Button Styling */
+  .close-btn {
+    color: #aaa;
+    font-size: 24px;
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+  
+  .close-btn:hover {
+    color: #333;
+  }
+  
+  /* Modal Body */
+  .modal-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  /* Icon/Image Styling */
+  .modal-cart-icon {
+    font-size: 50px;
+    color: #d37389; /* Green for success */
+    margin-bottom: 15px;
+  }
+  
+  /* Message Text Styling */
+  .modal-content p {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    margin-top: 10px;
+  }
+  
+
+
+
+/* Modal Background for Wishlist */
+#wishlistModal {
+    display: none; /* Initially hidden */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent dark background */
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+/* Modal Content Styling */
+#wishlistModalContent {
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
+    width: 300px;
+    text-align: center;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    transform: translateY(-50px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* Success and Error Styles */
+.wishlist-success {
+    border-top: 4px solid #d37389;
+}
+.wishlist-error {
+    border-top: 4px solid #dc3545;
+}
+
+/* Close Button */
+.wishlistModalClose {
+    color: #aaa;
+    font-size: 24px;
+    font-weight: bold;
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    cursor: pointer;
+}
+
+/* Icon or Image in Modal */
+#modalIcon {
+    font-size: 48px;
+    color: #d37389; /* Green for success */
+    margin-bottom: 10px;
+}
+.wishlist-error #modalIcon {
+    color: #dc3545; /* Red for error */
+}
+
+/* Message Text */
+#wishlistModalText {
+    font-size: 18px;
+    color: #333;
+    margin: 10px 0;
+}

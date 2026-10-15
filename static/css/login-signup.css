@@ -1,0 +1,79 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background-color: white;
+}
+
+/* NAV BAR STARTS */
+nav {
+    width: 100%;
+    background-color: white;
+    padding: 10px;
+    display: inline-block;
+    height: 100px;
+}
+
+.logo {
+    margin-left: 100px;
+    display: flex;
+    align-items: center;
+}
+
+.logo img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    transform: scale(2.5) translateY(5px);
+    transform-origin: center;
+}
+
+.logo h4 {
+    margin-left: 10px;
+    color: black;
+}
+
+/* Separator style */
+.separator {
+    width: 1px;
+    height: 30px;
+    background-color: #DB9EAC;
+    margin-left: 20px;
+}
+
+/* NAV BAR ENDS */
+
+
+/* MAIN CONTENT OR LOG IN STARTS */
+.main-content {
+    display: flex;
+    justify-content: space-between; /* Space between left and right content */
+    align-items: center; /* Center-align content vertically */
+    padding: 0 150px; /* Adjusted padding */
+    height: 90vh; /* Reduced height */
+}
+
+.left, .right {
+    flex: 1;
+    display: flex;
+    align-items: center; /* Center-align content vertically within each side */
+    justify-content: center; /* Center-align content horizontally within each side */
+}
+
+.left .logos img {
+    width: 350px;
+    height: 300px;
+    transform: scale(1.5); /* Adjust scaling if necessary */
+    transform-origin: center;
+}
+
+/* Registration Form DESIGN */
+
+/* Footer adjustment */
+.footer {
+    margin-top: 25px; /* Add margin to bottom to make space for footer */
+}

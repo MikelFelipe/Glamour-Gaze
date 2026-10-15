@@ -1,0 +1,1210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="../static/css/ADDDDMINNNN.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script> 
+    <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
+    <script src="https://kit.fontawesome.com/0dd07a1078.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+
+</head>
+
+<body>
+
+    <!-- Navbar (not full width) -->
+    <div class="navbar">
+        <span id="current-tab" class="current-tab">Dashboard</span>
+        <div class="icons">
+            <div class="icon">
+                <box-icon name="bell" class="notification"></box-icon>
+            </div>
+            <div class="icon">
+                <box-icon name="message"></box-icon>
+            </div>
+
+            <div class="profile" id="profile-btn">
+                <i class="fa-regular fa-user"></i> Welcome, {{ session['user'] }}
+                <div class="profile-dropdown">
+                    <a href="#"><i class="fas fa-user-circle"></i> Profile</a>
+                    <a href="#"><i class="fas fa-cog"></i> Settings</a>
+                    <a href="/logout"><i class="fas fa-sign-out-alt"></i> Log Out</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar (full height) -->
+    <div class="sidebar">
+        <div class="logo">
+            <img src="../static/src/logo design.png" alt="Logo">
+        </div>
+        <ul class="menu">
+            <li>
+                <a href="#" class="tab-link active" data-tab="infoDashboard" onclick="openTab('infoDashboard', 'Dashboard', event)">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" class="tab-link" data-tab="users" onclick="openTab('users', 'Users', event)">
+                    <i class="fas fa-users"></i>
+                    <span>Users</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" class="tab-link" data-tab="banned-users" onclick="openTab('banned-users', 'Banned Users', event)">
+                    <i class="fas fa-ban"></i>
+                    <span>Banned Users</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" class="tab-link" data-tab="messages" onclick="openTab('messages', 'Messages', event)">
+                    <i class="fas fa-envelope"></i>
+                    <span>Messages</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" class="tab-link" data-tab="finances" onclick="openTab('finances', 'Finances', event)">
+                    <i class="fas fa-money-bill-wave"></i>
+                    <span>Finances</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content-wrapper">
+        <div id="infoDashboard" class="content">
+            <div class="info-dashboard-container" id="InfoDash">
+                <h2>Admin Overview</h2>
+                <p>Stay on top of crucial updates and actions</p>
+
+                <div class="status-row">
+                    <div class="status-item-container">
+                        <div class="status-item">
+                            <p id="approved-users-count">Loading...</p>
+                            <span>Users Landed</span>
+                        </div>
+                    </div>
+                    <div class="status-item-container">
+                        <div class="status-item">
+                            <p id="products-listed-count">Loading...</p>
+                            <span>Products Listed</span>
+                        </div>
+                    </div>
+                    <div class="status-item-container">
+                        <div class="status-item">
+                            <p id="transactions-made-count">Loading...</p>
+                            <span>Transactions Made</span>
+                        </div>
+                    </div>
+                    <div class="status-item-container">
+                        <div class="status-item">
+                            <p id="pending-approval-count">Loading...</p>
+                            <span>Pending Approval</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        
+
+        <div class="content" id="users">
+            <h3>Registered Users</h3>
+        
+            <!-- Navigation buttons for Buyers and Sellers -->
+            <div class="user-nav mb-3" role="tablist">
+                <button onclick="showTable('buyers', event)" class="btn-nav active" role="tab" aria-selected="true">Buyers</button>
+                <button onclick="showTable('sellers', event)" class="btn-nav" role="tab" aria-selected="false">Sellers</button>
+                <button onclick="showTable('couriers', event)" class="btn-nav" role="tab" aria-selected="false">Couriers</button>
+            </div>
+        
+            <!-- Buyers Table -->
+            <div id="buyers-table">
+                <table class="delivery-table mt-4">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Roles</th>
+                            <th>Status</th>
+                            <th>Created At</th>
+                            <th>Upload ID</th> <!-- Add column header for Upload ID -->
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in buyer_users %}
+                        <tr>
+                            <td>{{ user['first_name'] }} {{ user['last_name'] }}</td> <!-- Modified here -->
+                            <td>{{ user['Email'] }}</td>
+                            <td>{{ user['Roles'] }}</td>
+                            <td>
+                                {% if user['Status'] == 'pending' %}
+                                    <span class="status-badge status-pending">Pending</span>
+                                {% elif user['Status'] == 'approved' %}
+                                    <span class="status-badge status-delivered">Approved</span>
+                                {% else %}
+                                    <span class="status-badge status-in-progress">{{ user['Status']|capitalize }}</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ user['created_at'] }}</td>
+                            <td>
+                                {% if user['upload_id'] %}
+                                    <a href="{{ url_for('static', filename=user['upload_id']) }}" target="_blank">View Upload ID</a>
+                                {% else %}
+                                    Not Available
+                                {% endif %}
+                            </td>
+                            
+                            <!-- Buyers Table Actions -->
+                            <td>
+                                <div class="action-buttons">
+                                    {% if user['Status'] == 'pending' %}
+                                        <form action="{{ url_for('approve_application', email=user['Email']) }}" method="POST" style="display:inline;">
+                                            <button type="submit" class="action-btn btn-primary">Accept</button>
+                                        </form>
+                                    {% elif user['Status'] == 'approved' %}
+                                        <!-- Ban Button -->
+                                        <form id="banFormStatic" action="{{ url_for('ban_user', email=user['Email']) }}" method="POST" style="display:inline;">
+                                            <button type="button" class="action-btn btn-secondary btn-ban btn-warning" data-email="{{ user['Email'] }}">Ban</button>
+                                        </form>
+                                    {% else %}
+                                        <span>No actions available</span>
+                                    {% endif %}
+                                </div>
+                            </td>          
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Ban Pop-Up -->
+            <div id="banPopup" class="popup" style="display: none;">
+                <div class="popup-content">
+                    <h3>Ban Reason</h3>
+                    <form id="banForm" method="POST">
+                        <!-- Radio Buttons -->
+                        <div class="radio-group">
+                            <label>
+                                <input type="radio" name="reason" value="Violation of Terms" required>
+                                Violation of Terms
+                            </label><br>
+                            <label>
+                                <input type="radio" name="reason" value="Abusive Behavior">
+                                Abusive Behavior
+                            </label><br>
+                            <label>
+                                <input type="radio" name="reason" value="Spam or Fraudulent Activity">
+                                Spam or Fraudulent Activity
+                            </label><br>
+                            <label>
+                                <input type="radio" name="reason" value="Unauthorized Access">
+                                Unauthorized Access
+                            </label><br>
+                            <label>
+                                <input type="radio" name="reason" value="Others">
+                                Others:
+                            </label>
+                            <!-- Text Box for "Others" -->
+                            <textarea id="otherBanReason" name="otherReason" placeholder="Specify other reason..." disabled></textarea>
+                        </div>
+
+                        <input type="hidden" id="banEmailField" name="email">
+
+                        <!-- Popup Actions -->
+                        <div class="popup-actions">
+                            <button type="button" class="btn btn-secondary" id="cancelBanPopup">Cancel</button>
+                            <button type="submit" class="btn btn-warning">Ban</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+
+            <!-- Custom Pop-Up -->
+            <div id="rejectPopup" class="popup" style="display: none;">
+                <div class="popup-content">
+                    <h3>Rejection Reason</h3>
+                    <form id="rejectForm" method="POST">
+                        <!-- Radio Buttons -->
+                        <div class="radio-group">
+                            <label>
+                                <input type="radio" name="reason" value="Incomplete Details" required>
+                                Incomplete Details
+                            </label><br>
+                            <label>
+                                <input type="radio" name="reason" value="Policy Violation">
+                                Policy Violation
+                            </label><br>
+                            <label>
+                                <input type="radio" name="reason" value="Outdated Information">
+                                Outdated Information
+                            </label><br>
+                            <label>
+                                <input type="radio" name="reason" value="Wrong Information">
+                                Wrong Information
+                            </label><br>
+                            <label>
+                                <input type="radio" name="reason" value="Others">
+                                Others:
+                            </label>
+                            <!-- Text Box for "Others" -->
+                            <textarea id="otherReason" name="otherReason" placeholder="Specify other reason..." disabled></textarea>
+                        </div>
+
+                        <input type="hidden" id="emailField" name="email">
+
+                        <!-- Popup Actions -->
+                        <div class="popup-actions">
+                            <button type="button" class="btn btn-secondary" id="cancelPopup">Cancel</button>
+                            <button type="submit" class="btn btn-danger">Reject</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+
+            <div id="couriers-table" style="display: none;">
+            <table class="delivery-table mt-4">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Roles</th>
+                        <th>Status</th>
+                        <th>Phone Number</th>
+                        <th>Vehicle Type</th>
+                        <th>Plate Number</th>
+                        <th>Upload ID</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in courier_users %}
+                    <tr>
+                        <td>{{ user['first_name'] }} {{ user['last_name'] }}</td>
+                        <td>{{ user['Email'] }}</td>
+                        <td>{{ user['Roles'] }}</td>
+                        <td>
+                            {% if user['Status'] == 'pending' %}
+                                <span class="status-badge status-pending">Pending</span>
+                            {% elif user['Status'] == 'approved' %}
+                                <span class="status-badge status-delivered">Approved</span>
+                            {% else %}
+                                <span class="status-badge status-in-progress">{{ user['Status']|capitalize }}</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ user['Phone_number'] }}</td>
+                        <td>{{ user['vehicle_type'] }}</td>
+                        <td>{{ user['plate_number'] }}</td>
+                        <td>
+                            {% if user['upload_id'] %}
+                                <a href="{{ url_for('static', filename=user['upload_id']) }}" target="_blank">View Upload ID</a>
+                            {% else %}
+                                Not Available
+                            {% endif %}
+                        </td>
+                        <!-- Couriers Table Actions -->
+                        <td>
+                            <div class="action-buttons">
+                                {% if user['Status'] == 'pending' %}
+                                    <form action="{{ url_for('approve_application', email=user['Email']) }}" method="POST" style="display:inline;">
+                                        <button type="submit" class="action-btn btn-primary">Accept</button>
+                                    </form>
+                                    <button class="action-btn btn-secondary btn-reject" data-email="{{ user['Email'] }}">Reject</button>
+                                {% elif user['Status'] == 'approved' %}
+                                    <form id="banFormStatic" action="{{ url_for('ban_user', email=user['Email']) }}" method="POST" style="display:inline;">
+                                        <button type="button" class="action-btn btn-secondary btn-ban btn-warning" data-email="{{ user['Email'] }}">Ban</button>
+                                    </form>
+                                {% else %}
+                                    <span>No actions available</span>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+            
+            
+
+            
+        
+            <div id="sellers-table" style="display: none;">
+                <table class="delivery-table mt-4">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Roles</th>
+                            <th>Status</th>
+                            <th>Business Name</th>
+                            <th>Phone Number</th>
+                            <th>Business Permit</th>
+                            <th>Upload ID</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in seller_users %}
+                        <tr>
+                            <td>{{ user['first_name'] }} {{ user['last_name'] }}</td>
+                            <td>{{ user['Email'] }}</td>
+                            <td>{{ user['Roles'] }}</td>
+                            <td>
+                                {% if user['Status'] == 'pending' %}
+                                    <span class="status-badge status-pending">Pending</span>
+                                {% elif user['Status'] == 'approved' %}
+                                    <span class="status-badge status-delivered">Approved</span>
+                                {% else %}
+                                    <span class="status-badge status-in-progress">{{ user['Status']|capitalize }}</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ user['Business_name'] }}</td>
+                            <td>{{ user['Phone_number'] }}</td>
+                            <td>
+                                {% if user['business_permit'] %}
+                                    <a href="{{ url_for('static', filename=user['business_permit']) }}" target="_blank">View Business Permit</a>
+                                {% else %}
+                                    Not Available
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if user['upload_id'] %}
+                                    <a href="{{ url_for('static', filename=user['upload_id']) }}" target="_blank">View Upload ID</a>
+                                {% else %}
+                                    Not Available
+                                {% endif %}
+                            </td>
+                            
+                            
+                            <!-- Sellers Table Actions -->
+                            <td>
+                                <div class="action-buttons">
+                                    {% if user['Status'] == 'pending' %}
+                                        <form action="{{ url_for('approve_application', email=user['Email']) }}" method="POST" style="display:inline;">
+                                            <button type="submit" class="action-btn btn-primary">Accept</button>
+                                        </form>
+                                        <button class="action-btn btn-secondary btn-reject" data-email="{{ user['Email'] }}">Reject</button>
+                                    {% elif user['Status'] == 'approved' %}
+                                        <form id="banFormStatic" action="{{ url_for('ban_user', email=user['Email']) }}" method="POST" style="display:inline;">
+                                            <button type="button" class="action-btn btn-secondary btn-ban btn-warning" data-email="{{ user['Email'] }}">Ban</button>
+                                        </form>
+                                    {% else %}
+                                        <span>No actions available</span>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>            
+        </div>
+
+       
+
+        
+        
+        
+        <!-- Banned Users Section -->
+        <div class="content" id="banned-users">
+            <h2>Banned Accounts</h2>
+            <div class="table-container">
+                <table class="delivery-table mt-4">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Roles</th>
+                            <th>Status</th>
+                            <th>Created At</th>
+                            <th>Gender</th>
+                            <th>Date of Birth</th>
+                            <th>Profile Picture</th>
+                            <th>Address</th>
+                            <th>Ban Reason</th> <!-- New column for ban reason -->
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for banned_user in banned_users %}
+                            <tr>
+                                <td>{{ banned_user['first_name'] }} {{ banned_user['last_name'] }}</td> <!-- Full name -->
+                                <td>{{ banned_user.Email }}</td>
+                                <td>{{ banned_user.Roles }}</td>
+                                <td>{{ banned_user.Status }}</td>
+                                <td>{{ banned_user.created_at }}</td>
+                                <td>{{ banned_user.gender }}</td>
+                                <td>{{ banned_user.date_of_birth }}</td>
+                                <td>
+                                    {% if banned_user.profile_picture %}
+                                        <img src="{{ banned_user.profile_picture }}" alt="Profile Picture" style="width: 50px; height: 50px;">
+                                    {% else %}
+                                        <img src="path/to/default/image.jpg" alt="Default Image" style="width: 50px; height: 50px;">
+                                    {% endif %}
+                                </td>
+                                <td>{{ banned_user.Address }}</td>
+                                <td>{{ banned_user.ban_reason }}</td> <!-- Displaying ban reason -->
+                                <td>
+                                    <form action="{{ url_for('unban', email=banned_user['Email']) }}" method="POST">
+                                        <button type="submit" class="btn btn-success">Unban</button>
+                                    </form>
+                                </td>
+                                
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="11" class="text-center">No banned accounts found.</td> <!-- Adjust colspan for new column -->
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+        <div class="content" id="messages" style="display: none;">
+            <div class="chat-container">
+                <!-- Sidebar -->
+                <div class="chat-sidebar">
+                    <div class="chat-search-bar">
+                        <input type="text" class="chat-search-input" placeholder="Search" id="search-user">
+                    </div>
+                    <ul class="chat-list" id="chat-list">
+                        <!-- Dynamic users will be added here -->
+                    </ul>
+                </div>
+            
+                <!-- Chat Area -->
+                <div class="chat-main-area">
+                    <div class="chat-header">
+                        <h4 class="chat-business-name" id="business-name"></h4>
+                        <div class="chat-options">
+                            <i class="fas fa-phone chat-option-icon"></i>
+                            <i class="fas fa-video chat-option-icon"></i>
+                            <i class="fas fa-ellipsis-v chat-option-icon"></i>
+                        </div>
+                    </div>
+            
+                    <div class="chat-messages-container" id="chat-messages">
+                        <!-- Messages will be loaded here -->
+                    </div>
+            
+                    <div class="chat-input-container">
+                        <input type="text" class="chat-input-field" placeholder="Type your message and press enter..." id="message-input">
+                        <div class="chat-input-options">
+                            <i class="fas fa-paper-plane chat-send-btn" id="send-message-btn"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>            
+        </div>
+
+        
+        <div class="content" id="finances">
+            <h2>Finances</h2>
+            <!-- Card-style totals summary -->
+            <div class="status-row" style="margin-bottom: 30px;">
+                <div class="status-item-container">
+                    <div class="status-item">
+                        <h5>Total Commission</h5>
+                        <span id="totalGross" style="font-size: 2rem; font-weight: 600;">0</span>
+                    </div>
+                </div>
+                <div class="status-item-container">
+                    <div class="status-item">
+                        <h5>Total Net</h5>
+                        <span id="totalNet" style="font-size: 2rem; font-weight: 600;">0</span>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <!-- No file path: just for reference, your HTML is already correct -->
+            <div class="search-container">
+                <div class="date-range-container">
+                    <div class="date-picker">
+                        <label for="start-date">Start Date</label>
+                        <input type="datetime-local" id="start-date">
+                    </div>
+                    <div class="date-picker">
+                        <label for="end-date">End Date</label>
+                        <input type="datetime-local" id="end-date">
+                    </div>
+                </div>
+                <button onclick="filterByDateRange()">Filter by Date</button>
+                <input type="text" id="finance-search" placeholder="Search in table..." onkeyup="searchTable()">
+                <button onclick="exportToPDF()">Export to PDF</button>
+                <button onclick="exportToCSV()">Export to CSV</button>
+            </div>
+            
+            <!-- Wrap the table in a container to apply the scrollable style -->
+            <div class="table-container">
+                <table id="completedOrdersTable" class="delivery-table mt-4">
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Phone Number</th>
+                            <th>Product Name</th>
+                            <th>Quantity</th>
+                            <th>Business Name</th>
+                            <th>Total Gross</th>
+                            <th>Payment Method</th>
+                            <th>Date of Sale</th>
+                            <th>Comission</th>
+                            <th>Net</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Table rows will be dynamically inserted here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+</body>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const profileBtn = document.getElementById('profile-btn');
+        const profileDropdown = profileBtn.querySelector('.profile-dropdown');
+
+        // Toggle dropdown on click
+        profileBtn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            profileBtn.classList.toggle('open');
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function (e) {
+            if (!profileBtn.contains(e.target)) {
+                profileBtn.classList.remove('open');
+            }
+        });
+
+        // Prevent dropdown from closing when clicking inside
+        profileDropdown.addEventListener('click', function (e) {
+            e.stopPropagation();
+        });
+    });
+    </script>
+
+    <script>
+
+        
+        // Get all the necessary elements for the Ban modal
+        const banPopup = document.getElementById('banPopup');
+        const banEmailField = document.getElementById('banEmailField');
+        const banReason = document.getElementById('banReason');
+        const cancelBanPopup = document.getElementById('cancelBanPopup');
+        const banButtons = document.querySelectorAll('.btn-ban');
+        const banForm = document.getElementById('banForm');
+
+        // Show Ban Pop-Up
+        banButtons.forEach((button) => {
+            button.addEventListener('click', function () {
+                const email = this.getAttribute('data-email');
+                banEmailField.value = email;
+                banForm.action = `/admin/ban/${email}`; // Dynamically set the form action
+                document.getElementById('banPopup').style.display = 'flex'; // Show the modal
+            });
+        });
+
+        // Hide Ban Pop-Up on Cancel
+        cancelBanPopup.addEventListener('click', function () {
+            banPopup.style.display = 'none'; // Hide the modal
+            banReason.value = ''; // Clear the text area
+        });
+
+        // Hide Ban Pop-Up when clicking outside
+        window.addEventListener('click', function (event) {
+            if (event.target === banPopup) {
+                banPopup.style.display = 'none'; // Hide the modal
+                banReason.value = ''; // Clear the text area
+            }
+        });
+    </script>
+
+    <script>
+        // Enable/Disable text box for "Others" option
+        const banRadioButtons = document.querySelectorAll('input[name="reason"]');
+        const otherBanReasonBox = document.getElementById('otherBanReason');
+
+        banRadioButtons.forEach(radio => {
+            radio.addEventListener('change', () => {
+                if (radio.value === "Others") {
+                    otherBanReasonBox.disabled = false;
+                    otherBanReasonBox.required = true;
+                } else {
+                    otherBanReasonBox.disabled = true;
+                    otherBanReasonBox.required = false;
+                    otherBanReasonBox.value = ""; // Clear text box when not selected
+                }
+            });
+        });
+    </script>
+
+<script>
+    async function exportToPDF() {
+        const { jsPDF } = window.jspdf;
+
+        // Initialize jsPDF
+        const doc = new jsPDF();
+
+        // Set custom color for text and header
+        const customColor = "#e91e63";
+        const rgb = hexToRgb(customColor);
+
+        // Page setup: Header
+        doc.setFontSize(18);
+        doc.setFont("helvetica", "bold");
+        doc.setTextColor(rgb.r, rgb.g, rgb.b);
+        doc.text("Glamour Gaze", 105, 15, { align: "center" });
+
+        doc.setFontSize(12);
+        doc.setFont("helvetica", "normal");
+        doc.text("Philippines, Laguna", 105, 25, { align: "center" });
+        doc.text("Contact: glamourgaze33@gmail.com | Phone: +63 123 456 7890", 105, 35, { align: "center" });
+        doc.text("Website: www.glamourgaze.com", 105, 45, { align: "center" });
+
+        // Add export metadata
+        doc.setTextColor(0, 0, 0); // Reset to black for metadata
+        const currentDate = new Date().toLocaleString("en-PH", { timeZone: "Asia/Manila" });
+        doc.text(`Export Date: ${currentDate}`, 10, 65);
+
+        // Table data extraction
+        const table = document.getElementById('completedOrdersTable');
+        const headers = Array.from(table.querySelectorAll('thead th')).map(th => th.textContent.trim());
+        const rows = Array.from(table.querySelectorAll('tbody tr')).map(row =>
+            Array.from(row.querySelectorAll('td')).map(td => td.textContent.trim())
+        );
+
+        // Add the table with custom header color
+        doc.autoTable({
+            head: [headers],
+            body: rows,
+            startY: 70, // Position table below the header
+            margin: { left: 10, right: 10 },
+            theme: 'grid',
+            headStyles: {
+                fillColor: [rgb.r, rgb.g, rgb.b], // Custom color for header background
+                textColor: 255, // White text
+                fontStyle: 'bold',
+            },
+        });
+
+        // Add footer with page number
+        const pageCount = doc.internal.getNumberOfPages();
+        for (let i = 1; i <= pageCount; i++) {
+            doc.setPage(i);
+            const pageHeight = doc.internal.pageSize.height;
+            doc.setFontSize(10);
+            doc.text(`Page ${i} of ${pageCount}`, 105, pageHeight - 10, { align: "center" });
+        }
+
+        // Save the PDF with date in the filename
+        const formattedDate = new Date().toISOString().split('T')[0];
+        const fileName = `Export_${formattedDate}.pdf`;
+        doc.save(fileName);
+    }
+
+    // Helper function to convert HEX color to RGB
+    function hexToRgb(hex) {
+        const bigint = parseInt(hex.replace("#", ""), 16);
+        return {
+            r: (bigint >> 16) & 255,
+            g: (bigint >> 8) & 255,
+            b: bigint & 255,
+        };
+    }
+</script>
+
+<script>
+    function exportToCSV() {
+        const table = document.getElementById('completedOrdersTable');
+        let csvContent = "";
+        
+        // Extract table headers
+        const headers = Array.from(table.querySelectorAll('thead th'))
+            .map(th => th.textContent.trim());
+        csvContent += headers.join(",") + "\n";
+
+        // Extract table rows
+        const rows = table.querySelectorAll('tbody tr');
+        rows.forEach(row => {
+            const cells = Array.from(row.querySelectorAll('td'))
+                .map(td => td.textContent.trim());
+            csvContent += cells.join(",") + "\n";
+        });
+
+        // Create a blob and download
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+
+        const downloadLink = document.createElement('a');
+        downloadLink.href = url;
+        downloadLink.download = 'CompletedOrders.csv';
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+    }
+
+</script>
+
+
+    <script>
+        // Get the pop-up elements
+        const rejectPopup = document.getElementById('rejectPopup');
+        const emailField = document.getElementById('emailField');
+        const rejectionReason = document.getElementById('rejectionReason');
+        const cancelPopup = document.getElementById('cancelPopup');
+        const rejectButtons = document.querySelectorAll('.btn-reject');
+        const rejectForm = document.getElementById('rejectForm');
+
+        // Show the pop-up when a reject button is clicked
+        rejectButtons.forEach((button) => {
+            button.addEventListener('click', function () {
+                const email = this.getAttribute('data-email');
+                emailField.value = email; // Set the email field in the form
+                rejectForm.action = `/admin/reject/${email}`; // Update form action dynamically
+                rejectPopup.style.display = 'block'; // Show the pop-up
+            });
+        });
+
+        // Hide the pop-up when cancel is clicked
+        cancelPopup.addEventListener('click', function () {
+            rejectPopup.style.display = 'none'; // Hide the pop-up
+            rejectionReason.value = ''; // Clear the reason text area
+        });
+
+        // Close the pop-up when clicking outside the pop-up content
+        window.addEventListener('click', function (event) {
+            if (event.target === rejectPopup) {
+                rejectPopup.style.display = 'none'; // Hide the pop-up
+                rejectionReason.value = ''; // Clear the reason text area
+            }
+        });
+    </script>
+
+    <script>
+        // Enable/Disable text box for "Others" option
+        const radioButtons = document.querySelectorAll('input[name="reason"]');
+        const otherReasonBox = document.getElementById('otherReason');
+
+        radioButtons.forEach(radio => {
+            radio.addEventListener('change', () => {
+                if (radio.value === "Others") {
+                    otherReasonBox.disabled = false;
+                    otherReasonBox.required = true;
+                } else {
+                    otherReasonBox.disabled = true;
+                    otherReasonBox.required = false;
+                    otherReasonBox.value = ""; // Clear text box when not selected
+                }
+            });
+        });
+    </script>
+
+    
+    <script>
+        function showTable(type, event) {
+            // Hide all tables
+            document.getElementById('buyers-table').style.display = 'none';
+            document.getElementById('sellers-table').style.display = 'none';
+            document.getElementById('couriers-table').style.display = 'none';
+
+            // Show the selected table
+            document.getElementById(type + '-table').style.display = 'block';
+
+            // Update the active button
+            const buttons = document.querySelectorAll('.btn-nav');
+            buttons.forEach(button => button.classList.remove('active'));
+            event.target.classList.add('active');
+            buttons.forEach(button => button.setAttribute('aria-selected', 'false'));
+            event.target.setAttribute('aria-selected', 'true');
+        }
+    </script>
+
+
+   
+
+
+    <script>
+        function filterByDateRange() {
+            let searchValue = document.getElementById('finance-search').value.toLowerCase();
+            let startDate = document.getElementById('start-date').value;
+            let endDate = document.getElementById('end-date').value;
+
+            let searchParams = `search=${encodeURIComponent(searchValue)}`;
+
+            // Ensure both startDate and endDate are formatted correctly
+            if (startDate) {
+                startDate = startDate.replace("T", " ") + ":00"; // Format to YYYY-MM-DD HH:MM:SS
+                searchParams += `&start_date=${encodeURIComponent(startDate)}`;
+            }
+            if (endDate) {
+                endDate = endDate.replace("T", " ") + ":00"; // Format to YYYY-MM-DD HH:MM:SS
+                searchParams += `&end_date=${encodeURIComponent(endDate)}`;
+            }
+
+            // Fetch data based on search and date parameters
+            fetch('/admin_dashboard_data?' + searchParams)
+                .then(response => response.json())
+                .then(data => {
+                    const tableBody = document.querySelector('#completedOrdersTable tbody');
+                    tableBody.innerHTML = '';  // Clear the table body
+
+                    if (data.completed_orders && data.completed_orders.length > 0) {
+                        data.completed_orders.forEach(order => {
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td>${order.username}</td>
+                                <td>${order.phoneNumber}</td>
+                                <td>${order.productName}</td>
+                                <td>${order.quantity}</td>
+                                <td>${order.business_name}</td>
+                                <td>${order.total}</td>
+                                <td>${order.payment_method}</td>
+                                <td>${order.created_at}</td>
+                                <td>${order.total_gross}</td>  <!-- Add Total Gross -->
+                                <td>${order.total_net}</td>    <!-- Add Total Net -->
+                            `;
+                            tableBody.appendChild(row);
+                        });
+                    } else {
+                        const row = document.createElement('tr');
+                        row.innerHTML = '<td colspan="8">No matching orders found.</td>';
+                        tableBody.appendChild(row);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching filtered dashboard data:', error);
+                });
+        }
+    </script>
+
+    <script>
+        function searchTable() {
+            // Get the search input value
+            let searchValue = document.getElementById('finance-search').value.toLowerCase();
+            
+            // Get the start and end date values
+            let startDate = document.getElementById('start-date').value;
+            let endDate = document.getElementById('end-date').value;
+
+            // Prepare the query parameters
+            let searchParams = `search=${searchValue}`;
+            if (startDate) {
+                searchParams += `&start_date=${startDate}`;
+            }
+            if (endDate) {
+                searchParams += `&end_date=${endDate}`;
+            }
+
+            // Fetch filtered data from the server based on the search input and date range filter
+            fetch('/admin_dashboard_data?' + searchParams)
+                .then(response => response.json())
+                .then(data => {
+                    const tableBody = document.querySelector('#completedOrdersTable tbody');
+                    tableBody.innerHTML = '';  // Clear the table body
+            
+                    // If there are completed orders, populate the table rows
+                    if (data.completed_orders && data.completed_orders.length > 0) {
+                        data.completed_orders.forEach(order => {
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td>${order.username}</td>
+                                <td>${order.phoneNumber}</td>
+                                <td>${order.productName}</td>
+                                <td>${order.quantity}</td>
+                                <td>${order.business_name}</td>
+                                <td>${order.total}</td>
+                                <td>${order.payment_method}</td>
+                                <td>${order.created_at}</td>
+                                <td>${order.total_gross}</td>  <!-- Add Total Gross -->
+                                <td>${order.total_net}</td>    <!-- Add Total Net -->
+                            `;
+                            tableBody.appendChild(row);
+                        });
+                    } else {
+                        const row = document.createElement('tr');
+                        row.innerHTML = '<td colspan="8">No matching orders found.</td>';
+                        tableBody.appendChild(row);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching filtered dashboard data:', error);
+                });
+        }
+
+    </script>
+    
+    <script>
+        fetch('/admin_dashboard_data')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('approved-users-count').textContent = data.approved_users_count;
+                document.getElementById('products-listed-count').textContent = data.products_listed_count;
+                document.getElementById('transactions-made-count').textContent = data.transactions_made_count;
+                document.getElementById('pending-approval-count').textContent = data.pending_approval_count;
+
+                const tableBody = document.querySelector('#completedOrdersTable tbody');
+                let totalGross = 0;
+                let totalNet = 0;
+                let totalCommission = 0;
+
+                if (data.completed_orders && data.completed_orders.length > 0) {
+                    data.completed_orders.forEach(order => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${order.username}</td>
+                            <td>${order.phoneNumber}</td>
+                            <td>${order.productName}</td>
+                            <td>${order.quantity}</td>
+                            <td>${order.business_name}</td>
+                            <td>${order.total}</td>
+                            <td>${order.payment_method}</td>
+                            <td>${order.created_at}</td>
+                            <td>${order.total_gross}</td>  <!-- Add Total Gross -->
+                            <td>${order.total_net}</td>    <!-- Add Total Net -->
+                        `;
+                        tableBody.appendChild(row);
+
+                        // Update the totals
+                        totalGross += parseFloat(order.total_gross) || 0;
+                        totalNet += parseFloat(order.total_net) || 0;
+
+                        // Assuming a commission rate of 10% for this example:
+                        const commissionRate = 0.10;
+                        totalCommission += (parseFloat(order.total_net) || 0) * commissionRate;
+                    });
+                } else {
+                    const row = document.createElement('tr');
+                    row.innerHTML = '<td colspan="10">No completed orders found.</td>';
+                    tableBody.appendChild(row);
+                }
+
+                // Update the totals on the page
+                document.getElementById('totalGross').textContent = totalGross.toFixed(2);
+                document.getElementById('totalNet').textContent = totalNet.toFixed(2);
+                document.querySelector('.totals-container h5 span:last-child').textContent = totalCommission.toFixed(2);
+
+            })
+            .catch(error => {
+                console.error('Error fetching dashboard data:', error);
+            });
+
+    </script>
+
+    <script>
+        window.onload = function() {
+            openTab('infoDashboard', 'Dashboard');
+        };
+
+       function openTab(tabName, tabDisplayName, event) {
+            // Hide all content sections
+            const contents = document.querySelectorAll('.content');
+            contents.forEach(content => {
+                content.style.display = 'none';
+            });
+
+            // Show the selected content section
+            const currentTab = document.getElementById(tabName);
+            if (currentTab) {
+                currentTab.style.display = 'block';
+            }
+
+            // Remove 'active' from all sidebar links
+            const tabLinks = document.querySelectorAll('.tab-link');
+            tabLinks.forEach(link => link.classList.remove('active'));
+
+            // Add 'active' to the clicked sidebar link
+            if (event && event.currentTarget) {
+                event.currentTarget.classList.add('active');
+            } else {
+                // fallback: add active to the link with matching data-tab
+                const activeLink = document.querySelector(`.tab-link[data-tab="${tabName}"]`);
+                if (activeLink) activeLink.classList.add('active');
+            }
+
+            // Optionally update the tab title
+            const tabTitleElement = document.getElementById('tabTitle');
+            if (tabTitleElement) {
+                tabTitleElement.textContent = tabDisplayName || tabName;
+            }
+        }
+
+    </script>
+
+
+
+
+<script>
+   document.addEventListener('DOMContentLoaded', function () {
+    fetch('/admin_get_messages', {  // Adjusted to match the updated backend route
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Data received from server:', data);  // Log the entire response from the server
+        
+        const chatList = document.getElementById('chat-list');
+        const chatMessagesContainer = document.getElementById('chat-messages');
+        const messageInput = document.getElementById('message-input');
+        const sendMessageBtn = document.getElementById('send-message-btn');
+        
+        if (data && data.length > 0) {
+            renderUsersList(data);
+        }
+
+        function displayMessages(user_id, data) {
+            chatMessagesContainer.innerHTML = '';  // Clear previous messages
+            const filteredMessages = data.filter(message => message.user_id === user_id);
+
+            console.log('Filtered messages for user_id ' + user_id + ':', filteredMessages);
+
+            filteredMessages.forEach(message => {
+                console.log(`Message data:`, message);  // Log entire message object
+                console.log(`sender_type: ${message.sender_type}`);  // Log sender_type for each message
+
+                const messageElement = document.createElement('div');
+                messageElement.classList.add('chat-message');
+
+                const isSellerMessage = message.sender_type && message.sender_type.toLowerCase() === 'seller';
+                const isBuyerMessage = message.sender_type && message.sender_type.toLowerCase() === 'buyer';
+                console.log(`Is seller message: ${isSellerMessage}`);  // Check if it's a seller message
+
+                messageElement.innerHTML = `
+                    <div class="message-content">${message.message}</div>
+                    <div class="message-time">${message.created_at}</div>
+                `;
+
+                if (isSellerMessage) {
+                    messageElement.classList.add('sent');  // Seller's message
+                } else {
+                    messageElement.classList.add('received');  // Buyer's message
+                }
+
+                console.log(`Classes added: ${messageElement.classList}`);  // Log classes added
+
+                chatMessagesContainer.appendChild(messageElement);  // Add message to container
+            });
+        }
+
+        function renderUsersList(data) {
+            const users = new Set();
+            const lastMessages = {};
+
+            data.forEach(message => {
+                if (message.user_id && message.username) {
+                    users.add(message.user_id);
+                    lastMessages[message.user_id] = message.message;
+                }
+            });
+
+            chatList.innerHTML = '';
+            const sortedUsers = [...users].sort((a, b) => {
+                const aMessage = lastMessages[a];
+                const bMessage = lastMessages[b];
+                return bMessage ? 1 : -1;
+            });
+
+            sortedUsers.forEach(user_id => {
+                const user = data.find(message => message.user_id === user_id);
+                const username = user ? user.username : 'Unknown User';
+                const lastMessage = lastMessages[user_id] || 'No messages yet';
+
+                const userItem = document.createElement('li');
+                userItem.classList.add('chat-user');
+                userItem.textContent = username;
+
+                const lastMessageDiv = document.createElement('div');
+                lastMessageDiv.classList.add('last-message');
+                lastMessageDiv.textContent = lastMessage;
+                userItem.appendChild(lastMessageDiv);
+
+                userItem.dataset.userId = user_id;
+                userItem.dataset.sellerId = user ? user.seller_id : null;  // Use seller_id instead of order_id
+
+                chatList.prepend(userItem);
+
+                userItem.addEventListener('click', function () {
+                    displayMessages(user_id, data);
+                    chatList.querySelectorAll('.chat-user').forEach(user => user.classList.remove('selected'));
+                    userItem.classList.add('selected');
+                });
+            });
+        }
+
+        sendMessageBtn.addEventListener('click', function () {
+            const messageText = messageInput.value.trim();
+            const activeUser = chatList.querySelector('.chat-user.selected');
+
+            
+            const sellerId = activeUser ? activeUser.dataset.sellerId : null;
+            const username = activeUser ? activeUser.textContent : null;  // Get username from the selected user item
+
+            const businessName = document.getElementById('business-name').textContent || 'Default Business Name'; // Adjust this to your actual DOM structure
+            
+            if (messageText && sellerId) {
+                fetch('/admin-send-message', {  // Updated to match backend route
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        seller_id: sellerId,  // Pass seller_id instead of order_id
+                        message: messageText,
+                        sender_type: 'admin',  // Sender is admin for this route
+                        username: username,  // Add username to message payload
+                        business_name: businessName  // Add business_name to message payload
+                    }),
+                })
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success) {
+                        const newMessageElement = document.createElement('div');
+                        newMessageElement.classList.add('chat-message');
+                        newMessageElement.innerHTML = `
+                            <div class="message-content">${messageText}</div>
+                            <div class="message-time">${new Date().toLocaleString()}</div>
+                        `;
+                        newMessageElement.classList.add('sent');  // Admin's message
+                        chatMessagesContainer.appendChild(newMessageElement);
+                        messageInput.value = '';  // Clear input after sending
+                    } else {
+                        console.error('Error sending message:', result.message);
+                    }
+                })
+                .catch(error => console.error('Error during message send:', error));
+            } else {
+                alert('Please select a user and enter a message.');
+            }
+        });
+    })
+    .catch(error => console.error('Error fetching messages:', error));
+});
+
+ 
+ </script>
+
+
+
+
+
+
+

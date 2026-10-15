@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Haircare Products</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/categoryPage.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/navbar.css')}}">
+    <script src="https://kit.fontawesome.com/0dd07a1078.js" crossorigin="anonymous"></script>
+    
+</head>
+<body>
+
+    {% include 'navbar.html' %}
+    {% include 'sidebar.html' %}
+
+
+    <!-- Modal for add-to-cart messages -->
+    <div id="addToCartModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeAddToCartModal()">&times;</span>
+            <div class="modal-body">
+                <!-- Dynamic Icon for Success or Error -->
+                <i id="modalCartIcon" class="modal-cart-icon fa-solid"></i> 
+                <!-- Dynamic Message -->
+                <p id="addToCartMessage">Item added to your cart successfully!</p>
+            </div>
+        </div>
+    </div>
+      
+
+    <div id="wishlistModal">
+        <div id="wishlistModalContent">
+            <span class="wishlistModalClose" onclick="closeWishlistModal()">&times;</span>
+            <i id="modalIcon" class="fa-solid fa-check-circle"></i> <!-- Icon for success or error -->
+            <p id="wishlistModalText"></p>
+        </div>
+    </div>
+    
+
+    <!-- Content -->
+    <div class="content">
+        <div class="product-nav">
+            <div class="nav-buttons">
+                <button class="nav-button">Popular</button>
+                <button class="nav-button">Latest</button>
+                <button class="nav-button">Top Sales</button>
+
+                <div class="dropdown">
+                    <button class="dropbtn">Price</button>
+                    <div class="dropdown-content">
+                        <a href="#">$0 - $50</a>
+                        <a href="#">$51 - $100</a>
+                        <a href="#">$101 - $150</a>
+                        <a href="#">Above $150</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pagination Controls (Top) -->
+            <div class="pagination">
+                <div class="pagination-top">
+                    <button id="prev-btn-top" class="prev-button" disabled>❮</button>
+                    <span id="page-indicator-top">1 / 1</span> <!-- Page indicator -->
+                    <button id="next-btn-top" class="next-button">❯</button>
+                </div>
+            </div>
+        </div>
+
+      <!-- Product Container -->
+      <div class="product-container">
+        <h1>Mens's Grooming</h1>
+        <div id="products-grid" class="products">
+            {% if products %}
+                {% for product in products %}
+                <div class="product">
+                    <!-- Heart icon, separate from the anchor tag -->
+                    <div class="icon-container">
+                        <i class="{{ 'fa-solid' if product.in_wishlist else 'fa-regular' }} fa-heart wishlist-icon" 
+                           onclick="toggleWishlist(event, this, '{{ product[0] }}', '{{ product[1] }}', '{{ product[7] }}', '{{ product[5] }}', '{{ business_name }}', '{{ product[0] }}')">
+                        </i>
+                    </div> 
+                                
+                    <a href="{{ url_for('product_detail', product_id=product[0]) }}">
+                        <div class="desc">
+                            <img src="{{ url_for('static', filename='upload_images/' + product[7]) }}" alt="{{ product[2] }}">
+                            <h3>{{ product[1] }}</h3>
+                            <p>Price: {{ product[5] }}</p>
+        
+                            <form action="{{ url_for('add_to_cart', product_id=product[0]) }}" method="POST" class="add-to-cart-form">
+                                <input type="hidden" name="product_name" value="{{ product[1] }}">
+                                <input type="hidden" name="product_image" value="{{ url_for('static', filename='upload_images/' + product[7]) }}">
+                                <input type="hidden" name="product_price" value="{{ product[5] }}">
+                                <input type="hidden" name="quantity" id="hidden-quantity" min="1" value="1">
+                                <button type="submit" class="add-to-cart-btn">Add to Cart</button>
+                            </form>
+                        </div>
+                    </a>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p>No Men's Grooming Products found.</p>
+            {% endif %}
+        </div>
+    </div>
+    
+
+
+
+        <!-- Pagination Controls (Bottom) -->
+        <div class="pagination">
+            <button id="prev-btn-bottom" class="prev-button" disabled>❮</button>
+            <span id="page-indicator-bottom">1 / 1</span> <!-- Page indicator -->
+            <button id="next-btn-bottom" class="next-button">❯</button>
+        </div>
+    </div>
+
+    <script>
+        const productsPerPage = 12;  // 12 products (4 columns x 3 rows)
+let currentPage = 1;         // Current page
+const products = document.querySelectorAll('.product'); // All product elements
+const totalProducts = products.length;                  // Total number of products
+const totalPages = Math.ceil(totalProducts / productsPerPage); // Total pages
+
+const prevBtnTop = document.getElementById('prev-btn-top');
+const nextBtnTop = document.getElementById('next-btn-top');
+const prevBtnBottom = document.getElementById('prev-btn-bottom');
+const nextBtnBottom = document.getElementById('next-btn-bottom');
+
+const pageIndicatorTop = document.getElementById('page-indicator-top');
+const pageIndicatorBottom = document.getElementById('page-indicator-bottom');
+
+// Function to show products for the current page
+function showPage(page) {
+    // Hide all products
+    products.forEach(product => product.classList.remove('visible'));
+
+    // Calculate the range of products to show
+    const start = (page - 1) * productsPerPage;
+    const end = page * productsPerPage;
+
+    // Show only the products for the current page
+    for (let i = start; i < end && i < totalProducts; i++) {
+        products[i].classList.add('visible');
+    }
+
+    // Update pagination controls
+    pageIndicatorTop.textContent = `${page} / ${totalPages}`;
+    pageIndicatorBottom.textContent = `${page} / ${totalPages}`;
+    prevBtnTop.disabled = prevBtnBottom.disabled = (page === 1);
+    nextBtnTop.disabled = nextBtnBottom.disabled = (page === totalPages);
+}
+
+// Initialize the page by showing the first set of products
+showPage(currentPage);
+
+// Event listeners for pagination buttons
+prevBtnTop.addEventListener('click', function() {
+    if (currentPage > 1) {
+        currentPage--;
+        showPage(currentPage);
+    }
+});
+
+nextBtnTop.addEventListener('click', function() {
+    if (currentPage < totalPages) {
+        currentPage++;
+        showPage(currentPage);
+    }
+});
+
+prevBtnBottom.addEventListener('click', function() {
+    if (currentPage > 1) {
+        currentPage--;
+        showPage(currentPage);
+    }
+});
+
+nextBtnBottom.addEventListener('click', function() {
+    if (currentPage < totalPages) {
+        currentPage++;
+        showPage(currentPage);
+    }
+});
+</script>
+   
+
+
+<!-- for clicking add to cart kahit wala ka -->
+<script>
+    document.querySelectorAll('.add-to-cart-form').forEach(form => {
+     form.addEventListener('submit', function(event) {
+         event.preventDefault(); // Prevent default form submission
+ 
+         // Submit the form via AJAX
+         const formData = new FormData(form);
+         fetch(form.action, {
+             method: 'POST',
+             body: formData,
+         })
+         .then(response => response.json()) // Parse JSON response
+         .then(data => {
+             if (data.status === 'success') {
+                 // Show the modal with success message
+                 showAddToCartModal(true, data.message);
+                 updateCartCount();  // Optionally update cart count here
+             } else {
+                 // Show the modal with error message
+                 showAddToCartModal(false, data.message);
+             }
+         })
+         .catch(error => {
+             showAddToCartModal(false, "An error occurred while adding the item to your cart.");
+             console.error('Error:', error);
+         });
+     });
+ });
+ 
+ // Function to show the modal
+ function showAddToCartModal(isSuccess, message = '') {
+     const modal = document.getElementById('addToCartModal');
+     const modalContent = modal.querySelector('.modal-content');
+     const modalIcon = document.getElementById('modalCartIcon');
+     const modalMessage = document.getElementById('addToCartMessage');
+ 
+     modal.style.display = 'flex'; // Display the modal with flex layout
+     setTimeout(() => {
+         modal.style.opacity = '1'; // Fade-in effect for background
+         modalContent.classList.add('show'); // Apply zoom-in effect for content
+     }, 10);
+ 
+     // Update modal content based on success or error
+     if (isSuccess) {
+         modalIcon.classList.add('fa-check-circle');
+         modalMessage.textContent = message; // Success message
+     } else {
+         modalIcon.classList.add('fa-exclamation-circle');
+         modalMessage.textContent = message; // Error message, such as "Cart is full."
+     }
+ 
+     // Close the modal when the close button (×) is clicked
+     document.querySelector('.close-btn').onclick = function() {
+         closeAddToCartModal();
+     };
+ 
+     // Close the modal if the user clicks outside of it
+     window.onclick = function(event) {
+         if (event.target == modal) {
+             closeAddToCartModal();
+         }
+     };
+ }
+ 
+ // Function to hide the modal with transition
+ function closeAddToCartModal() {
+     const modal = document.getElementById('addToCartModal');
+     const modalContent = modal.querySelector('.modal-content');
+ 
+     modal.style.opacity = '0'; // Fade-out effect for background
+     modalContent.classList.remove('show'); // Remove zoom-in effect
+ 
+     // Wait for the transition to complete before hiding modal
+     setTimeout(() => {
+         modal.style.display = 'none';
+     }, 300); // Match this to the transition duration in CSS
+ }
+ 
+ </script>
+ 
+
+ <!-- FOR ADD TO WISHLIST -->
+<script>
+    // Function to display the modal with a success or error message
+    function showWishlistModal(message, type) {
+    const modal = document.getElementById("wishlistModal");
+    const modalContent = document.getElementById("wishlistModalContent");
+    const messageText = document.getElementById("wishlistModalText");
+    const modalIcon = document.getElementById("modalIcon");
+
+    // Set the message and styling based on the type
+    messageText.innerText = message;
+    modalContent.className = type === 'success' ? 'wishlist-success' : 'wishlist-error';
+    modalIcon.className = type === 'success' ? 'fa-solid fa-check-circle' : 'fa-solid fa-times-circle';
+
+    // Display and animate the modal
+    modal.style.display = "flex";
+    setTimeout(() => {
+        modal.style.opacity = 1;
+        modalContent.style.opacity = 1;
+        modalContent.style.transform = "translateY(0)";
+    }, 10);
+}
+
+    // Function to close the modal with transition
+    function closeWishlistModal() {
+        var modal = document.getElementById("wishlistModal");
+        var modalContent = document.getElementById("wishlistModalContent");
+
+        modal.style.opacity = 0;
+        modalContent.style.opacity = 0;
+        modalContent.style.transform = "translateY(-50px)";
+        
+        setTimeout(function() {
+            modal.style.display = "none";
+        }, 500);
+    }
+
+    // Updated toggleWishlist function with modal notification
+    function toggleWishlist(event, iconElement, productId, productName, productImage, productPrice, businessName, sellerId) {
+        event.preventDefault();
+
+        const productData = {
+            id: productId,
+            name: productName,
+            image: productImage,
+            price: productPrice,
+            business_name: businessName,
+            seller_id: sellerId
+        };
+
+        fetch("{{ url_for('add_to_wishlist') }}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(productData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === "added") {
+                iconElement.classList.remove("fa-regular");
+                iconElement.classList.add("fa-solid");
+                showWishlistModal("Product added to wishlist!", "success");
+            } else if (data.status === "removed") {
+                iconElement.classList.remove("fa-solid");
+                iconElement.classList.add("fa-regular");
+                showWishlistModal("Product removed from wishlist!", "error");
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+        });
+    }
+</script>
+
+</body>
+</html>

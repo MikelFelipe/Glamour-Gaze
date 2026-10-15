@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Messages</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+  <style>
+    /* General Styles */
+    body {
+      margin: 0;
+      font-family: 'Arial', sans-serif;
+      background-color: white;
+    }
+
+    .chat-container {
+      margin-top: 100px; /* Reduced margin for top */
+      display: flex;
+      height: 90vh;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 30%;
+      background-color:  #ecf0f1;
+      border-right: 1px solid #ddd;
+      display: flex;
+      flex-direction: column;
+      padding: 1rem;
+      border-radius: 40px;
+  
+    }
+
+    .search-bar {
+      padding: 0.5rem;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .search-bar input {
+      width: 70%;
+      padding: 0.40rem;
+      border-radius: 20px;
+      border: 1px solid #ddd;
+      outline: none;
+      font-size: 0.875rem; /* Smaller font size */
+    }
+
+    .chat-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      overflow-y: auto;
+      flex-grow: 1;
+    }
+
+    .chat-item {
+      display: flex;
+      align-items: center;
+      padding: 0.5rem;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      font-size: 0.875rem; /* Smaller font size */
+    }
+
+    .chat-item.active {
+      background-color: transparent; /* No blue background */
+    }
+
+    .chat-item:hover {
+      background-color: #f9f9f9;
+    }
+
+    .profile-pic {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      margin-right: 0.75rem;
+    }
+
+    .chat-details {
+      flex-grow: 1;
+    }
+
+    .chat-details h4 {
+      margin: 0;
+      font-size: 0.875rem; /* Smaller font size */
+      color: #333;
+    }
+
+    .chat-details p {
+      margin: 0;
+      font-size: 0.75rem; /* Smaller font size */
+      color: #555;
+    }
+
+    .timestamp {
+      font-size: 0.625rem; /* Smaller font size */
+      color: #888;
+    }
+
+    /* Chat Area */
+    .chat-area {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      background-color: white;
+      padding: 1rem;
+    }
+
+    .chat-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: red;
+    }
+
+    .chat-header h4 {
+      margin: 0;
+      font-size: 0.875rem; /* Smaller font size */
+      background-color:  #d37389;
+    }
+
+    .chat-options i {
+      margin-left: 0.75rem;
+      font-size: 1rem; /* Smaller icon size */
+      color:white;
+    }
+
+    .chat-messages {
+      flex-grow: 1;
+      padding: 0.75rem;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      font-size: 0.875rem; /* Smaller font size for messages */
+    }
+
+    /* Message transition effect */
+    .message {
+      opacity: 1; /* Initially visible */
+      transform: translateX(0); /* Ensure it's visible */
+      transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+      padding: 8px;
+      border-radius: 4px;
+      margin-bottom: 8px;
+      max-width: 80%;
+      font-size: 0.875rem; /* Smaller font size */
+      display: block;
+      position: relative;
+      z-index: 1; /* Ensure messages are on top */
+    }
+
+    .message.sent {
+      text-align: right;
+    }
+
+    /* Received Messages */
+    .received .message-body{
+      background-color:#ddd;
+      border-radius: 15px 15px 15px 0px;
+      padding: 10px;
+      margin-bottom: 10px;
+      width: fit-content; /* Dynamically adjusts to content width */
+      align-self: flex-start;
+      text-align: left;
+      z-index: 1; /* Ensure the received message appears on top */
+    }
+
+    .received p {
+      margin: 0;
+      padding: 0.5rem 0.75rem;
+      border-radius: 8px;
+      font-size: 0.875rem; /* Adjust font size as needed */
+      line-height: 1.25;
+    }
+
+    /* Optionally, adjust the max-width for received messages */
+    .received {
+      max-width: 80%; /* Limit width to 80% of container */
+    }
+
+    .received .time {
+      text-align: right;
+      margin-top: 4px; /* Reduced margin */
+      font-size: 0.625rem; /* Smaller font size */
+      color: #888;
+      margin-left: auto;
+      margin-right: 8px; /* Reduced space from the right edge */
+    }
+
+    /* Sent (Buyer) Message Styling - Align Far Right and Smaller Width */
+    .sent .message-body {
+      border-radius: 15px 15px 0px 15px;
+      padding: 10px;
+      text-align: right; /* Align text to the right */
+      margin-right: -150px;
+      margin-left: 0;
+      width: fit-content; /* Dynamically adjusts to content width */
+      max-width: 250px; /* Smaller width */
+      margin-left: auto;
+      color: white;
+      background-color:  #d37389;
+    }
+
+    .sent .time {
+      text-align: right;
+      margin-top: 4px; /* Reduced margin */
+      font-size: 0.625rem; /* Smaller font size */
+      color: #888;
+      margin-left: auto;
+      margin-right: 8px; /* Reduced space from the right edge */
+    }
+
+    .chat-input {
+      display: flex;
+      align-items: center;
+      padding: 0.75rem;
+      background-color: #fff;
+      border-top: 1px solid #ddd;
+    }
+
+    .chat-input input {
+      flex-grow: 1;
+      padding: 0.5rem 0.75rem;
+      border: 1px solid #ddd;
+      border-radius: 20px;
+      outline: none;
+      font-size: 0.875rem; /* Smaller font size */
+    }
+
+    .input-options i {
+      margin-left: 0.75rem;
+      font-size: 1rem; /* Smaller icon size */
+      color:  #d37389;
+      cursor: pointer;
+    }
+
+    /* New styles for product details section */
+    .product-details {
+      padding: 0.75rem;
+      background-color: #fff;
+      margin-bottom: 0.75rem;
+    }
+
+    .product-details img {
+      width: 80px;
+      height: 80px;
+      margin-right: 0.75rem;
+    }
+
+    .product-details h4 {
+      font-size: 0.875rem; /* Smaller font size */
+      margin-bottom: 0.25rem;
+    }
+
+    .product-details p {
+      font-size: 0.75rem; /* Smaller font size */
+      color: #555;
+    }
+  </style>
+  
+  
+  
+  
+</head>
+
+<body>
+
+  {% include 'navbar.html' %}
+
+    <div class="chat-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+          <div class="search-bar">
+              <input type="text" placeholder="Search">
+          </div>
+          <ul class="chat-list" id="chat-list">
+            <!-- Dynamic sellers will be added here -->
+        </ul>
+        
+      </div>
+      
+    
+       <!-- Chat Area -->
+       <div class="chat-area">
+        <div class="chat-header" style="background-color:  #d37389;">
+            <h4 class="chat-header" id="business-name"></h4>
+            <div class="chat-options">
+                <i class="fas fa-phone"></i>
+                <i class="fas fa-video"></i>
+                <i class="fas fa-ellipsis-v"></i>
+            </div>
+        </div>
+
+        <div class="chat-messages" id="chat-messages">
+            <!-- Messages will be loaded here -->
+        </div>
+
+        <div class="chat-input">
+            <input type="text" placeholder="Type your message and press enter..." id="message-input">
+            <div class="input-options">
+                <i class="fas fa-smile"></i>
+                <i class="fas fa-paperclip"></i>
+                <i class="fas fa-microphone"></i>
+                <i class="fas fa-paper-plane" id="send-message-btn"></i> <!-- Added send message icon -->
+            </div>
+        </div>
+    </div>
+    </div>
+
+    {% include 'footer.html' %}  
+    
+    <script>
+      // Function to get query parameters from the URL
+      function getQueryParam(param) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(param);
+      }
+  
+      // Function to update the sidebar with messages for the specific seller
+      function updateSidebarMessages(sellerId, businessName, newMessage = null) {
+        const chatList = document.querySelector('.chat-list');
+  
+        // Check if the seller already has a section in the sidebar
+        let existingSellerSection = Array.from(chatList.children).find(chatItem =>
+          chatItem.dataset.sellerId === sellerId
+        );
+  
+        if (!existingSellerSection) {
+          // Create a new section for this seller
+          existingSellerSection = document.createElement('li');
+          existingSellerSection.classList.add('chat-item');
+          existingSellerSection.dataset.sellerId = sellerId; // Store seller_id as a data attribute
+  
+          existingSellerSection.innerHTML = `
+            <img src="..//static/src/logo.jpg" alt="User" class="profile-pic">
+            <div class="chat-details">
+              <h4 class="chat-details">${businessName}</h4> <!-- Business name -->
+              <p class="latest-message">No messages yet...</p>
+            </div>
+            <span class="timestamp">Just now</span>
+          `;
+  
+          // Append the new seller section to the sidebar
+          chatList.appendChild(existingSellerSection);
+  
+          // Add a click event listener to load messages for the seller when clicked
+          existingSellerSection.addEventListener('click', function () {
+            loadMessagesForSeller(sellerId, businessName);
+          });
+        }
+  
+        // If a new message is passed, update the message in the seller section
+        if (newMessage) {
+          const messageElement = existingSellerSection.querySelector('.latest-message');
+          messageElement.textContent = newMessage;
+          existingSellerSection.querySelector('.timestamp').textContent = 'Just now'; // Update timestamp
+        }
+      }
+  
+      function loadMessagesForSeller(sellerId, businessName) {
+        const chatHeaderName = document.querySelector('.chat-header h4');
+        const chatMessages = document.getElementById('chat-messages');
+        
+        // Update the chat header with the business name
+        chatHeaderName.textContent = businessName;
+        
+        // Clear the existing messages in the chat window
+        chatMessages.innerHTML = '';
+
+        // Fetch messages from the backend
+        fetch(`/get-messages?seller_id=${sellerId}`)
+          .then(response => response.json())
+          .then(data => {
+            console.log('Response data:', data); // Log the entire response
+
+            if (data.success && Array.isArray(data.messages)) {
+              console.log('Messages array:', data.messages); // Log the messages array
+
+              // Clear the chatbox before appending new messages
+              chatMessages.innerHTML = ''; 
+
+              // Iterate over each message
+              data.messages.forEach((message, index) => {
+                console.log(`Processing message ${index + 1}:`, message); // Debug each message
+
+                // Check for missing sender_type or message
+                if (!message.sender_type || !message.message) {
+                  console.warn(`Message data is missing necessary fields:`, message);
+                  return;  // Skip this message
+                }
+
+                const newMessage = document.createElement('div');
+                newMessage.classList.add('message');
+
+                // Apply appropriate class based on sender type
+                if (message.sender_type && message.sender_type.trim().toLowerCase() === 'buyer') {
+                  newMessage.classList.add('sent'); // Buyer messages align right
+                } else if (message.sender_type && message.sender_type.trim().toLowerCase() === 'seller') {
+                  newMessage.classList.add('received'); // Seller messages align left
+                }
+
+                // Add message body and time to the message element
+                newMessage.innerHTML = `
+                  <div class="message-body">${message.message}</div>
+                  <div class="message-time">
+                    <span class="time">${message.created_at || 'Just now'}</span>
+                  </div>
+                `;
+
+
+                // Append the new message to the chat messages container
+                console.log('Appending message:', newMessage);  // Check if message is created correctly
+                chatMessages.appendChild(newMessage);
+              });
+
+              console.log('All messages appended to chatbox.');
+              // Scroll to the bottom of the chat window to show the latest message
+              chatMessages.scrollTop = chatMessages.scrollHeight; 
+
+            } else {
+              console.log('No messages or error in response:', data.message);
+            }
+          })
+          .catch(error => console.error('Error fetching messages:', error)); // Log errors if any occur
+      }
+
+  
+      // On page load, load messages for the relevant sellers and update the sidebar
+      window.onload = function () {
+        const sellerId = getQueryParam('seller_id');
+        const businessName = getQueryParam('business_name');
+        
+        // If there's a specific seller being passed, update the sidebar for them
+        if (sellerId && businessName) {
+          updateSidebarMessages(sellerId, businessName);
+        }
+      };
+  
+      // Message sending logic
+      document.addEventListener('DOMContentLoaded', function () {
+        document.getElementById('send-message-btn').addEventListener('click', function () {
+          const sellerId = getQueryParam('seller_id');
+          const orderId = getQueryParam('order_id');
+          const businessName = getQueryParam('business_name');
+          const senderType = 'buyer';
+  
+          if (!sellerId || !orderId || !businessName) {
+            alert('Required information is missing.');
+            return;
+          }
+  
+          // Get the message from the input field
+          const message = document.getElementById('message-input').value;
+          if (message.trim() === '') {
+            alert('Please type a message!');
+            return;
+          }
+  
+          // Prepare the data to send
+          const data = {
+            message: message,
+            seller_id: sellerId,
+            order_id: orderId,
+            business_name: businessName,
+            sender_type: senderType
+          };
+  
+          fetch('/send-message', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+          })
+            .then(response => response.json())
+            .then(data => {
+              if (data.success) {
+                document.getElementById('message-input').value = ''; // Clear the input field
+  
+                // Update the sidebar with the new message
+                updateSidebarMessages(sellerId, businessName, message);
+  
+                // Display the sent message in the chat (aligned to the right for buyer)
+                const chatMessages = document.querySelector('.chat-messages');
+                const newMessage = document.createElement('div');
+                newMessage.classList.add('message'); // Add the 'message' class without 'sent' for now
+  
+                // Add timestamp to the right
+                newMessage.innerHTML = `
+                  <div class="message-body">${message}</div>
+                  <span class="timestamp time">Just now</span>
+                `;
+  
+                // Append the message to the chat
+                chatMessages.appendChild(newMessage);
+  
+                // Use setTimeout to delay the application of the 'sent' class to trigger the transition
+                setTimeout(() => {
+                  newMessage.classList.add('sent'); // Apply the 'sent' class after a slight delay
+                }, 10); // Small delay (10ms) to trigger the transition
+  
+                // Scroll to bottom
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+              } else {
+                alert('Failed to send message.');
+              }
+            })
+            .catch(error => {
+              console.error('Error:', error);
+              alert('An error occurred while sending the message.');
+            });
+        });
+      });
+    </script>
+  
+
+
+</body>
+
+
+</html>

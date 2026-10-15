@@ -1,0 +1,831 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+  font-size: 18px;
+}
+
+html, body {
+  height: 100%; /* Ensure the HTML and body are 100% height */
+  scroll-behavior: smooth;
+}
+
+#home {
+  height: 100vh; /* Full height of the viewport */
+  width: 100%; /* Full width */
+}
+
+
+
+.slideshow-container {
+  position: relative;
+  width: 100%;
+  height: 100vh; /* Full height of the viewport */
+  overflow: hidden;
+  background-color: hsl(340, 100%, 92%);
+}
+
+.slide {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 1s ease; /* Smooth fade effect */
+}
+
+.slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.text-center {
+  position: absolute;
+  top: 70%;
+  left: 50%;
+  width: 90%; /* Extend width to 80% of the screen */
+  transform: translate(-50%, 50px); /* Start below final position */
+  text-align: center;
+  color: white;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 1s ease, transform 1s ease; /* Smooth fade and rise effect */
+  font-size: 26px; /* Increase font size if necessary */
+  line-height: 1.4; /* Adjust line height for readability */
+}
+.text-center h1{
+  font-size: 50px;
+}
+.text-center p {
+  font-size: 20px;
+  margin-bottom: 20px;
+}
+
+.active-slide {
+  opacity: 1;
+  visibility: visible;
+}
+
+.active-slide .text-center {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, -50%); /* Move text to center position */
+}
+
+.shop-button {
+  padding: 10px 15px;
+  font-size: 16px;
+  background-color: #ff4081;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  transition: background-color 0.3s, transform 0.5s ease;
+  margin-top: 10px; /* Add space above the button */
+}
+
+/* Hover effect for the button */
+.shop-button:hover {
+  background-color: #e91e63; /* Slightly darker shade on hover */
+  transform: scale(1.05); /* Slight scaling on hover */
+}
+
+/* Prev and next buttons */
+.prev, .next {
+  position: absolute;
+  top: 50%;
+  padding: 16px;
+  color: white;
+  font-weight: bold;
+  font-size: 18px;
+  transition: 0.6s ease;
+  cursor: pointer;
+  user-select: none;
+}
+
+.prev {
+  left: 0;
+}
+
+.next {
+  right: 0;
+}
+
+.prev:hover, .next:hover {
+  background-color: #DB9EAC;
+}
+
+
+
+
+#second-section{
+  height: 90vh;
+}
+
+#second-section .ads-container {
+    display: flex; 
+    height: 300px; 
+    padding: 10px 0;
+    margin-top: 15px;
+}
+
+/* ADS CONTAINER START */
+#second-section .left-ads {
+    margin: 0 0 0 8%;
+    flex: 7; 
+    padding: 10px; 
+    position: relative; 
+    overflow: hidden; 
+}
+
+#second-section .right-ads {
+    margin: 0 8% 0 0; 
+    flex: 3; 
+    padding: 10px; 
+}
+
+#second-section .slides-wrapper {
+    position: relative; 
+    width: 100%; 
+    height: 100%; 
+    overflow: hidden; 
+}
+
+#second-section .slides-container {
+    display: flex; 
+    width: 100%; 
+    height: 100%; 
+    transition: transform 0.5s ease; 
+}
+
+#second-section .slides-container img {
+    flex: 0 0 100%; 
+    height: 100%; 
+    object-fit: cover; 
+}
+
+#second-section .prev-btn, .next-btn {
+    background-color: rgba(0, 0, 0, 0.2); 
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    font-size: 12px;
+    z-index: 10; 
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    border-radius: 50%; 
+    display: none; 
+}
+#second-section .prev-btn:hover, .next-btn:hover{
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+#second-section .prev-btn {
+    left: 10px; 
+}
+
+#second-section .next-btn {
+    right: 10px; 
+}
+
+#second-section .slides-wrapper:hover .prev-btn,
+.slides-wrapper:hover .next-btn {
+    display: block; 
+    background-color: #DB9EAC;
+}
+
+#second-section .right-ads {
+    flex: 3; 
+    display: flex; 
+    flex-direction: column; 
+    justify-content: center; 
+    padding: 10px; 
+    box-sizing: border-box; 
+}
+
+#second-section .right-ads img {
+    width: 100%; 
+    height: 200px; 
+    max-height: 50%; 
+    object-fit: cover; 
+    margin-bottom: 10px; 
+}
+
+#second-section .right-ads img:last-of-type {
+    margin-bottom: 0; 
+}
+
+/* ADS CONTAINER END */
+
+/* CATEGORIES CONTAINER START */
+
+#second-section .categories-container{
+    margin: 0 6%;
+    background-color: white;
+    margin-top: 10px;
+    padding: 20px 0px;
+    height: auto;
+    text-align: center;
+   
+}
+#second-section .categories-container .headings{
+    text-align: center;
+    padding: 10px;
+}
+#second-section .categories-container h2{
+    font-weight: 600;
+    font-size: 35px;
+}
+.links-categ {
+    display: flex;
+    flex-wrap: wrap; 
+    justify-content: space-around; 
+
+}
+
+#second-section .categories-container .item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 5px;
+    margin: 0 30px;
+    width: 150px;
+    height: 180px;
+    transition: box-shadow 0.3s ease;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    margin-top: 20px;
+}
+
+#second-section .categories-container .item img {
+    cursor: pointer;
+    transition: transform 1s ease; 
+    transform: scale(1.8);
+    margin-bottom: 20px;
+}
+
+.item:hover img {
+    transform: scale(1.5); 
+}
+
+.item:hover {
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+}
+
+.item a {
+    display: block; 
+}
+.item label {
+    margin-top: 10px;
+    transition: font-weight 0.1s ease; 
+    font-size: 15px;
+    font-weight: 400;
+}
+
+.item:hover label {
+    font-weight: 600;
+}
+
+/* CATEGORIES CONTAINER END */
+
+                                /* HOME SECTION END */
+
+#video-section {
+  height: 90vh; /* Set section height to 90% of viewport height */
+  position: relative;
+  overflow: hidden;
+}
+
+#background-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Ensures the video covers the section */
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+
+
+
+
+
+                                 /* BEST SELLER START */
+
+                                 
+#best-seller {
+    height: 90vh;
+    width: 100%;
+    padding: 20px 0px;
+    position: relative; /* For the pseudo-element positioning */
+    background-image: url(../src/best-seller\ bg.png);
+    background-size: 150%; /* Zoom in on the background image */
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+#best-seller::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.944); /* White transparent overlay */
+    z-index: 0; /* Keep the overlay behind the content */
+}
+
+/* Content stays above the overlay */
+#best-seller .content {
+    position: relative;
+    z-index: 20; /* Keeps content on top of the faded background */
+}
+
+/* Heading styling */
+#best-seller h2 {
+    text-align: center; /* Center the heading */
+    font-weight: 600;
+    font-size: 35px;
+    margin-top: 20px;
+    position: relative; /* Ensure it's positioned correctly */
+    z-index: 25; /* Bring it above the overlay */
+}
+
+
+
+
+#best-seller .carousel-container {
+  position: relative;
+  width: 100%;
+  max-width: 1700px; /* Make the container a bit wider if needed */
+  height: 400px; /* Increase the height to fit focused items */
+  overflow: hidden;
+}
+
+#best-seller .carousel {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: center; /* Center the carousel horizontally */
+  margin-top: 80px; /* Adjust this value to move the carousel down */
+}
+
+#best-seller .carousel-track {
+  display: flex;
+  transition: transform 0.5s ease;
+  position: relative;
+  width: max-content;
+  justify-content: center; /* Center the items within the track */
+}
+
+#best-seller .carousel-item {
+  min-width: calc(80% / 5); /* Show 5 items at once */
+  padding: 10px;
+  text-align: center;
+  background-color: #fff;
+  margin: 0 15px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  position: relative;
+  transition: box-shadow 0.3s; /* Removed transform for item hover */
+  height: 270px;
+  width: 140px;
+  border-radius: 10px;
+}
+
+#best-seller .carousel-item a{
+  text-decoration: none;
+  color: black;
+}
+
+#best-seller .carousel-item img {
+  max-width: 100%;
+  height: 150px;
+  width: 150px;
+  border-radius: 5px;
+  transition: transform 0.3s ease; /* Smooth transition for image */
+}
+
+/* Hover Effect for Image Enlargement */
+#best-seller .carousel-item img:hover {
+  transform: scale(1.1); /* Scale up the image slightly on hover */
+  z-index: 3; /* Ensure the hovered image is above others */
+}
+
+#best-seller .carousel-item p {
+  margin-top: 30px;
+  padding: 5px;
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);
+  background-color: #fff;
+  border-radius: 8px;
+  transition: all 0.3s ease; /* Smooth border transition */
+  position: absolute;
+  bottom: -10px; /* Adjust this value to balance visibility */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  font-size: 16px;
+}
+
+
+
+/* Focused Item Style */
+#best-seller .carousel-item.focused {
+  transform: scale(1.2); /* Scale up the focused item */
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.3); /* Stronger shadow */
+  z-index: 2; /* Ensure it's on top */
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transition for transform and box-shadow */
+}
+
+#best-seller .prevbtn,
+.nextbtn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: #db9eac42;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 5px;
+  z-index: 3;
+  font-weight: bolder;
+}
+
+#best-seller .prevbtn {
+  left: 10px;
+}
+
+#best-seller .nextbtn {
+  right: 10px;
+}
+
+#best-seller .prevbtn:hover,
+.nextbtn:hover {
+  background-color: #DB9EAC;
+}
+
+.carousel-item.focused {
+  box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.3);
+  transform: scale(1.1); /* Optional: Slightly scale up the focused item */
+  border: 2px solid #DB9EAC
+}
+
+
+
+
+
+                                 /* BEST SELLER END */
+
+
+                                 /* PRODUCT START */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap');
+
+/* .product-container .card:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #DB9EAC;
+  clip-path: circle(100px at 80% 10%);
+  transition: 0.5s ease-in-out;
+} */
+
+#product {
+  padding: 20px;
+  margin-top: 0px;
+  background-color: white;
+  width: 100%;
+}
+
+.product-container .product-to-productPage{
+  text-decoration: none;
+}
+
+.product-container {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(150px, 1fr)); /* 4 columns with fixed minimum width */
+  grid-gap: 15px 0; /* Minimal gap between cards */
+  padding: 0 20px; /* Reduce padding on both sides */
+  max-width: 90%; /* Set a maximum width for the container */
+  width: calc(100% - 40px); /* Adjust width to account for padding */
+  box-sizing: border-box;
+  margin: 0 auto; /* Center the grid */
+}
+
+.product-container .card {
+  position: relative;
+  width: 75%; /* Let each card fill its grid cell */
+  height: 310px;
+  background: white;
+  border-radius: 15px;
+  overflow: hidden;
+  margin: 0;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+}
+
+.product-container .card:hover:before {
+  clip-path: circle(220px at 80% -30%);
+}
+
+.product-container .card .imgBx {
+  position: absolute;
+  top: 35%; /* Adjusted position */
+  transform: translateY(-50%);
+  width: 100%;
+  height: 140px; /* Further reduced height */
+  transition: 0.5s;
+  margin-top: 15px;
+}
+
+.product-container .card:hover .imgBx {
+  top: 5%;
+  transform: translateY(0%);
+  position: relative;
+}
+
+.product-container .card .imgBx img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 180px; /* Further reduced image size */
+  height: 180px; /* Set height to keep the image square */
+  object-fit: cover; /* Ensure image covers the container without distortion */
+}
+
+.product-container .card .contentBx {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 60px; /* Further reduced height */
+  text-align: center;
+  transition: 1s;
+}
+
+.product-container .card:hover .contentBx {
+  height: 125px; /* Adjusted height on hover */
+}
+
+.product-container .card .contentBx h2 {
+  font-weight: 600;
+  color: black;
+  margin: 0;
+  font-size: 0.8rem;
+  margin-top: 10px;
+}
+
+.product-container .card .contentBx .price {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 5px 0; /* Reduced padding */
+  transition: 0.5s;
+  opacity: 0;
+  visibility: hidden;
+  font-size: 0.80rem;
+}
+
+.product-container .card:hover .contentBx .price {
+  opacity: 1;
+  visibility: visible;
+  transition-delay: 0.5s;
+}
+
+.product-container .card .contentBx .price h3 {
+  color: black;
+  font-weight: 300;
+  font-size: 15px; /* Further reduced font size */
+  text-transform: uppercase;
+  margin-right: 5px; /* Adjusted margin */
+}
+
+.product-container .card .contentBx .price span {
+  font-size: 15px; /* Further reduced font size */
+  font-weight: bold;
+  color: black;
+}
+
+.product-container .card .contentBx .buttons {
+  display: flex;
+  justify-content: center;
+  gap: 5px; /* Adjusted gap */
+  width: 100%; /* Full width for the buttons container */
+}
+
+.product-container .card .contentBx .buttons .add-to-cart {
+  background-color: white;
+  color: black;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  width: calc(100% - 20px); /* Ensure it fits within the card padding */
+  margin: 5px auto 0; /* Center the button and add spacing from content */
+  box-sizing: border-box; /* Include padding/border in the button size */
+  text-decoration: none;
+  transform: translateY(50px);
+  transition: 0.5s;
+}
+
+.product-container .card:hover .contentBx .buttons .add-to-cart {
+  opacity: 1;
+  transform: translateY(0px);
+  transition-delay: 0.75s;
+}
+
+.product-container .card .contentBx .buttons .add-to-cart {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 220px; /* Full width for 'Add to Cart' button */
+}
+
+
+/* Wishlist Heart Icon */
+.product-container .fa-heart {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  font-size: 1.5rem;
+  color: #d37389;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 50%;
+  opacity: 0; /* Initially hidden */
+  transition: opacity 0.3s ease, color 0.3s ease; /* Smooth transition for appearance */
+  z-index: 10; /* Ensure the heart icon is above the content */
+}
+
+/* Only show the heart icon when hovering over a specific card */
+.product-container .card:hover .fa-heart {
+  opacity: 1; /* Fade in the heart icon */
+}
+
+/* Optional: Change the heart icon color when hovered */
+.product-container .card .fa-heart:hover {
+  color: #f00;
+}
+
+
+
+
+/* Modal for Add to cart pop op Background Styling */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed;
+  z-index: 9999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6); /* Darker, semi-transparent background */
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.3s ease; /* Fade-in effect for background */
+}
+
+/* Modal Content Styling */
+.modal-content {
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 25px;
+  width: 320px;
+  text-align: center;
+  position: relative;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  opacity: 0;
+  transform: scale(0.9); /* Zoom-in effect */
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  border-top: 4px solid #d37389;
+}
+
+/* Display Modal with Animation */
+.modal-content.show {
+  opacity: 1;
+  transform: scale(1); /* Reset scale */
+}
+
+/* Close Button Styling */
+.close-btn {
+  color: #aaa;
+  font-size: 24px;
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.close-btn:hover {
+  color: #333;
+}
+
+/* Modal Body */
+.modal-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Icon/Image Styling */
+.modal-cart-icon {
+  font-size: 50px;
+  color: #d37389; /* Green for success */
+  margin-bottom: 15px;
+}
+
+/* Message Text Styling */
+.modal-content p {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  margin-top: 10px;
+}
+
+
+
+                                /* PRODUCT END */
+
+
+footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    background-color: #f8f8f8;
+    padding: 20px;
+    text-align: left;
+    flex-wrap: wrap; /* Allows wrapping for smaller screens */
+}
+
+.footer-sections {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    flex-wrap: wrap; /* Enables sections to wrap on smaller screens */
+    margin: 0 70px;
+}
+
+.footer-section {
+    flex: 1;
+    margin: 0 20px;
+    min-width: 150px; /* Ensures sections don't shrink too much */
+}
+
+.footer-section h4 {
+    margin-bottom: 10px;
+    font-size: 16px;
+    color: #333;
+}
+
+.footer-section p {
+    margin: 5px 0;
+    color: #666;
+    font-size: 14px;
+}
+
+.footer-section img {
+    width: 100px;
+    height: 40px;
+    margin-top: 10px;
+    margin-right: 10px; /* Space between images */
+    display: block;
+}
+
+footer p.footer-copyright {
+    width: 100%;
+    text-align: center;
+    margin-top: 20px;
+    font-size: 12px;
+    color: #999;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

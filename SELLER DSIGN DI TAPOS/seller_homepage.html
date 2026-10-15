@@ -1,0 +1,2050 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seller Homepage</title>
+    <link rel="stylesheet" href="{{url_for('static', filename='css/seller.css')}}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script src="https://kit.fontawesome.com/0dd07a1078.js" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
+</head>
+
+<body>
+    <!-- Navbar (not full width) -->
+    <div class="navbar">
+        <span id="current-tab" class="current-tab">Dashboard</span> <!-- Added span for current tab -->
+        <div class="icons">
+            <div class="icon">
+                <div class="notification-wrapper">
+                    <box-icon name="bell" class="notification"></box-icon> <!-- Notification icon -->
+                    <span class="notification-count" id="notification-count">{{ notifications|length }}</span>
+                    <div class="notification-dropdown">
+                        <ul id="notification-list">
+                            {% for notification in notifications %}
+                                <li class="notification-item">
+                                    <span>{{ notification.message }}</span>
+                                    <div class="product-details">
+                                        <div class="image-wrapper">
+                                            <img src="{{ url_for('static', filename='upload_images/' + notification.product_image) }}" alt="Product Image">
+                                        </div>
+                                    </div>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="message">
+                <box-icon name="message" class="message-icon"></box-icon>
+            </div>
+
+            
+
+            <div class="profile">
+                <i class="fa-regular fa-user"></i> Welcome, {{ session['user'] }}
+                <div class="profile-dropdown">
+                    <a href="/seller_profile">My Account</a>
+                    <a href="/logout">Log Out</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="sidebar">
+        <div class="logo">
+            <img src="../static/src/logo design.png" alt="Logo">
+        </div>
+
+        <ul class="menu">
+            <li>
+                <a href="#" onclick="openTab('dashboard', 'Dashboard')" class="{% if active_tab == 'dashboard' %}active{% endif %}">
+                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('my_orders') }}" onclick="openTab('my-orders', 'My Orders')" class="{% if active_tab == 'my-orders' %}active{% endif %}">
+                    <i class="fas fa-box"></i> My Orders
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('my_products') }}" onclick="openTab('my-products', 'My Products')" class="{% if active_tab == 'my-products' %}active{% endif %}">
+                    <i class="fas fa-tags"></i> My Products
+                </a>
+            </li>
+            <li>
+                <a href="#" onclick="openTab('messages', 'Messages')" class="{% if active_tab == 'messages' %}active{% endif %}">
+                    <i class="fas fa-envelope"></i> Messages
+                </a>
+            </li>
+            <li>
+                <a href="#" onclick="openTab('add-new-product', 'Add New Product')" class="{% if active_tab == 'add-new-product' %}active{% endif %}">
+                    <i class="fas fa-plus-circle"></i> Add New Product
+                </a>
+            </li>
+            <li>
+                <a href="#" onclick="openTab('editProductForm')" class="{% if active_tab == 'editProductForm' %}active{% endif %}">
+                    <i class="fas fa-edit"></i> Edit Product
+                </a>
+            </li>
+            <li>
+                <a href="#" onclick="openTab('sales-income', 'Sales & Income')" class="{% if active_tab == 'sales-income' %}active{% endif %}">
+                    <i class="fas fa-chart-line"></i> Sales & Income
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="content-wrapper">
+        <div class="content" id="dashboard">   
+            <!-- To-do List Container -->
+            <div class="to-do-list-container" id="toDoList">
+                <h2>Seller Overview</h2>
+                <p>Things you should check</p>
+        
+                <!-- New Row with 3 Columns -->
+                <div class="status-row">
+                    <!-- Container for Total Orders -->
+                    <div class="status-item-container">
+                        <div class="status-item">
+                            <p id="totalOrders">0</p>  <!-- Display the total orders count here -->
+                            <span>Total Orders</span>
+                        </div>
+                    </div>
+        
+                    <!-- Container for Pending Shipment -->
+                    <div class="status-item-container">
+                        <div class="status-item">
+                            <p id="pendingShipment">0</p>  <!-- Display the pending shipment count here -->
+                            <span>Pending Shipment</span>
+                        </div>
+                    </div>
+        
+                    <!-- Container for Products Added to Cart -->
+                    <div class="status-item-container">
+                        <div class="status-item">
+                            <p id="cartCount">0</p>  <!-- Display the cart count here -->
+                            <span>Products Added to Cart</span>
+                        </div>
+                    </div>
+        
+                    <!-- Container for Stock Level -->
+                    <div class="status-item-container">
+                        <div class="status-item">
+                            <p id="lowStockCount">0</p>  <!-- Display the low stock count here -->
+                            <span>Stock Level</span>
+                            <span class="tooltip">
+                                <span class="circle">?</span>  <!-- Circle around the question mark -->
+                                <span class="tooltiptext">This shows the number of products with stock levels below 15.</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+        
+                <!-- Most Sold Products Section Below the Status Row -->
+                <div class="most-sold-products-container">
+                    <h4>Most Sold Products</h4>
+                    <ul id="mostSoldProducts"></ul>
+                </div>
+            </div>
+        </div>   
+ 
+        <div id="my-orders" class="content">
+        
+            <!-- Navigation buttons for filtering orders -->
+            <div class="order-nav">
+                <button class="active" onclick="showOrderContent('all', this)">All</button>
+                <button onclick="showOrderContent('to-ship', this)">To Ship</button>
+                <button onclick="showOrderContent('to-receive', this)">To Receive</button>
+                <button onclick="showOrderContent('completed', this)">Completed</button>
+                <button onclick="showOrderContent('cancelled', this)">Cancelled</button>
+                <button onclick="showOrderContent('refund', this)">Refund</button>
+            </div>
+        
+            <div class="order-content-section active-content" id="order-content-all">
+                {% if orders %}
+                    <table class="delivery-table">
+                        <thead>
+                            <tr>
+                                <th>Product Info</th>
+                                <th>Quantity</th>
+                                <th>Total</th>
+                                <th>Payment Method</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="order-body">
+                            {% for order in orders %}
+                                <tr class="order-row {{ order.status|lower }}">
+                                    <td>
+                                        <div class="username">{{ order.username }}</div>
+                                        <div class="order-info">
+                                            <div class="product-container">
+                                                <img src="{{ order.product_image }}" alt="{{ order.productName }}" width="50">
+                                                <div class="product-name">{{ order.productName }}</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>{{ order.quantity }}</td>
+                                    <td>${{ order.total }}</td>
+                                    <td>{{ order.payment_method }}</td>
+                                    <td>{{ order.status }}</td>
+                                    <td>
+                                        <input type="hidden" class="order-id" value="{{ order.id }}">
+                                        <a href="#" onclick="shipOrder(this)" title="Ship" class="action-btn">
+                                            <i class="fas fa-shipping-fast"></i>
+                                        </a>
+                                        <a href="#" onclick="openCancelModal(this)" title="Cancel" class="action-btn">
+                                            <i class="fas fa-times-circle"></i>
+                                        </a>
+                                    </td>                                
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <p>No orders found.</p>
+                {% endif %}
+            </div>
+            
+            <!-- Cancel Order Modal -->
+            <div class="cancel-order-modal" style="display: none;">
+                <div class="modal-content">
+                    <span class="close" onclick="closeCancelModal()">&times;</span>
+                    <h2>Cancel Order</h2>
+                    <textarea id="cancel-reason" placeholder="Enter your reason for cancellation" data-order-id=""></textarea>
+                    <button onclick="submitCancel()">Submit</button>
+                    <button onclick="closeCancelModal()">Close</button>
+                </div>
+            </div>
+            
+        
+            <div class="order-content-section" id="order-content-to-ship">
+                <table class="delivery-table">
+                    <thead>
+                        <tr>
+                            <th>Product Details</th>
+                            <th>Quantity</th>
+                            <th>Total</th>
+                            <th>Payment Method</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="to-ship-orders-body">
+                       
+                    </tbody>
+                </table>
+            </div>
+
+          <!-- To Receive Orders Section -->
+            <div class="order-content-section" id="order-content-to-receive">
+                <table class="delivery-table">
+                    <thead>
+                        <tr>
+                            <th>Product Details</th>
+                            <th>Quantity</th>
+                            <th>Total</th>
+                            <th>Payment Method</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="to-receive-orders-body">
+                       
+                    </tbody>
+                </table>
+            </div>
+        
+            <div class="order-content-section" id="order-content-completed">
+                <table class="delivery-table">
+                    <thead>
+                        <tr>
+                            <th>Product Details</th>
+                            <th>Quantity</th>
+                            <th>Total</th>
+                            <th>Payment Method</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="completed-orders-body">
+                        <!-- Completed orders will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="order-content-section" id="order-content-cancelled">
+                <table class="delivery-table">
+                    <thead>
+                        <tr>
+                            <th>Product Details</th>
+                            <th>Quantity</th>
+                            <th>Total</th>
+                            <th>Payment Method</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cancelled-orders-body">
+                        <!-- Cancelled orders will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="order-content-section" id="order-content-refund">
+                <table class="delivery-table">
+                    <thead>
+                        <tr>
+                            <th>Product Details</th>
+                            <th>Quantity</th>
+                            <th>Total</th>
+                            <th>Payment Method</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="refund-orders-body">
+                        <!-- Cancelled orders will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="content" id="my-products">
+            <div class="my-products-toolbar">
+                <div class="btn-group" role="group" aria-label="Product Status Filter">
+                    <button type="button" class="btn btn-secondary" id="listed-tab" onclick="filterProducts('listed')">Listed</button>
+                    <button type="button" class="btn btn-secondary" id="unlisted-tab" onclick="filterProducts('unlisted')">Unlisted</button>
+                </div>
+                <form method="GET" action="{{ url_for('my_products') }}" class="products-search-form">
+                    <input type="text" class="form-control" name="search_query" placeholder="Search products..." aria-label="Search" value="{{ search_query }}">
+                    <select class="form-select" aria-label="Select category" name="selected_category">
+                        <option value="all" {% if selected_category == 'all' %}selected{% endif %}>All Categories</option>
+                        <option value="Skincare Products" {% if selected_category == 'skincare products' %}selected{% endif %}>Skincare Products</option>
+                        <option value="Haircare Solutions" {% if selected_category == 'Haircare Solutions' %}selected{% endif %}>Haircare Solutions</option>
+                        <option value="makeup & cosmetics" {% if selected_category == 'makeup & cosmetics' %}selected{% endif %}>Makeup & Cosmetics</option>
+                        <option value="personal care appliances" {% if selected_category == 'personal care appliances' %}selected{% endif %}>Personal Care Appliances</option>
+                        <option value="men's grooming" {% if selected_category == 'men\s grooming' %}selected{% endif %}>Men's Grooming</option>
+                        <option value="health supplements" {% if selected_category == 'health supplements' %}selected{% endif %}>Health Supplements</option>
+                    </select>
+                    <input type="hidden" name="product_status" id="product_status" value="listed">
+                </form>
+            </div>
+        
+            <div class="my_products_content">
+                <!-- Listed Products Section -->
+                <div id="listed-products" style="display: block;">
+                    <table class="delivery-table">
+                        <thead>
+                            <tr>
+                                <th>Product Image</th>
+                                <th>Product Name</th>
+                                <th>Price</th>
+                                <th>Stock Quantity</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for product in listed_products %}
+                            <tr class="{% if product[6] < 15 %}low-stock-row{% endif %}">
+                                <td>
+                                    <img src="{{ url_for('static', filename='upload_images/' + product[7]) }}" alt="{{ product[1] }}" style="max-width: 100px;">
+                                </td>
+                                <td>{{ product[1] }}</td>
+                                <td>{{ product[5] }}</td>
+                                <td>{{ product[6] }}</td>
+                                <td class="status-cell">
+                                    <span class="status-badge listed">Listed</span>
+                                </td>
+                                <td class="actions-cell">
+                                    <div class="action-btns">
+                                        <a href="{{ url_for('edit_product', product_id=product[0]) }}" 
+                                        onclick="openTab('editProductForm')" 
+                                        class="circle-btn" title="Edit">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <form action="{{ url_for('unlist_product', product_id=product[0]) }}" method="POST" style="display:inline;">
+                                            <button type="submit" class="circle-btn" title="Unlist" onclick="return confirm('Are you sure you want to unlist this product?');">
+                                                <i class="fas fa-eye-slash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                            {% if listed_products|length == 0 %}
+                            <tr>
+                                <td colspan="6" class="text-center">No listed products found.</td>
+                            </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Unlisted Products Section -->
+                <div id="unlisted-products" style="display: none;">
+                    <table class="delivery-table">
+                        <thead>
+                            <tr>
+                                <th>Product Image</th>
+                                <th>Product Name</th>
+                                <th>Price</th>
+                                <th>Stock Quantity</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for product in unlisted_products %}
+                        <tr class="{% if product[6] < 15 %}low-stock-row{% endif %}">
+                            <td>
+                                <img src="{{ url_for('static', filename='upload_images/' + product[7]) }}" alt="{{ product[1] }}" style="max-width: 100px;">
+                            </td>
+                            <td>{{ product[1] }}</td>
+                            <td>{{ product[5] }}</td>
+                            <td>{{ product[6] }}</td>
+                            <td class="status-cell">
+                                <span class="status-badge listed">Listed</span>
+                            </td>
+                            <td class="actions-cell">
+                                <div class="action-btns">
+                                    <a href="{{ url_for('edit_product', product_id=product[0]) }}" 
+                                    onclick="openTab('editProductForm')" 
+                                    class="circle-btn" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <form action="{{ url_for('unlist_product', product_id=product[0]) }}" method="POST" style="display:inline;">
+                                        <button type="submit" class="circle-btn" title="Unlist" onclick="return confirm('Are you sure you want to unlist this product?');">
+                                            <i class="fas fa-eye-slash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}       
+                            {% if unlisted_products|length == 0 %}
+                            <tr>
+                                <td colspan="6" class="text-center">No unlisted products found.</td>
+                            </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+            <div class="content" id="messages" style="display: none;">
+                <div class="chat-container">
+                    <!-- Sidebar -->
+                    <div class="chat-sidebar">
+                        <div class="chat-search-bar">
+                            <input type="text" class="chat-search-input" placeholder="Search" id="search-user">
+                        </div>
+                        <ul class="chat-list" id="chat-list">
+                            <!-- Dynamic users will be added here -->
+                        </ul>
+                    </div>
+                
+                    <!-- Chat Area -->
+                    <div class="chat-main-area">
+                        <div class="chat-header">
+                            <h4 class="chat-business-name" id="business-name"></h4>
+                            <div class="chat-options">
+                                <i class="fas fa-phone chat-option-icon"></i>
+                                <i class="fas fa-video chat-option-icon"></i>
+                                <i class="fas fa-ellipsis-v chat-option-icon"></i>
+                            </div>
+                        </div>
+                
+                        <div class="chat-messages-container" id="chat-messages">
+                            <!-- Messages will be loaded here -->
+                        </div>
+                
+                        <div class="chat-input-container">
+                            <input type="text" class="chat-input-field" placeholder="Type your message and press enter..." id="message-input">
+                            <div class="chat-input-options">
+                                <i class="fas fa-paper-plane chat-send-btn" id="send-message-btn"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>            
+            </div>
+
+
+        
+           
+            <div class="content" id="add-new-product">           
+            {% with messages = get_flashed_messages(with_categories=True) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="flash {% if category == 'error' %}error{% endif %}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <div class="info-container">
+                <form id="addProductForm" action="{{ url_for('add_products') }}" method="POST" enctype="multipart/form-data">
+                    <input type="hidden" id="activeTab" name="active_tab" value="add-new-product">
+                    
+                    <div class="basic-info">
+                        <h2>Basic Information</h2>
+                    
+                        <!-- Main Product Image -->
+                        <div class="form-group">
+                            <label>Product Image:</label>
+                            <div class="image-input-container">
+                                <div class="main-image-preview" id="imagePreview" onclick="document.getElementById('productImage').click();">
+                                    <img id="previewImage" src="" alt="Image Preview" />
+                                    <span id="placeholderText">Upload Image</span>
+                                </div>
+                                <input type="file" id="productImage" name="productImage" accept="image/*" required style="display: none;">
+                            </div>
+                        </div>
+                    
+                        <!-- Sub-Images for Product -->
+                        <div class="form-group">
+                            <label>Sub-Images (Additional):</label>
+                            <div class="sub-image-container">
+                                <div class="sub-image-preview" onclick="document.getElementById('subImage1').click();">
+                                    <img id="subImagePreview1" src="" alt="Sub Image Preview 1" />
+                                    <span id="subPlaceholderText1">Upload Sub Image 1</span>
+                                </div>
+                                <input type="file" id="subImage1" name="subImage1" accept="image/*" required style="display: none;">
+                    
+                                <div class="sub-image-preview" onclick="document.getElementById('subImage2').click();">
+                                    <img id="subImagePreview2" src="" alt="Sub Image Preview 2" />
+                                    <span id="subPlaceholderText2">Upload Sub Image 2</span>
+                                </div>
+                                <input type="file" id="subImage2" name="subImage2" accept="image/*" required style="display: none;">
+                    
+                                <div class="sub-image-preview" onclick="document.getElementById('subImage3').click();">
+                                    <img id="subImagePreview3" src="" alt="Sub Image Preview 3" />
+                                    <span id="subPlaceholderText3">Upload Sub Image 3</span>
+                                </div>
+                                <input type="file" id="subImage3" name="subImage3" accept="image/*" required style="display: none;">
+                            </div>
+                        </div>
+                    
+                        <div class="form-group">
+                            <label for="productName">Product Name:</label>
+                            <input type="text" id="productName" name="productName" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="miniDescription">Mini Description:</label>
+                            <textarea id="miniDescription" name="miniDescription" rows="2" required></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="mainDescription">Main Description:</label>
+                            <textarea id="mainDescription" name="mainDescription" rows="4" required></textarea>
+                        </div>
+                    
+                        <div class="form-group">
+                            <label for="category">Category:</label>
+                            <select id="category" name="category" required>
+                                <option value="Skincare Products">Skincare Products</option>
+                                <option value="Haircare Solutions">Haircare Solutions</option>
+                                <option value="Makeup & Cosmetics">Makeup & Cosmetics</option>
+                                <option value="Personal Care Appliances">Personal Care Appliances</option>
+                                <option value="Men's Grooming">Men's Grooming</option>
+                                <option value="Health Supplements">Health Supplements</option>
+                            </select>
+                        </div>                       
+                    </div>         
+
+                    <div class="sales-info">
+                        <h2>Sales Information</h2>
+                        <div class="form-group">
+                            <label for="price">Price:</label>
+                            <input type="number" id="price" name="price" step="0.01" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="stockQuantity">Stock Quantity:</label>
+                            <input type="number" id="stockQuantity" name="stockQuantity" required>
+                        </div>
+                        
+                        <div class="button-container">
+                            <button type="submit">Save</button>
+                        </div>
+                    </div>         
+                </form>
+            </div>           
+        </div>
+
+         <!-- Edit Product Form -->
+        <div id="editProductForm" class="tab-content" style="display: none;">
+            {% if product %}
+            <h3>Edit Product</h3>
+            <form action="{{ url_for('edit_product', product_id=product[0]) }}" method="POST" enctype="multipart/form-data">
+                <!-- Basic Information Section -->
+                <div class="basic-info">
+                    <h2>Basic Information</h2>
+
+    
+                    <!-- Product Details -->
+                    <div class="form-group">
+                        <label for="product_name">Product Name:</label>
+                        <input type="text" id="product_name" name="product_name" value="{{ product[1] }}" required>
+                    </div>
+
+                    <!-- Category Dropdown Menu -->
+                    <div class="form-group">
+                        <label for="category">Category:</label>
+                        <select id="category" name="category" required>
+                            <option value="Skincare Products" {% if product[2] == 'Skincare Products' %}selected{% endif %}>Skincare Products</option>
+                            <option value="Haircare Solutions" {% if product[2] == 'Haircare Solutions' %}selected{% endif %}>Haircare Solutions</option>
+                            <option value="Makeup & Cosmetics" {% if product[2] == 'Makeup & Cosmetics' %}selected{% endif %}>Makeup & Cosmetics</option>
+                            <option value="Personal Care Appliances" {% if product[2] == 'Personal Care Appliances' %}selected{% endif %}>Personal Care Appliances</option>
+                            <option value="Men's Grooming" {% if product[2] == "Men's Grooming" %}selected{% endif %}>Men's Grooming</option>
+                            <option value="Health Supplements" {% if product[2] == 'Health Supplements' %}selected{% endif %}>Health Supplements</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="mini_description">Mini Description:</label>
+                        <textarea id="mini_description" name="mini_description" rows="2" required>{{ product[3] }}</textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="main_description">Main Description:</label>
+                        <textarea id="main_description" name="main_description" rows="4" required>{{ product[4] }}</textarea>
+                    </div>
+                </div>
+
+                <div class="sales-info">
+                    <h2>Sales Information</h2>
+                    <div class="form-group">
+                        <label for="price">Price:</label>
+                        <input type="number" id="price" name="price" step="0.01" value="{{ product[5] }}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="stock_quantity">Stock Quantity:</label>
+                        <input type="number" id="stock_quantity" name="stock_quantity" value="{{ product[6] }}" required>
+                    </div>         
+                    <div class="button-container">
+                        <button type="submit">Update Product</button>
+                    </div>
+                </div>
+        
+            </form>
+            {% endif %}
+        </div>
+          
+        
+        <div class="content" id="sales-income">
+            <h2>Finances</h2>
+            <div class="totals-container">
+                <h5>Total Net: <span id="totalNet">0</span></h5>
+            </div>
+            <div class="export-buttons">
+                <button onclick="exportToCSV()">Export to CSV</button>
+                <button onclick="exportToPDF()">Export to PDF</button>
+            </div>
+            <div class="search-container">
+                <!-- Search input field -->
+                <input type="text" id="finance-search" placeholder="Search in table..." onkeyup="searchTable()">
+                
+                <!-- Date Range Filter beside the search -->
+                <div class="date-range-container">
+                    <div class="date-picker">
+                        <label for="start-date">Start Date</label>
+                        <input type="datetime-local" id="start-date">
+                    </div>
+                    <div class="date-picker">
+                        <label for="end-date">End Date</label>
+                        <input type="datetime-local" id="end-date">
+                    </div>
+                </div>
+                
+                <!-- Button to filter by date range -->
+                <button onclick="filterByDateRange()">Filter by Date</button>
+            </div>
+            
+
+            <div class="table-container">
+                <table id="completedOrdersTable" border="1">
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Phone Number</th>
+                            <th>Product Name</th>
+                            <th>Quantity</th>
+                            <th>Business Name</th>
+                            <th>Total</th>
+                            <th>Payment Method</th>
+                            <th>Date of Sale</th>
+                            <th>Service Fee</th> <!-- New column -->
+                            <th>Total Net</th>   <!-- New column -->
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Table rows will be dynamically inserted here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="view-reason-modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close-btn">&times;</span>
+                <h3>Refund Reason</h3>
+                <p id="refund-reason-text"></p>
+                <div id="refund-images"></div>
+            </div>
+        </div>
+
+        <div id="enlarged-image-modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close-enlarged-btn">&times;</span>
+                <img id="enlarged-image" src="" alt="Enlarged Refund Image">
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
+
+<script>
+function openTab(tabId, tabLabel) {
+    // Hide all content sections
+    document.querySelectorAll('.content, .tab-content').forEach(section => {
+        section.style.display = 'none';
+    });
+
+    // Show the selected tab
+    const activeSection = document.getElementById(tabId);
+    if (activeSection) {
+        activeSection.style.display = 'block';
+    }
+
+    // Update the current tab label if provided
+    if (tabLabel && document.getElementById('current-tab')) {
+        document.getElementById('current-tab').textContent = tabLabel;
+    }
+
+    // Optionally, update the active class on sidebar links
+    document.querySelectorAll('.sidebar .menu a').forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('onclick') && link.getAttribute('onclick').includes(tabId)) {
+            link.classList.add('active');
+        }
+    });
+}
+</script>
+
+    <script>
+        // Define these globally so all functions can use them
+        const chatList = document.getElementById('chat-list');
+        const chatMessagesContainer = document.getElementById('chat-messages');
+        const businessNameElement = document.getElementById('business-name');
+    </script>
+    <script>
+        window.onload = function() {
+            fetchSellerDashboardData();
+        };
+    
+        function fetchSellerDashboardData() {
+            let searchValue = document.getElementById('finance-search') ? document.getElementById('finance-search').value.toLowerCase() : '';
+            let startDate = document.getElementById('start-date') ? document.getElementById('start-date').value : '';
+            let endDate = document.getElementById('end-date') ? document.getElementById('end-date').value : '';
+    
+            // Format the query parameters
+            let searchParams = `search=${encodeURIComponent(searchValue)}`;
+            if (startDate) {
+                startDate = startDate.replace("T", " ") + ":00"; // Format to YYYY-MM-DD HH:MM:SS
+                searchParams += `&start_date=${encodeURIComponent(startDate)}`;
+            }
+            if (endDate) {
+                endDate = endDate.replace("T", " ") + ":00"; // Format to YYYY-MM-DD HH:MM:SS
+                searchParams += `&end_date=${encodeURIComponent(endDate)}`;
+            }
+    
+            fetch('/seller_dashboard_data?' + searchParams)
+                
+                .then(response => response.json())
+                .then(data => {
+                    // Update the dashboard counts
+                    if (data.cart_count !== undefined && data.low_stock_count !== undefined && data.pending_shipment_count !== undefined && data.total_orders_count !== undefined) {
+                        document.getElementById('cartCount').innerText = data.cart_count;
+                        document.getElementById('lowStockCount').innerText = data.low_stock_count;
+                        document.getElementById('pendingShipment').innerText = data.pending_shipment_count;
+                        document.getElementById('totalOrders').innerText = data.total_orders_count;
+                    }
+                    // Clear existing rows in the completed orders table
+                    const tableBody = document.getElementById('completedOrdersTable').querySelector('tbody');
+                    tableBody.innerHTML = '';
+    
+                    // Initialize Total Gross and Total Net
+                    let totalGross = 0;
+                    let totalNet = 0;
+    
+                    // Populate the completed orders table with new data
+                    if (data.completed_orders && data.completed_orders.length > 0) {
+                        data.completed_orders.forEach(order => {
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td>${order.username}</td>
+                                <td>${order.phoneNumber}</td>
+                                <td>${order.productName}</td>
+                                <td>${order.quantity}</td>
+                                <td>${order.business_name}</td>
+                                <td>${order.total}</td>
+                                <td>${order.payment_method}</td>
+                                <td>${order.created_at}</td>
+                                <td>${order.total_gross}</td>
+                                <td>${order.total_net}</td>
+                            `;
+                            tableBody.appendChild(row);
+    
+                            // Accumulate totals
+                            totalGross += parseFloat(order.total_gross);
+                            totalNet += parseFloat(order.total_net);
+                        });
+                    } else {
+                        const row = document.createElement('tr');
+                        row.innerHTML = '<td colspan="10">No matching orders found.</td>';
+                        tableBody.appendChild(row);
+                    }
+    
+                    // Update Total Gross and Total Net in the UI
+                    document.getElementById('totalNet').textContent = totalNet.toFixed(2);
+                })
+                .catch(error => {
+                    console.error('Error fetching seller dashboard data:', error);
+                });
+        }
+    
+        // Attach event listeners for search and date filter
+        document.getElementById('finance-search').addEventListener('keyup', fetchSellerDashboardData);
+        document.getElementById('start-date').addEventListener('change', fetchSellerDashboardData);
+        document.getElementById('end-date').addEventListener('change', fetchSellerDashboardData);
+    
+        // Function to filter by date range using a button click
+        function filterByDateRange() {
+            fetchSellerDashboardData();
+        }
+    
+        // Refresh the data every 5 seconds
+        setInterval(() => {
+            fetchSellerDashboardData();
+        }, 5000);
+    </script>
+    <script>
+        function exportToCSV() {
+            const table = document.getElementById("completedOrdersTable");
+            const rows = table.querySelectorAll("tr");
+            let csvContent = "";
+
+            rows.forEach(row => {
+                const cols = row.querySelectorAll("td, th");
+                const rowData = Array.from(cols).map(col => `"${col.textContent}"`).join(",");
+                csvContent += rowData + "\n";
+            });
+
+            // Create a blob from the CSV content and download it
+            const blob = new Blob([csvContent], { type: "text/csv" });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = "completed_orders.csv";
+            link.click();
+        }
+
+    </script>
+
+    <script>
+        async function exportToPDF() {
+            const { jsPDF } = window.jspdf;
+        
+            // Initialize jsPDF
+            const doc = new jsPDF();
+        
+            // Set custom color for text and header
+            const customColor = "#e91e63";
+            const rgb = hexToRgb(customColor);
+        
+            // Page setup: Header
+            doc.setFontSize(18);
+            doc.setFont("helvetica", "bold");
+            doc.setTextColor(rgb.r, rgb.g, rgb.b);
+            doc.text("Glamour Gaze", 105, 15, { align: "center" });
+        
+            doc.setFontSize(12);
+            doc.setFont("helvetica", "normal");
+            doc.text("Philippines, Laguna", 105, 25, { align: "center" });
+            doc.text("Contact: glamourgaze33@gmail.com | Phone: +63 123 456 7890", 105, 35, { align: "center" });
+            doc.text("Website: www.glamourgaze.com", 105, 45, { align: "center" });
+        
+            // Add export metadata
+            doc.setTextColor(0, 0, 0); // Reset to black for metadata
+            const currentDate = new Date().toLocaleString("en-PH", { timeZone: "Asia/Manila" });
+            doc.text(`Export Date: ${currentDate}`, 10, 65);
+        
+            // Table data extraction
+            const table = document.getElementById('completedOrdersTable');
+            const headers = Array.from(table.querySelectorAll('thead th')).map(th => th.textContent.trim());
+            const rows = Array.from(table.querySelectorAll('tbody tr')).map(row =>
+                Array.from(row.querySelectorAll('td')).map(td => td.textContent.trim())
+            );
+        
+            // Add the table with custom header color
+            doc.autoTable({
+                head: [headers],
+                body: rows,
+                startY: 70, // Position table below the header
+                margin: { left: 10, right: 10 },
+                theme: 'grid',
+                headStyles: {
+                    fillColor: [rgb.r, rgb.g, rgb.b], // Custom color for header background
+                    textColor: 255, // White text
+                    fontStyle: 'bold',
+                },
+            });
+        
+            // Add footer with page number
+            const pageCount = doc.internal.getNumberOfPages();
+            for (let i = 1; i <= pageCount; i++) {
+                doc.setPage(i);
+                const pageHeight = doc.internal.pageSize.height;
+                doc.setFontSize(10);
+                doc.text(`Page ${i} of ${pageCount}`, 105, pageHeight - 10, { align: "center" });
+            }
+        
+            // Save the PDF with date in the filename
+            const formattedDate = new Date().toISOString().split('T')[0];
+            const fileName = `Export_${formattedDate}.pdf`;
+            doc.save(fileName);
+        }
+        
+        // Helper function to convert HEX color to RGB
+        function hexToRgb(hex) {
+            const bigint = parseInt(hex.replace("#", ""), 16);
+            return {
+                r: (bigint >> 16) & 255,
+                g: (bigint >> 8) & 255,
+                b: bigint & 255,
+            };
+        }
+    </script>
+
+<script>
+    function searchTable() {
+        // Get the search input value
+        let searchValue = document.getElementById('finance-search').value.toLowerCase();
+        
+        // Get the start and end date values
+        let startDate = document.getElementById('start-date').value;
+        let endDate = document.getElementById('end-date').value;
+
+        // Prepare the query parameters
+        let searchParams = `search=${searchValue}`;
+        if (startDate) {
+            searchParams += `&start_date=${startDate}`;
+        }
+        if (endDate) {
+            searchParams += `&end_date=${endDate}`;
+        }
+
+        // Fetch filtered data from the server based on the search input and date range filter
+        fetch('/seller_dashboard_data?' + searchParams)
+            .then(response => response.json())
+            .then(data => {
+                const tableBody = document.querySelector('#completedOrdersTable tbody');
+                tableBody.innerHTML = '';  // Clear the table body
+        
+                // If there are completed orders, populate the table rows
+                if (data.completed_orders && data.completed_orders.length > 0) {
+                    data.completed_orders.forEach(order => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${order.username}</td>
+                            <td>${order.phoneNumber}</td>
+                            <td>${order.productName}</td>
+                            <td>${order.quantity}</td>
+                            <td>${order.business_name}</td>
+                            <td>${order.total}</td>
+                            <td>${order.payment_method}</td>
+                            <td>${order.created_at}</td>
+                            <td>${order.total_gross}</td>  <!-- Add Total Gross -->
+                            <td>${order.total_net}</td>    <!-- Add Total Net -->
+                        `;
+                        tableBody.appendChild(row);
+                    });
+                } else {
+                    const row = document.createElement('tr');
+                    row.innerHTML = '<td colspan="8">No matching orders found.</td>';
+                    tableBody.appendChild(row);
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching filtered dashboard data:', error);
+            });
+    }
+</script>
+
+
+   
+    <!-- ETO YUNG PAG CLINICK YUNG SHIP BUTTON FUNCTION -->
+    <script>
+      function shipOrder(element) {
+    // Retrieve the closest `.order-id` input value within the same table row
+    const orderId = element.closest('td').querySelector('.order-id').value;
+
+    console.log("Order ID retrieved:", orderId);  // Debugging line to verify ID retrieval
+
+    if (!orderId) {
+        alert("Order ID is missing.");
+        return;
+    }
+
+    fetch('/ship_order', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id: orderId })  // Send the order ID in the request body
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log("Response from server:", data);  // Log response data for debugging
+        if (data.success) {
+            alert(data.message);
+            element.closest('tr').querySelector('td:nth-last-child(2)').textContent = 'To Ship';  // Update status cell
+        } else {
+            alert(data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while shipping the order.');
+    });
+}
+    </script>
+    
+
+<!-- FOR ORDERS CHANGING CONTENT TAB -->
+    <script>
+function showOrderContent(contentId, btn) {
+    // Remove active class from all buttons
+    document.querySelectorAll('.order-nav button').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+
+    // Hide all sections
+    document.querySelectorAll('.order-content-section').forEach(section => section.classList.remove('active-content'));
+
+    // Show the selected section
+    const activeSection = document.getElementById(`order-content-${contentId}`);
+    if (activeSection) {
+        activeSection.classList.add('active-content');
+    }
+
+    // Fetch data for specific tabs if needed
+    if (contentId === 'to-ship') fetchToShipOrders();
+    if (contentId === 'to-receive') fetchToReceiveOrders();
+    if (contentId === 'completed') fetchCompletedOrders();
+    if (contentId === 'cancelled') fetchCancelledOrders();
+    if (contentId === 'refund') fetchRefundOrders();
+}
+</script>
+
+
+
+<!-- // FOR DISPLAYING SHIP ORDERS TABLE -->
+    <script>
+        function fetchToShipOrders() {
+            fetch('/to-ship-orders')
+                .then(response => response.json())
+                .then(data => {
+                    const tableBody = document.getElementById('to-ship-orders-body');
+                    tableBody.innerHTML = '';
+
+                    if (data.to_ship_orders && data.to_ship_orders.length > 0) {
+                        data.to_ship_orders.forEach(order => {
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td class="product-details">
+                                    <div class="username">${order.username}</div>
+                                    <div class="product-info">
+                                        <img src="${order.product_image}" alt="${order.productName}" width="50">
+                                        <span class="product-name">${order.productName}</span>
+                                    </div>
+                                </td>
+                                <td>${order.quantity}</td>
+                                <td>$${order.total}</td>
+                                <td>${order.payment_method}</td>
+                                <td>${order.status}</td>
+                            `;
+                            tableBody.appendChild(row);
+                        });
+                    } else {
+                        tableBody.innerHTML = `<tr><td colspan="6">No orders to ship</td></tr>`;
+                    }
+                })
+                .catch(error => console.error('Error fetching To Ship orders:', error));
+        }
+
+         // Fetch To Receive Orders initially
+         fetchToShipOrders();
+
+        // Optional: Set an interval to refresh Cancelled Orders every 5 minutes
+        setInterval(() => {
+            fetchToShipOrders();
+        }, 1000); // Refresh every 5 sicinds
+        </script>
+
+
+
+<!-- // FOR DISPLAYING TO RECEIVE ORDERS TABLE -->
+    <script>
+       function fetchToReceiveOrders() {
+    fetch('/to-receive-orders')
+        .then(response => response.json())
+        .then(data => {
+            const tableBody = document.getElementById('to-receive-orders-body');
+            tableBody.innerHTML = '';
+
+            if (data.to_receive_orders && data.to_receive_orders.length > 0) {
+                data.to_receive_orders.forEach(order => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td class="product-details">
+                            <div class="username">${order.username}</div>
+                            <div class="product-info">
+                                <img src="${order.product_image}" alt="${order.productName}" width="50">
+                                <span class="product-name">${order.productName}</span>
+                            </div>
+                        </td>
+                        <td>${order.quantity}</td>
+                        <td>$${order.total}</td>
+                        <td>${order.payment_method}</td>
+                        <td>${order.status}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            } else {
+                tableBody.innerHTML = `<tr><td colspan="8">No orders to receive</td></tr>`;
+            }
+        })
+        .catch(error => console.error('Error fetching To Receive orders:', error));
+}
+
+        // Fetch To Receive Orders initially
+        fetchToReceiveOrders();
+
+        // Optional: Set an interval to refresh Cancelled Orders every 5 minutes
+        setInterval(() => {
+            fetchToReceiveOrders();
+        }, 1000); // Refresh every 5 sicinds
+
+    </script>
+
+
+<!-- // FOR DISPLAYING COMPLETED ORDERS TABLE -->
+    <script>
+        function fetchCompletedOrders() {
+            fetch('/completed-orders')  // Adjust this endpoint based on your route
+                .then(response => response.json())
+                .then(data => {
+                    const tableBody = document.getElementById('completed-orders-body');
+                    tableBody.innerHTML = '';
+
+                    if (data.completed_orders && data.completed_orders.length > 0) {
+                        data.completed_orders.forEach(order => {
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td class="product-details">
+                                    <div class="username">${order.username}</div>
+                                    <div class="product-info">
+                                        <img src="${order.product_image}" alt="${order.productName}" width="50">
+                                        <span class="product-name">${order.productName}</span>
+                                    </div>
+                                </td>
+                                <td>${order.quantity}</td>
+                                <td>$${order.total}</td>
+                                <td>${order.payment_method}</td>
+                                <td style="color: #2ddf00;">${order.status}</td>
+                            `;
+                            tableBody.appendChild(row);
+                        });
+                    } else {
+                        tableBody.innerHTML = `<tr><td colspan="8">No completed orders available.</td></tr>`;
+                    }
+                })
+                .catch(error => console.error('Error fetching completed orders:', error));
+        }
+        // Fetch completed orders initially
+        fetchCompletedOrders();
+
+        // Optional: Set an interval to refresh Cancelled Orders every 5 minutes
+        setInterval(() => {
+            fetchCompletedOrders();
+        }, 1000); // Refresh every 5 sicinds
+</script>
+
+
+<!-- // FOR DISPLAYING CANCELLED ORDERS TABLE -->
+<script>
+    function fetchCancelledOrders() {
+         fetch('/cancelled-orders')  // Adjust this endpoint based on your route
+             .then(response => response.json())
+             .then(data => {
+                 const tableBody = document.getElementById('cancelled-orders-body');
+                 tableBody.innerHTML = '';
+
+                 if (data.cancelled_orders && data.cancelled_orders.length > 0) {
+                     data.cancelled_orders.forEach(order => {
+                         const row = document.createElement('tr');
+                         row.innerHTML = `
+                             <td class="product-details">
+                                 <div class="username">${order.username}</div>
+                                 <div class="product-info">
+                                     <img src="${order.product_image}" alt="${order.productName}" width="50">
+                                     <span class="product-name">${order.productName}</span>
+                                 </div>
+                             </td>
+                             <td>${order.quantity}</td>
+                             <td>$${order.total}</td>
+                             <td>${order.payment_method}</td>
+                             <td>${order.status}</td>
+                         `;
+                         tableBody.appendChild(row);
+                     });
+                 } else {
+                     tableBody.innerHTML = `<tr><td colspan="8">No cancelled orders available.</td></tr>`;
+                 }
+             })
+             .catch(error => console.error('Error fetching cancelled orders:', error));
+     }
+
+     // Fetch cancelled orders initially
+     fetchCancelledOrders();
+
+     // Optional: Set an interval to refresh Cancelled Orders every 5 minutes
+     setInterval(() => {
+         fetchCancelledOrders();
+     }, 1000); // Refresh every 5 minutes
+
+ </script>
+
+
+<script>
+  function fetchRefundOrders() {
+    fetch('/seller-refund-orders')  // Adjusted to use the seller's refund orders route
+        .then(response => response.json())
+        .then(data => {
+            const tableBody = document.getElementById('refund-orders-body');
+            tableBody.innerHTML = '';
+
+            if (data.refund_orders && data.refund_orders.length > 0) {
+                data.refund_orders.forEach(order => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td class="product-details">
+                            <div class="username">${order.business_name}</div>
+                            <div class="product-info">
+                                <img src="${order.product_image}" alt="${order.productName}" width="50">
+                                <span class="product-name">${order.productName}</span>
+                            </div>
+                        </td>
+                        <td>${order.quantity}</td>
+                        <td>$${order.total}</td>
+                        <td>${order.payment_method}</td>
+                        <td>${order.status}</td>
+                        <td>
+                            <button class="view-reason-btn" data-order-id="${order.id}">
+                                View Reason
+                            </button>
+                            <button class="accept-refund-btn" data-order-id="${order.id}" 
+                                ${order.status === 'Refund' ? 'disabled' : ''}>
+                                Accept Refund
+                            </button>
+                        </td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+
+                // Add event listeners for the accept refund buttons
+                const acceptButtons = document.querySelectorAll('.accept-refund-btn');
+                acceptButtons.forEach(button => {
+                    button.addEventListener('click', function () {
+                        const orderId = button.getAttribute('data-order-id');
+                        acceptRefund(orderId, button);
+                    });
+                });
+
+                // Add event listeners for the view reason buttons
+                const viewReasonButtons = document.querySelectorAll('.view-reason-btn');
+                viewReasonButtons.forEach(button => {
+                    button.addEventListener('click', function () {
+                        const orderId = button.getAttribute('data-order-id');
+                        viewReason(orderId);
+                    });
+                });
+
+            } else {
+                tableBody.innerHTML = `<tr><td colspan="7">No refund orders available.</td></tr>`;
+            }
+        })
+        .catch(error => console.error('Error fetching refund orders:', error));
+}
+document.addEventListener('DOMContentLoaded', () => {
+    const closeBtn = document.querySelector('.close-btn');
+    const modal = document.getElementById('view-reason-modal');
+    const enlargedModal = document.getElementById('enlarged-image-modal');
+    const enlargedImage = document.getElementById('enlarged-image');
+    const closeEnlargedBtn = document.querySelector('.close-enlarged-btn');
+
+    // Close the refund reason modal
+    closeBtn.onclick = () => {
+        modal.style.display = 'none';
+    };
+
+    // Close the enlarged image modal
+    closeEnlargedBtn.onclick = () => {
+        enlargedModal.style.display = 'none';
+    };
+
+    window.onclick = (event) => {
+        if (event.target === modal) {
+            modal.style.display = 'none';
+        }
+        if (event.target === enlargedModal) {
+            enlargedModal.style.display = 'none';
+        }
+    };
+});
+
+function viewReason(orderId) {
+    fetch(`/refund-reason/${orderId}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const reasonText = document.getElementById('refund-reason-text');
+                const imageContainer = document.getElementById('refund-images');
+
+                // Set the reason text
+                reasonText.textContent = data.reason;
+
+                // Clear and set the images
+                imageContainer.innerHTML = '';
+                data.images.forEach(image => {
+                    if (image) {
+                        const img = document.createElement('img');
+                        img.src = image;
+                        img.alt = 'Refund Image';
+                        img.classList.add('clickable-image');
+                        imageContainer.appendChild(img);
+
+                        // Add click event listener to enlarge the image
+                        img.onclick = () => {
+                            const enlargedModal = document.getElementById('enlarged-image-modal');
+                            const enlargedImage = document.getElementById('enlarged-image');
+                            enlargedImage.src = image;
+                            enlargedModal.style.display = 'flex';
+                        };
+                    }
+                });
+
+                // Show the refund reason modal
+                const modal = document.getElementById('view-reason-modal');
+                modal.style.display = 'block';
+            } else {
+                alert('Unable to fetch refund reason.');
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching refund reason:', error);
+            alert('An error occurred while fetching the refund reason.');
+        });
+}
+
+
+
+// Function to handle accepting a refund
+function acceptRefund(orderId, button) {
+    fetch(`/accept-refund/${orderId}`, {  // Adjust the endpoint to match your backend route
+        method: 'POST',
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Display a success alert
+                alert('Refund request accepted successfully!');
+
+                // Disable the button after accepting the refund
+                button.disabled = true;
+                button.textContent = 'Accepted';
+                button.classList.add('disabled');
+
+                // Optionally update the order status in the UI
+                const statusCell = button.closest('tr').querySelector('td:nth-child(5)');
+                if (statusCell) {
+                    statusCell.textContent = 'Refund';
+                }
+            } else {
+                // Display an error alert
+                alert('Error accepting refund.');
+            }
+        })
+        .catch(error => {
+            console.error('Error updating refund status:', error);
+            // Display an error alert
+            alert('An error occurred while updating the refund status.');
+        });
+}
+
+// Fetch refund orders initially
+fetchRefundOrders();
+
+// Optional: Set an interval to refresh Refund Orders every 5 minutes
+setInterval(() => {
+    fetchRefundOrders();
+}, 300000); // Refresh every 5 minutes (300000ms)
+
+
+</script>
+
+
+
+
+
+    <script>
+        function previewEditImage(input, previewImageId) {
+            const file = input.files[0];
+            const previewImage = document.getElementById(previewImageId);
+            
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImage.src = e.target.result;
+                    previewImage.style.display = 'block'; // Ensure the image is displayed
+                    document.getElementById('editPlaceholderText').style.display = 'none'; // Hide the placeholder text if applicable
+                }
+                reader.readAsDataURL(file);
+            } else {
+                previewImage.src = ''; // Clear the image if no file is selected
+                document.getElementById('editPlaceholderText').style.display = 'block'; // Show placeholder text if no image
+            }
+        }
+    </script>
+
+    
+
+    <script>
+     document.addEventListener("DOMContentLoaded", function () {
+    // G et the active tab from the template
+    var activeTab = "{{ active_tab }}";
+
+    // Open the correct tab
+    if (activeTab) {
+        openTab(activeTab, document.querySelector('a[onclick*="' + activeTab + '"]').innerText);
+    } else {
+        openTab('dashboard', 'Dashboard'); // Default tab
+    }
+});
+
+
+
+function toggleSubMenu(submenuId) {
+    var submenu = document.getElementById(submenuId);
+    submenu.classList.toggle('open'); // Toggle submenu visibility
+}
+
+const menuLinks = document.querySelectorAll('.menu li a');
+
+// Add click event to each menu link
+menuLinks.forEach(link => {
+    link.addEventListener('click', function() {
+        // Remove active class from all links
+        menuLinks.forEach(link => link.classList.remove('active'));
+        
+        // Add active class to the clicked link
+        this.classList.add('active');
+    });
+});
+
+// Function to clear form fields
+function clearForm() {
+    const form = document.getElementById('addProductForm');
+    if (form) {
+        form.reset(); // Reset form fields
+        const previewImage = document.getElementById('previewImage');
+        const placeholderText = document.getElementById('placeholderText');
+        if (previewImage) {
+            previewImage.src = ''; // Clear image preview
+        }
+        if (placeholderText) {
+            placeholderText.style.display = 'block'; // Show placeholder text
+        }
+    }
+}
+
+// Handle main product image upload
+document.getElementById('productImage').addEventListener('change', function(event) {
+    const file = event.target.files[0];
+    const previewImage = document.getElementById('previewImage');
+    const placeholderText = document.getElementById('placeholderText');
+
+    if (file) {
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+            previewImage.src = e.target.result; // Set the src of the image preview
+            previewImage.style.display = 'block'; // Show the image
+            placeholderText.style.display = 'none'; // Hide the placeholder text
+        };
+
+        reader.readAsDataURL(file); // Read the image file
+    } else {
+        // If no file is selected, show the placeholder
+        previewImage.style.display = 'none'; // Hide the image
+        placeholderText.style.display = 'block'; // Show the placeholder text
+    }
+});
+
+// Handle sub-image uploads
+for (let i = 1; i <= 3; i++) {
+    document.getElementById(`subImage${i}`).addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        const subImagePreview = document.getElementById(`subImagePreview${i}`);
+        const subPlaceholderText = document.getElementById(`subPlaceholderText${i}`);
+
+        if (file) {
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                subImagePreview.src = e.target.result; // Set the src of the sub-image preview
+                subImagePreview.style.display = 'block'; // Show the sub-image
+                subPlaceholderText.style.display = 'none'; // Hide the placeholder text
+            };
+
+            reader.readAsDataURL(file); // Read the image file
+        } else {
+            // If no file is selected, show the placeholder
+            subImagePreview.style.display = 'none'; // Hide the sub-image
+            subPlaceholderText.style.display = 'block'; // Show the placeholder text
+        }
+    });
+}
+
+function filterProducts(type) {
+    document.getElementById('listed-products').style.display = type === 'listed' ? 'block' : 'none';
+    document.getElementById('unlisted-products').style.display = type === 'unlisted' ? 'block' : 'none';
+}
+
+// Function to switch between listed and unlisted products
+function filterProducts(status) {
+        document.getElementById('product_status').value = status;
+        if (status === 'listed') {
+            document.getElementById('listed-products').style.display = 'block';
+            document.getElementById('unlisted-products').style.display = 'none';
+        } else if (status === 'unlisted') {
+            document.getElementById('listed-products').style.display = 'none';
+            document.getElementById('unlisted-products').style.display = 'block';
+        }
+    }
+
+    // Set the default filter to 'listed'
+    document.addEventListener('DOMContentLoaded', function () {
+        filterProducts('listed');  // Default to listed products on page load
+    });
+    </script>
+
+
+
+<!-- For notification function para sa seller -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+    const bellIcon = document.querySelector('.notification');
+    const notificationDropdown = document.querySelector('.notification-dropdown');
+    const notificationList = document.querySelector('#notification-list');
+    const notificationCount = document.getElementById('notification-count');  // Notification count badge
+
+    // Fetch unread notification count when page loads
+    function updateNotificationCount() {
+        fetch('/fetch_seller_unread_notification_count')  // Updated to seller route
+            .then((response) => response.json())
+            .then((data) => {
+                if (data.success) {
+                    const unreadCount = data.unread_count;
+                    notificationCount.textContent = unreadCount;
+
+                    // Hide the count if it's 0, show otherwise
+                    if (unreadCount === 0) {
+                        notificationCount.style.display = 'none';
+                    } else {
+                        notificationCount.style.display = 'inline-block';
+                    }
+                } else {
+                    notificationCount.style.display = 'none';  // Hide the count if fetch fails
+                }
+            })
+            .catch((error) => {
+                console.error('Error fetching unread notification count:', error);
+                notificationCount.style.display = 'none';  // Hide the count on error
+            });
+    }
+
+    // Call the function to update notification count on page load
+    updateNotificationCount();
+
+    // Toggle dropdown visibility on bell icon click
+    bellIcon.addEventListener('click', () => {
+        notificationDropdown.classList.toggle('visible');
+
+        // Fetch notifications only when dropdown is opened
+        if (notificationDropdown.classList.contains('visible')) {
+            fetch('/fetch_seller_notifications')  // Updated to seller route
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.success) {
+                        notificationList.innerHTML = ''; // Clear existing notifications
+
+                        // Populate dropdown with new notifications
+                        data.notifications.forEach((notification) => {
+                            const notificationItem = document.createElement('li');
+                            notificationItem.className = 'notification-item';
+                            notificationItem.innerHTML = `
+                                <div class="product-details">
+                                    <div class="image-wrapper">
+                                        <img src="${notification.product_image}" alt="${notification.product_name}">
+                                    </div>
+                                    <div>
+                                        <div class="product-name">${notification.product_name}</div>
+                                        <span class="notification-message">${notification.message}</span>
+                                    </div>
+                                </div>
+                            `;
+                            notificationList.appendChild(notificationItem);
+                        });
+
+                        // Mark notifications as read after the dropdown is opened
+                        fetch('/mark_seller_notifications_read', {  // Updated to seller route
+                            method: 'POST',
+                        })
+                        .then((response) => response.json())
+                        .then((data) => {
+                            if (data.success) {
+                                // Update the notification count badge after marking as read
+                                notificationCount.textContent = data.unread_count;
+
+                                // Hide the count if it's zero, show otherwise
+                                if (data.unread_count === 0) {
+                                    notificationCount.style.display = 'none';
+                                } else {
+                                    notificationCount.style.display = 'inline-block';
+                                }
+                            } else {
+                                console.error('Error marking notifications as read');
+                            }
+                        })
+                        .catch((error) => {
+                            console.error('Error marking notifications as read:', error);
+                        });
+                    } else {
+                        notificationList.innerHTML = `<li>No notifications available.</li>`;
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error fetching notifications:', error);
+                    notificationList.innerHTML = `<li>Error fetching notifications.</li>`;
+                });
+        }
+    });
+
+    // Close dropdown if clicking outside
+    document.addEventListener('click', (event) => {
+        if (!bellIcon.contains(event.target) && !notificationDropdown.contains(event.target)) {
+            notificationDropdown.classList.remove('visible');
+        }
+    });
+});
+
+</script>
+
+<script>
+  // Function to open the cancel modal
+function openCancelModal(element) {
+    var modal = document.querySelector(".cancel-order-modal");
+    modal.style.display = "flex";  // Use flex to center the modal
+
+    // Get the order ID from the clicked row
+    var orderId = element.closest('tr').querySelector('.order-id').value;
+
+    // Store the order ID in the modal's hidden field
+    document.getElementById('cancel-reason').setAttribute('data-order-id', orderId);
+}
+
+// Function to close the cancel modal
+function closeCancelModal() {
+    var modal = document.querySelector(".cancel-order-modal");
+    modal.style.display = "none";  // Hide the modal
+
+    // Clear the cancel reason and order ID
+    var cancelReason = document.getElementById('cancel-reason');
+    cancelReason.value = "";
+    cancelReason.removeAttribute('data-order-id');
+}
+
+
+
+// Function to submit the cancellation
+function submitCancel() {
+    var orderId = document.getElementById('cancel-reason').getAttribute('data-order-id');
+    var cancelReason = document.getElementById('cancel-reason').value;
+
+    if (cancelReason.trim() === "") {
+        alert("Please provide a cancellation reason.");
+        return;
+    }
+
+    // Send AJAX request to the server to cancel the order
+    fetch('/request-cancel-order', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            order_id: orderId,
+            cancel_reason: cancelReason
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.message) {
+            alert(data.message); // Display response message
+        } else {
+            alert("The order could not be cancelled.");
+        }
+
+        closeCancelModal(); // Close the modal
+
+        // Optionally update the UI (like changing order status to "Cancelled")
+        const orderRow = document.querySelector(`tr[data-order-id="${orderId}"]`);
+        if (orderRow) {
+            orderRow.querySelector('.status').innerText = 'Cancelled';
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert("There was an error cancelling the order.");
+    });
+}
+
+</script>
+
+<script>
+   document.addEventListener('DOMContentLoaded', function () {
+    fetch('/seller_get_message', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Data received from server:', data);  // Log the entire response from the server
+        
+        const chatList = document.getElementById('chat-list');
+        const chatMessagesContainer = document.getElementById('chat-messages');
+        const messageInput = document.getElementById('message-input');
+        const sendMessageBtn = document.getElementById('send-message-btn');
+        const businessNameElement = document.getElementById('business-name');  // Get the business name element
+        
+        if (data && data.length > 0) {
+            renderUsersList(data);
+        }
+
+
+        sendMessageBtn.addEventListener('click', function () {
+            const messageText = messageInput.value.trim();
+            const activeUser = chatList.querySelector('.chat-user.selected');
+            const userId = activeUser ? activeUser.dataset.userId : null;
+            const orderId = activeUser ? activeUser.dataset.orderId : null;
+
+            console.log('Sending message to userId:', userId);
+            console.log('Message text:', messageText);
+
+            if (messageText && userId) {
+                fetch('/seller-send-message', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        user_id: userId,
+                        order_id: orderId,
+                        message: messageText,
+                        business_name: 'Your Business',
+                        sender_type: 'seller',
+                    }),
+                })
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success) {
+                        const newMessageElement = document.createElement('div');
+                        newMessageElement.classList.add('chat-message');
+                        newMessageElement.innerHTML = `
+                            <div class="message-content">${messageText}</div>
+                            <div class="message-time">${new Date().toLocaleString()}</div>
+                        `;
+                        newMessageElement.classList.add('sent');  // Seller's message
+                        chatMessagesContainer.appendChild(newMessageElement);
+                        messageInput.value = '';
+                    } else {
+                        console.error('Error sending message:', result.message);
+                    }
+                })
+                .catch(error => console.error('Error during message send:', error));
+            } else {
+                alert('Please select a user and enter a message.');
+            }
+        });
+    })
+    .catch(error => console.error('Error fetching messages:', error));
+});
+
+
+
+</script>
+
+<script>
+    function displayMessages(user_id, data) {
+            chatMessagesContainer.innerHTML = '';  // Clear previous messages
+            const filteredMessages = data.filter(message => message.user_id === user_id);
+
+            console.log('Filtered messages for user_id ' + user_id + ':', filteredMessages);
+
+            filteredMessages.forEach(message => {
+                console.log(`Message data:`, message);  // Log entire message object
+                console.log(`sender_type: ${message.sender_type}`);  // Log sender_type for each message
+
+                const messageElement = document.createElement('div');
+                messageElement.classList.add('chat-message');
+
+                const isSellerMessage = message.sender_type && message.sender_type.toLowerCase() === 'seller';
+                const isBuyerMessage = message.sender_type && message.sender_type.toLowerCase() === 'buyer';
+                console.log(`Is seller message: ${isSellerMessage}`);  // Check if it's a seller message
+
+                messageElement.innerHTML = `
+                    <div class="message-content">${message.message}</div>
+                    <div class="message-time">${message.created_at}</div>
+                `;
+
+                if (isSellerMessage) {
+                    messageElement.classList.add('sent');  // Seller's message
+                } else {
+                    messageElement.classList.add('received');  // Buyer's message
+                }
+
+                console.log(`Classes added: ${messageElement.classList}`);  // Log classes added
+
+                chatMessagesContainer.appendChild(messageElement);  // Add message to container
+            });
+        }
+
+        function renderUsersList(data) {
+            const users = new Set();
+            const lastMessages = {};
+
+            data.forEach(message => {
+                if (message.user_id && message.username) {
+                    users.add(message.user_id);
+                    lastMessages[message.user_id] = message.message;
+                }
+            });
+
+            chatList.innerHTML = '';
+            const sortedUsers = [...users].sort((a, b) => {
+                const aMessage = lastMessages[a];
+                const bMessage = lastMessages[b];
+                return bMessage ? 1 : -1;
+            });
+
+            sortedUsers.forEach(user_id => {
+                const user = data.find(message => message.user_id === user_id);
+                const username = user ? user.username : 'Unknown User';
+                const lastMessage = lastMessages[user_id] || 'No messages yet';
+
+                const userItem = document.createElement('li');
+                userItem.classList.add('chat-user');
+                userItem.textContent = username;
+
+                const lastMessageDiv = document.createElement('div');
+                lastMessageDiv.classList.add('last-message');
+                lastMessageDiv.textContent = lastMessage;
+                userItem.appendChild(lastMessageDiv);
+
+                userItem.dataset.userId = user_id;
+                userItem.dataset.orderId = user ? user.order_id : null;
+
+                chatList.prepend(userItem);
+
+                userItem.addEventListener('click', function () {
+                    displayMessages(user_id, data);
+                    chatList.querySelectorAll('.chat-user').forEach(user => user.classList.remove('selected'));
+                    userItem.classList.add('selected');
+                    
+                    // Update the business name with the selected user's username
+                    businessNameElement.textContent = username;
+                });
+            });
+        }
+</script>
+
+
+<script>
+ document.addEventListener('DOMContentLoaded', function () {
+    fetch('/get-orders', {  // API endpoint to fetch orders
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Orders data received:', data);  // Log the orders data
+
+        // Process the orders to calculate the most sold products
+        const mostSoldProducts = calculateMostSoldProducts(data);
+
+        // Display the most sold products in the UI
+        displayMostSoldProducts(mostSoldProducts);
+    })
+    .catch(error => console.error('Error fetching orders:', error));
+
+    // Function to calculate most sold products based on completed orders
+    function calculateMostSoldProducts(orders) {
+        const productSales = {};
+
+        // Process each order and its associated quantity, product_image, and product_name
+        orders.forEach(order => {
+            const productId = order.order_id;  // Use order_id as the product identifier
+            const quantity = order.total_quantity;  // Get the total quantity for that product
+            const productImage = order.product_image;  // Get the product image
+            const productName = order.productName;  // Get the product name
+
+            // Check if the product already exists in productSales
+            if (productSales[productId]) {
+                productSales[productId].quantity += quantity;  // Sum the quantities
+            } else {
+                // If the product doesn't exist, create a new entry
+                productSales[productId] = {
+                    quantity: quantity,
+                    image: productImage,
+                    name: productName,
+                };
+            }
+        });
+
+        // Sort products by the highest quantity sold
+        const sortedProducts = Object.entries(productSales).sort((a, b) => b[1].quantity - a[1].quantity);
+
+        // Get the top 5 most sold products
+        return sortedProducts.slice(0, 5).map(item => ({
+            productId: item[0],  // Product ID
+            quantity: item[1].quantity,  // Total quantity sold
+            image: item[1].image,  // Product image
+            name: item[1].name,    // Product name
+        }));
+    }
+
+    // Function to display the most sold products in the UI with progress bars
+    function displayMostSoldProducts(mostSoldProducts) {
+        const mostSoldProductsList = document.getElementById('mostSoldProducts');
+        mostSoldProductsList.innerHTML = '';  // Clear previous list
+
+        mostSoldProducts.forEach(product => {
+            const productItem = document.createElement('li');
+            
+            // Maximum quantity that could be sold (this can be adjusted based on your needs)
+            const maxQuantity = 100;  // Example max quantity, you can set it based on your data
+
+            // Calculate the percentage sold
+            const soldPercentage = (product.quantity / maxQuantity) * 100;
+
+            productItem.innerHTML = `
+    <div class="product-item-container">  <!-- Added a container to reduce size -->
+        <div class="product-item">
+            <div class="product-info">
+                <div class="product-text-image">
+                    <p class="product-name">${product.name}</p>
+                    <img src="${product.image}" alt="Product Image" class="product-image">
+                </div>
+                <div class="progress-container" title="${product.quantity} units sold">
+                    <div class="progress-bar" style="width: ${soldPercentage}%;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+`;
+
+
+            mostSoldProductsList.appendChild(productItem);
+        });
+    }
+});
+
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const searchInput = document.getElementById('search_query');
+    const categorySelect = document.getElementById('selected_category');
+    const productStatus = document.getElementById('product_status');
+
+    function fetchProducts() {
+        const query = searchInput.value;
+        const category = categorySelect.value;
+        const status = productStatus.value;
+
+        // Build the query string
+        const params = new URLSearchParams({
+            search_query: query,
+            selected_category: category,
+            product_status: status
+        });
+
+        fetch(`{{ url_for('my_products') }}?${params.toString()}`, {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+        .then(response => response.text())
+        .then(html => {
+            // Replace the products table content
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            const newContent = doc.querySelector('.my_products_content');
+            if (newContent) {
+                document.querySelector('.my_products_content').innerHTML = newContent.innerHTML;
+            }
+        });
+    }
+
+    if (searchInput && categorySelect) {
+        searchInput.addEventListener('input', fetchProducts);
+        categorySelect.addEventListener('change', fetchProducts);
+    }
+});
+</script>
+<script>
+    function loadSellerMessages() {
+    fetch('/seller_get_message', {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Your rendering logic here (copy from your DOMContentLoaded handler)
+        // Example:
+        if (data && data.length > 0) {
+            renderUsersList(data);
+        } else {
+            document.getElementById('chat-list').innerHTML = '<li>No messages found.</li>';
+            document.getElementById('chat-messages').innerHTML = '';
+        }
+    })
+    .catch(error => console.error('Error fetching messages:', error));
+}
+</script>

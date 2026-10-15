@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .back-icon {
+    display: flex;
+    align-items: center;
+    padding: 10px 20px; /* Adjust spacing */
+    border-bottom: 1px solid #ddd; /* Optional: Divider line */
+}
+
+.back-icon a {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: #333; /* Adjust text color */
+    font-size: 16px; /* Text size */
+    font-weight: 500; /* Font weight */
+}
+
+.back-icon i {
+    margin-right: 10px; /* Space between icon and text */
+    font-size: 18px; /* Adjust icon size */
+}
+
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+<div class="sidebar">
+
+    <div class="back-icon">
+        <a href="{{ url_for('buyer_homepage') }}">
+            <i class="fas fa-arrow-left"></i> Back
+        </a>
+    </div>
+
+    <p>All Categories</p>
+    <a href="{{url_for('skincare')}}">Skincare</a>
+    <a href="{{ url_for('haircare')}}">Haircare Solutions</a>
+    <a href="{{ url_for('makeup')}}">Makeup & Cosmetics</a>
+    <a href="{{url_for('personal_care')}}">Personal Care Appliances</a>
+    <a href="{{ url_for('mens')}}">Men's Grooming</a>
+    <a href="{{ url_for('health')}}">Health Supplements</a>
+</div>
+
+</body>
+</html>

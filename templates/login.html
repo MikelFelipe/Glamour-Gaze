@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log In</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #D37389, #DC3545);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* NAV BAR STYLES */
+        nav {
+            width: 100%;
+            background-color: white;
+            padding: 10px;
+            display: inline-block;
+            height: 80px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            margin-left: 50px;
+            display: flex;
+            align-items: center;
+            height: 100%;
+        }
+
+        .logo img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            transform: scale(2.5) translateY(5px);
+            transform-origin: center;
+        }
+
+        .logo h4 {
+            margin-left: 10px;
+            color: black;
+            font-size: 1.2rem;
+        }
+
+        .separator {
+            width: 1px;
+            height: 30px;
+            background-color: #DB9EAC;
+            margin: 0 20px;
+        }
+
+        /* WAVE BACKGROUND */
+        .wave-container {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 200px;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .wave {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='rgba(255,255,255,0.1)' d='M0,192L48,197.3C96,203,192,213,288,229.3C384,245,480,267,576,250.7C672,235,768,181,864,181.3C960,181,1056,235,1152,234.7C1248,235,1344,181,1392,154.7L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3C/svg%3E");
+            background-size: cover;
+            background-position: bottom;
+        }
+
+        /* MAIN CONTENT WITH IMAGE AND FORM */
+        .main-content {
+            display: flex;
+            flex: 1;
+            padding: 40px;
+            position: relative;
+            z-index: 1;
+            align-items: center;
+        }
+
+        .left {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .left img {
+            max-width: 100%;
+            height: auto;
+            max-height: 500px;
+            border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .right {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* LOGIN FORM STYLES */
+        .login-form {
+            background-color: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            padding: 40px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            border: 1.5px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .login-form h2 {
+            text-align: center;
+            color: #f7f3f3;
+            font-size: 28px;
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .input-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 15px;
+            color: #D37389;
+            font-size: 18px;
+            z-index: 2;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 15px 20px 15px 45px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            color: #333;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .input-field:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(211, 115, 137, 0.3);
+        }
+
+        .forgot-password {
+            text-align: right;
+            margin-top: 5px;
+        }
+
+        .forgot-password a {
+            color: #DC3545;
+            font-size: 14px;
+            text-decoration: none;
+        }
+
+        .forgot-password a:hover {
+            text-decoration: underline;
+        }
+
+        .login-button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(to right, #D37389, #DC3545);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .login-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .signup-link {
+            text-align: center;
+            margin-top: 25px;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .signup-link a {
+            color: white;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .signup-link a:hover {
+            text-decoration: underline;
+        }
+
+        /* FLASH MESSAGE STYLES */
+        .flash-message {
+            position: fixed;
+            top: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid #DC3545;
+            display: flex;
+            align-items: center;
+            z-index: 1000;
+            max-width: 90%;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .flash-message i {
+            color: #DC3545;
+            margin-right: 10px;
+        }
+
+        .flash-message .close {
+            margin-left: 15px;
+            color: #DC3545;
+            cursor: pointer;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -20px);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, 0);
+            }
+        }
+
+        /* RESPONSIVE STYLES */
+        @media (max-width: 1024px) {
+            .main-content {
+                flex-direction: column;
+                padding: 20px;
+            }
+            
+            .left, .right {
+                width: 100%;
+                padding: 10px;
+            }
+            
+            .left img {
+                max-height: 300px;
+                margin-bottom: 30px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .logo {
+                margin-left: 20px;
+            }
+            
+            .login-form {
+                padding: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo">
+            <a href="{{url_for('buyer_homepage')}}"><img src="{{ url_for('static', filename='src/logo design.png') }}" alt=""></a>
+            <div class="separator"></div>
+            <h4>LOG IN</h4>
+        </div>
+    </nav>
+    
+    <div class="main-content">
+        <div class="left">
+            <img src="{{ url_for('static', filename='src/login-image/ecommerce-website-banners.jpg') }}" alt="Glamour Gaze">
+        </div>
+        
+        <div class="right">
+            <div class="login-form">
+                <h2>Login</h2>
+                <form action="{{ url_for('login') }}" method="POST">
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <div class="input-container">
+                            <i class="fas fa-user input-icon"></i>
+                            <input type="email" id="email" name="email" class="input-field" placeholder="Enter your email" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <div class="input-container">
+                            <i class="fas fa-lock input-icon"></i>
+                            <input type="password" id="password" name="password" class="input-field" placeholder="Enter your password" required>
+                        </div>
+                        <div class="forgot-password">
+                            <a href="{{ url_for('password_recovery') }}">Forgot your password?</a>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="login-button">LOG IN</button>
+                    
+                    <div class="signup-link">
+                        Don't have an account? <a href="{{ url_for('buyer_register') }}">Sign up</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="wave-container">
+        <div class="wave"></div>
+    </div>
+    
+    <!-- Flash Message Container -->
+    <div id="flashMessageContainer" style="display: none;">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {{ messages[0][1] }}
+            {% endif %}
+        {% endwith %}
+    </div>
+    
+    <script>
+        // Function to show flash message
+        function showFlashMessage(message) {
+            const container = document.createElement('div');
+            container.className = 'flash-message';
+            container.innerHTML = `
+                <i class="fas fa-exclamation-circle"></i>
+                <span>${message}</span>
+                <span class="close" onclick="this.parentElement.remove()">&times;</span>
+            `;
+            
+            document.body.appendChild(container);
+            
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                container.remove();
+            }, 5000);
+        }
+        
+        // Check for flash message on page load
+        window.onload = function() {
+            const flashMessage = document.getElementById('flashMessageContainer').innerText;
+            if (flashMessage.trim() !== '') {
+                showFlashMessage(flashMessage);
+            }
+        };
+    </script>
+    
+    {% include 'footer.html' %}
+</body>
+</html>

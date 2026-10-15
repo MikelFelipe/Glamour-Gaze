@@ -1,0 +1,681 @@
+* {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #D37389, #DC3545);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* NAV BAR STYLES */
+        nav {
+            width: 100%;
+            background-color: white;
+            padding: 10px;
+            display: inline-block;
+            height: 80px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            margin-left: 50px;
+            display: flex;
+            align-items: center;
+            height: 100%;
+        }
+
+        .logo img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            transform: scale(2.5) translateY(5px);
+            transform-origin: center;
+        }
+
+        .logo h4 {
+            margin-left: 10px;
+            color: black;
+            font-size: 1.2rem;
+        }
+
+        .separator {
+            width: 1px;
+            height: 30px;
+            background-color: #DB9EAC;
+            margin: 0 20px;
+        }
+
+        /* WAVE BACKGROUND */
+        .wave-container {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 200px;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .wave {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='rgba(255,255,255,0.1)' d='M0,192L48,197.3C96,203,192,213,288,229.3C384,245,480,267,576,250.7C672,235,768,181,864,181.3C960,181,1056,235,1152,234.7C1248,235,1344,181,1392,154.7L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3C/svg%3E");
+            background-size: cover;
+            background-position: bottom;
+        }
+
+        /* MAIN CONTENT STYLES */
+        .main-content {
+            display: flex;
+            flex: 1;
+            padding: 40px;
+            position: relative;
+            z-index: 1;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .right {
+            width: 100%;
+            max-width: 800px;
+        }
+
+        /* REGISTRATION FORM STYLES */
+        .registration-form {
+            background-color: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            padding: 40px;
+            width: 100%;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            border: 1.5px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .registration-form h5 {
+            text-align: center;
+            color: white;
+            font-size: 28px;
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+
+        .form-step {
+            display: none;
+        }
+
+        .form-step.active {
+            display: block;
+        }
+
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
+            gap: 24px;
+        }
+
+        .column {
+            flex: 1;
+            min-width: 220px;
+        }
+
+        .registration-form label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 1rem;
+            letter-spacing: 0.5px;
+        }
+
+        .registration-form input,
+        .registration-form select {
+            width: 100%;
+            padding: 14px 16px;
+            background-color: rgba(255,255,255,0.95);
+            border: 1.5px solid #e0e0e0;
+            border-radius: 16px;
+            font-size: 1rem;
+            color: #333;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 6px rgba(211, 115, 137, 0.04);
+            transition: border 0.2s, box-shadow 0.2s;
+        }
+
+        .registration-form input:focus,
+        .registration-form select:focus {
+            outline: none;
+            border: 1.5px solid #DC3545;
+            box-shadow: 0 0 0 2px rgba(211, 115, 137, 0.12);
+        }
+
+        .registration-form input[type="file"] {
+            padding: 10px 0;
+            background: none;
+            border: none;
+            font-size: 1rem;
+            color: #333;
+            margin-bottom: 12px;
+        }
+
+        .registration-form input[type="file"]::-webkit-file-upload-button {
+            background: #DC3545;
+            color: #fff;
+            border: none;
+            border-radius: 16px;
+            padding: 8px 18px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .registration-form input[type="file"]::file-selector-button {
+            background: #DC3545;
+            color: #fff;
+            border: none;
+            border-radius: 16px;
+            padding: 8px 18px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .registration-form input[type="file"]:hover::-webkit-file-upload-button,
+        .registration-form input[type="file"]:hover::file-selector-button {
+            background: #D37389;
+        }
+
+        .registration-form button,
+        .button-group button {
+            padding: 14px 0;
+            background: linear-gradient(to right, #D37389, #DC3545);
+            color: #fff;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(211, 115, 137, 0.10);
+            width: 100%;
+            letter-spacing: 1px;
+        }
+
+        .registration-form button:hover,
+        .button-group button:hover {
+            background: linear-gradient(to right, #DC3545, #D37389);
+            transform: translateY(-2px) scale(1.03);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 18px;
+            margin-top: 18px;
+        }
+
+        .button-group button {
+            flex: 1;
+            padding: 14px 0;
+            margin-top: 0;
+        }
+
+        .new-user-section {
+            text-align: center;
+            margin-top: 25px;
+            color: white;
+            font-size: 14px;
+        }
+
+        .new-user-section a {
+            color: white;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .new-user-section a:hover {
+            text-decoration: underline;
+        }
+
+        .password-strength {
+            height: 5px;
+            background-color: #ddd;
+            border-radius: 5px;
+            margin-top: 5px;
+            margin-bottom: 15px;
+        }
+
+        .password-requirements {
+            margin-top: 10px;
+            font-size: 12px;
+            color: white;
+        }
+
+        .password-requirements p {
+            margin-bottom: 5px;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .password-requirements p:before {
+            content: "✖";
+            position: absolute;
+            left: 0;
+        }
+
+        .password-requirements p.valid {
+            color: #4CAF50;
+        }
+
+        .password-requirements p.valid:before {
+            content: "✓";
+        }
+
+        #match-message {
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        #match-message.valid {
+            color: #4CAF50;
+        }
+
+        #match-message.invalid {
+            color: #f44336;
+        }
+
+        /* FLASH MESSAGE STYLES */
+        .flash-message {
+            position: fixed;
+            top: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid #DC3545;
+            display: flex;
+            align-items: center;
+            z-index: 1000;
+            max-width: 90%;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .flash-message i {
+            color: #DC3545;
+            margin-right: 10px;
+        }
+
+        .flash-message .close {
+            margin-left: 15px;
+            color: #DC3545;
+            cursor: pointer;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -20px);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, 0);
+            }
+        }
+
+        /* RESPONSIVE STYLES */
+        @media (max-width: 900px) {
+            .registration-form {
+                padding: 32px 12px 24px 12px;
+                max-width: 98vw;
+            }
+            .row {
+                flex-direction: column;
+                gap: 18px;
+            }
+            .column {
+                min-width: 100%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .logo {
+                margin-left: 20px;
+            }
+            
+            .registration-form {
+                padding: 30px;
+            }
+            
+            .row {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .column {
+                width: 100%;
+            }
+        }
+
+        select {
+            appearance: none;
+            -webkit-appearance: none;
+            background: rgba(255,255,255,0.95) url("data:image/svg+xml,%3Csvg width='16' height='16' fill='gray' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4 6l4 4 4-4'/%3E%3C/svg%3E") no-repeat right 16px center/18px 18px;
+        }
+
+        .form-step {
+            display: none;
+        }
+
+        .form-step.active {
+            display: block;
+        }
+
+        button {
+            margin-top: 10px;
+            padding: 10px;
+        }
+    
+        .right {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding-bottom: 60px;
+            box-sizing: border-box;
+        }
+    
+        .registration-form h5 {
+            font-size: 1.5rem;
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+    
+        .registration-form label {
+            font-size: 0.8rem;
+            color: #666;
+        }
+    
+        .registration-form input[type="text"],
+        .registration-form input[type="email"],
+        .registration-form input[type="password"] {
+            width: 100%;
+            padding: 8px 0;
+            border: none;
+            border-bottom: 2px solid #ccc;
+            font-size: 0.9rem;
+            outline: none;
+            box-sizing: border-box;
+        }
+    
+        .registration-form input:focus {
+            border-bottom: 2px solid #dc3545;
+        }
+    
+        .registration-form button {
+            width: 100%;
+            background-color: #d37389;
+            color: white;
+            padding: 8px;
+            font-size: 0.9rem;
+            border: none;
+            border-radius: 4px;
+            margin-top: 30px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+    
+        .registration-form button:hover {
+            background-color: #dc3545;
+        }
+    
+        .new-user-section,
+        .seller-registration {
+            text-align: center;
+            margin-top: 20px;
+        }
+    
+        .seller-registration a,
+        .new-user-section a {
+            color: #dc3545;
+            text-decoration: none;
+        }
+    
+        .new-user-section a:hover,
+        .seller-registration a:hover {
+            text-decoration: underline;
+        }
+    
+        .new-user {
+            font-size: 0.8rem;
+            color: #555;
+        }
+    
+        .sign-up {
+            font-weight: bold;
+            color: #007bff;
+        }
+    
+        /* Row for arranging elements side by side */
+        .row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+    
+        .column {
+            flex: 1;
+            margin-right: 10px;
+        }
+    
+        .column:last-child {
+            margin-right: 0;
+        }
+    
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 0.8rem;
+            color: #666;
+        }
+    
+        input {
+            width: 100%;
+            padding: 8px 0;
+            border: none;
+            border-bottom: 2px solid #ccc;
+            font-size: 0.9rem;
+            outline: none;
+            box-sizing: border-box;
+        }
+    
+        #flashMessageModal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+    
+        #flashMessageContent {
+            color: #721c24;
+            margin: 15% auto;
+            padding: 20px;
+            width: 80%;
+            max-width: 400px;
+            text-align: center;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            transform: translateY(-50px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+    
+        #flashMessageContent.success {
+            border-color: #8bc34a;
+            background-color: #6bfd70;
+        }
+    
+        #flashMessageContent.error {
+            border-color: #f5c6cb;
+            background-color: #f8d7da;
+        }
+    
+        .close {
+            color: white;
+            font-size: 28px;
+            font-weight: bold;
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+        }
+    
+        .close:hover,
+        .close:focus {
+            color: #f5c6cb;
+            text-decoration: none;
+        }
+    
+        #flashMessageText {
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .password-strength {
+        height: 5px;
+        width: 100%;
+        background: red;
+        transition: 0.3s;
+        display: none;
+    }
+
+    .strength-weak {
+        background: red;
+        width: 33%;
+    }
+
+    .strength-medium {
+        background: orange;
+        width: 66%;
+    }
+
+    .strength-strong {
+        background: green;
+        width: 100%;
+    }
+
+    .password-requirements {
+
+        color: #555;
+        display: none;
+    }
+
+    .valid {
+        display: none;
+    }
+
+    .invalid {
+        color: red;
+    }
+    #match-message {
+        font-size: 10px; /* Smaller font for match message */
+    }
+    .button-group {
+        display: flex;
+        gap: 15px; /* Adjust the spacing between buttons */
+        margin-top: 10px;
+    }
+
+    .button-group button {
+        padding: 10px;
+    }
+
+    /* Make select fields smaller and consistent with text inputs */
+    .registration-form select {
+        width: 100%;
+        padding: 8px 0;
+        border: none;
+        border-bottom: 2px solid #ccc;
+        font-size: 0.9rem;
+        border-radius: 0;
+        background: rgba(255,255,255,0.95) url("data:image/svg+xml,%3Csvg width='16' height='16' fill='gray' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4 6l4 4 4-4'/%3E%3C/svg%3E") no-repeat right 12px center/18px 18px;
+        appearance: none;
+        -webkit-appearance: none;
+        margin-bottom: 0 !important;
+        box-shadow: none;
+        transition: border 0.2s;
+    }
+
+    .registration-form select:focus {
+        border-bottom: 2px solid #dc3545;
+        outline: none;
+    }
+
+    /* Address Row Styles */
+    .address-row {
+        display: flex;
+        gap: 16px; /* space between dropdowns */
+        align-items: flex-end; /* align labels and selects nicely */
+        margin-bottom: 1em;
+    }
+
+    .address-field {
+        flex: 1 1 0;
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+    }
+
+    .address-field label {
+        font-size: 0.85rem;
+        margin-bottom: 4px;
+        color: #444;
+        font-weight: 600;
+    }
+
+    .address-field select {
+        border-radius: 18px;
+        border: 1.5px solid #e0e0e0;
+        padding: 10px 14px;
+        font-size: 0.95em;
+        background: #fafafa;
+        transition: border 0.2s;
+        outline: none;
+        width: 100%;
+        box-sizing: border-box;
+        margin-bottom: 0;
+    }
+
+    .address-field select:focus {
+        border: 1.5px solid #dc3545;
+        background: #fff;
+    }
+
+    /* Responsive: stack vertically on small screens */
+    @media (max-width: 700px) {
+        .address-row {
+            flex-direction: column;
+            gap: 10px;
+        }
+    }

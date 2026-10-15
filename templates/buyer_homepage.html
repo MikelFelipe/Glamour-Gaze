@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glamour Gaze</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/homepage.css') }}">
+    <script src="https://kit.fontawesome.com/0dd07a1078.js" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
+
+    <style>
+       
+/* Modal Background */
+#wishlistModal {
+    display: none; /* Initially hidden */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent dark background */
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+/* Modal Content Styling */
+#wishlistModalContent {
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
+    width: 300px;
+    text-align: center;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    transform: translateY(-50px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* Success and Error Styles */
+.wishlist-success {
+    border-top: 4px solid #d37389;
+}
+.wishlist-error {
+    border-top: 4px solid #dc3545;
+}
+
+/* Close Button */
+.wishlistModalClose {
+    color: #aaa;
+    font-size: 24px;
+    font-weight: bold;
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    cursor: pointer;
+}
+
+/* Icon or Image in Modal */
+#modalIcon {
+    font-size: 48px;
+    color: #d37389; /* Green for success */
+    margin-bottom: 10px;
+}
+.wishlist-error #modalIcon {
+    color: #dc3545; /* Red for error */
+}
+
+/* Message Text */
+#wishlistModalText {
+    font-size: 18px;
+    color: #333;
+    margin: 10px 0;
+}
+
+    </style>
+</head>
+<body>
+    
+    <!-- HOME SECTION START -->
+    <section id="home">
+      {% include 'navbar.html' %}
+
+   
+
+      
+
+      
+      <div class="slideshow-container">
+          <!-- First Slide -->
+          <div class="slide fade">
+              <img src="../static/src/taylor.png" alt="Image 1">
+              <div class="text-center">
+                  <h1>WELCOME TO GLAMOUR GAZE SHOP OUR NEW COLLECTION</h1>
+                  <p>FROM HIGH TO LOW, CLASSIC OR MODERN. WE HAVE YOU COVERED</p>
+                  <a href="#product" class="shop-button">Shop Now</a>
+              </div>
+          </div>
+          <!-- Second Slide -->
+          <div class="slide fade">
+            <video id="background-video" autoplay muted loop>
+              <source src="../static/src/homepage-bg-video/EDITED VER MOLAK.mov" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+              <div class="text-center">
+                  <h1>EVERY COLLECTION OF COSMETIC PRODUCT</h1>
+                  <p>CHECK OUT LATEST COLLECTION!</p>
+                  <a href="#product" class="shop-button">Explore Now</a>
+              </div>
+          </div>
+  
+          <!-- Navigation Buttons -->
+          <a class="prev">&#10094;</a>
+          <a class="next">&#10095;</a>
+      </div>
+  </section>
+  
+    <!-- HOME SECTION END -->
+
+    <section id="second-section">
+      <div class="ads-container">
+        <div class="left-ads">
+            <div class="slides-wrapper">
+                <div class="slides-container">
+                    <img src="../static/src/ads-img/ads1.jpg" alt="">
+                    <img src="../static/src/ads-img/ads5.png" alt="">
+                    <img src="../static/src/ads-img/ads2.jpg" alt="">
+                    <img src="../static/src/ads-img/ads0.jpg" alt="">
+               </div>
+                <button class="prev-btn">&#10094;</button>
+                <button class="next-btn">&#10095;</button>
+            </div>
+        </div>
+        <div class="right-ads">
+            <img src="../static/src/ads-img/ads4.jpg" alt="">
+            <img src="../static/src/ads-img/ads3.png" alt="">
+        </div>
+    </div>
+    
+    <div class="categories-container">
+        <div class="headings">
+            <h2>CATEGORIES</h2>
+        </div>
+    
+         <div class="links-categ">
+            <div class="item">
+                <a href="{{ url_for('skincare') }}">
+                    <img src="{{ url_for('static', filename='src/skincare22.png') }}" alt="Health and Skincare Logo" width="50px">
+                </a>
+                <label>Skincare Products</label>
+            </div>
+        
+            
+            <div class="item">
+                <a href="{{ url_for('haircare') }}">
+                    <img src="../static/src/haircare222.png" alt="Logo" width="50px">
+                </a>
+                <label for="">Haircare Solutions</label>
+            </div>
+            
+            <div class="item">
+                <a href="{{ url_for('makeup') }}">
+                    <img src="../static/src/makeup2.png" alt="Logo" width="50px">
+                </a>
+                <label for="">Makeup & Cosmetics</label>
+            </div>
+            
+            <div class="item">
+                <a href="{{ url_for('personal_care') }}">
+                    <img src="../static/src/skincare2.png" alt="Logo" width="50px">
+                </a>
+                <label for="">Personal Care Appliances</label>
+            </div>
+            
+            <div class="item">
+                <a href="{{ url_for('mens') }}">
+                    <img src="../static/src/mens2.png" alt="Logo" width="50px">
+                </a>
+                <label for="">Men's Grooming</label>
+            </div>
+
+            <div class="item">
+              <a href="{{ url_for('health') }}">
+                  <img src="../static/src/health22.png" alt="Logo" width="50px">
+              </a>
+              <label for="">Health Supplements</label>
+          </div>
+        </div>
+    </div>
+    </section>
+
+    
+
+    <!-- BEST SELLER START -->
+    <section id="best-seller">
+        <h2 style="text-align: center;">OUR BEST SELLER</h2>
+    
+        <div class="carousel-container">
+            <button class="prevbtn" id="prevBt">&lt;</button>
+    
+            <div class="carousel">
+                <div class="carousel-track">
+                    <!-- Best sellers will be inserted here by JavaScript -->
+                </div>
+            </div>
+    
+            <button class="nextbtn" id="nextBt">&gt;</button>
+        </div>
+    </section>
+    
+    
+     
+    
+    
+  
+    </section>
+     <!-- BEST SELLER END -->
+
+     <section id="video-section">
+        <video id="background-video" autoplay muted loop>
+          <source src="../static/src/homepage-bg-video/DIOR SAVAUGE NAM JOOHYUK EDITED.mov" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+      </section>
+
+     <!-- PRODUCT START -->
+     <section id="product">
+    
+             <!-- Display products if available -->
+            {% if products %}
+            <div class="product-container">
+                {% for product in products %}
+                    <div class="card">
+                        <a href="{{ url_for('product_detail', product_id=product[0]) }}" class="product-to-productPage">
+                            <div class="icon-container">
+                                <i class="{{ 'fa-solid' if product.in_wishlist else 'fa-regular' }} fa-heart wishlist-icon" 
+                                   onclick="toggleWishlist(event, this, '{{ product[0] }}', '{{ product[1] }}', '{{ product[7] }}', '{{ product[5] }}', '{{ business_name }}', '{{ product[0] }}')">
+                                </i>
+                            </div>                                                 
+                            <div class="imgBx">
+                                <!-- Display the product image -->
+                                <img src="{{ url_for('static', filename='upload_images/' + product[7]) }}" alt="{{ product[1] }}">
+                            </div>
+                            <div class="contentBx">
+                                <!-- Display the product name and price -->
+                                <h2>{{ product[1] }}</h2>
+                                <div class="price">
+                                    <h3>Price :</h3>
+                                    <span>${{ product[5] }}</span>
+                                </div>
+                                <div class="buttons">
+                                    <!-- Make sure the button is contained within the form and not within the anchor -->
+                                    <form action="{{ url_for('add_to_cart', product_id=product[0]) }}" method="POST" class="add-to-cart-form">
+                                        <input type="hidden" name="product_name" value="{{ product[1] }}">
+                                        <input type="hidden" name="product_image" value="{{ url_for('static', filename='upload_images/' + product[7]) }}">
+                                        <input type="hidden" name="product_price" value="{{ product[5] }}">
+                                        <input type="hidden" name="quantity" id="hidden-quantity" min="1" value="1">
+                            
+                                        <button type="submit" class="add-to-cart">Add to Cart</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </a>
+                        
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No Products Available</p>
+        {% endif %}
+
+     </section>
+     <!-- PRODUCT END -->
+
+     <!-- Modal for add-to-cart messages -->
+    <div id="addToCartModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeAddToCartModal()">&times;</span>
+            <div class="modal-body">
+                <!-- Dynamic Icon for Success or Error -->
+                <i id="modalCartIcon" class="modal-cart-icon fa-solid"></i> 
+                <!-- Dynamic Message -->
+                <p id="addToCartMessage">Item added to your cart successfully!</p>
+            </div>
+        </div>
+    </div>
+
+      <!-- Wishlist Modal Structure -->
+      <div id="wishlistModal">
+        <div id="wishlistModalContent">
+            <span class="wishlistModalClose" onclick="closeWishlistModal()">&times;</span>
+            <i id="modalIcon" class="fa-solid fa-check-circle"></i> <!-- Icon for success or error -->
+            <p id="wishlistModalText"></p>
+        </div>
+    </div>
+
+
+
+    
+
+              <!-- FOOTER STARTS -->
+
+              {% include 'footer.html' %}   
+
+                <!-- FOOTER END -->
+  
+
+<script src="{{ url_for('static', filename='js/homepage.js') }}"></script>
+
+<!-- for clicking add to cart kahit wala ka -->
+<script>
+    document.querySelectorAll('.add-to-cart-form').forEach(form => {
+     form.addEventListener('submit', function(event) {
+         event.preventDefault(); // Prevent default form submission
+ 
+         // Submit the form via AJAX
+         const formData = new FormData(form);
+         fetch(form.action, {
+             method: 'POST',
+             body: formData,
+         })
+         .then(response => response.json()) // Parse JSON response
+         .then(data => {
+             if (data.status === 'success') {
+                 // Show the modal with success message
+                 showAddToCartModal(true, data.message);
+                 updateCartCount();  // Optionally update cart count here
+             } else {
+                 // Show the modal with error message
+                 showAddToCartModal(false, data.message);
+             }
+         })
+         .catch(error => {
+             showAddToCartModal(false, "An error occurred while adding the item to your cart.");
+             console.error('Error:', error);
+         });
+     });
+ });
+ 
+ // Function to show the modal
+ function showAddToCartModal(isSuccess, message = '') {
+     const modal = document.getElementById('addToCartModal');
+     const modalContent = modal.querySelector('.modal-content');
+     const modalIcon = document.getElementById('modalCartIcon');
+     const modalMessage = document.getElementById('addToCartMessage');
+ 
+     modal.style.display = 'flex'; // Display the modal with flex layout
+     setTimeout(() => {
+         modal.style.opacity = '1'; // Fade-in effect for background
+         modalContent.classList.add('show'); // Apply zoom-in effect for content
+     }, 10);
+ 
+     // Update modal content based on success or error
+     if (isSuccess) {
+         modalIcon.classList.add('fa-check-circle');
+         modalMessage.textContent = message; // Success message
+     } else {
+         modalIcon.classList.add('fa-exclamation-circle');
+         modalMessage.textContent = message; // Error message, such as "Cart is full."
+     }
+ 
+     // Close the modal when the close button (×) is clicked
+     document.querySelector('.close-btn').onclick = function() {
+         closeAddToCartModal();
+     };
+ 
+     // Close the modal if the user clicks outside of it
+     window.onclick = function(event) {
+         if (event.target == modal) {
+             closeAddToCartModal();
+         }
+     };
+ }
+ 
+ // Function to hide the modal with transition
+ function closeAddToCartModal() {
+     const modal = document.getElementById('addToCartModal');
+     const modalContent = modal.querySelector('.modal-content');
+ 
+     modal.style.opacity = '0'; // Fade-out effect for background
+     modalContent.classList.remove('show'); // Remove zoom-in effect
+ 
+     // Wait for the transition to complete before hiding modal
+     setTimeout(() => {
+         modal.style.display = 'none';
+     }, 300); // Match this to the transition duration in CSS
+ }
+ 
+ </script>
+
+<!-- FOR ADD TO WISHLIST -->
+<script>
+     // Function to display the modal with a success or error message
+     function showWishlistModal(message, type) {
+    const modal = document.getElementById("wishlistModal");
+    const modalContent = document.getElementById("wishlistModalContent");
+    const messageText = document.getElementById("wishlistModalText");
+    const modalIcon = document.getElementById("modalIcon");
+
+    // Set the message and styling based on the type
+    messageText.innerText = message;
+    modalContent.className = type === 'success' ? 'wishlist-success' : 'wishlist-error';
+    modalIcon.className = type === 'success' ? 'fa-solid fa-check-circle' : 'fa-solid fa-times-circle';
+
+    // Display and animate the modal
+    modal.style.display = "flex";
+    setTimeout(() => {
+        modal.style.opacity = 1;
+        modalContent.style.opacity = 1;
+        modalContent.style.transform = "translateY(0)";
+    }, 10);
+}
+
+    // Function to close the modal with transition
+    function closeWishlistModal() {
+        var modal = document.getElementById("wishlistModal");
+        var modalContent = document.getElementById("wishlistModalContent");
+
+        modal.style.opacity = 0;
+        modalContent.style.opacity = 0;
+        modalContent.style.transform = "translateY(-50px)";
+        
+        setTimeout(function() {
+            modal.style.display = "none";
+        }, 500);
+    }
+
+    // Updated toggleWishlist function with modal notification
+    function toggleWishlist(event, iconElement, productId, productName, productImage, productPrice, businessName, sellerId) {
+        event.preventDefault();
+
+        const productData = {
+            id: productId,
+            name: productName,
+            image: productImage,
+            price: productPrice,
+            business_name: businessName,
+            seller_id: sellerId
+        };
+
+        fetch("{{ url_for('add_to_wishlist') }}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(productData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === "added") {
+                iconElement.classList.remove("fa-regular");
+                iconElement.classList.add("fa-solid");
+                showWishlistModal("Product added to wishlist!", "success");
+            } else if (data.status === "removed") {
+                iconElement.classList.remove("fa-solid");
+                iconElement.classList.add("fa-regular");
+                showWishlistModal("Product removed from wishlist!", "error");
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+        });
+    }
+</script>
+
+ <!-- para to sa best seller para mag showtime -->
+<script>
+ document.addEventListener('DOMContentLoaded', () => {
+    const track = document.querySelector('.carousel-track');
+    const prevBt = document.getElementById('prevBt');
+    const nextBt = document.getElementById('nextBt');
+
+    let currentIndex = 3; // Start with the 3rd item (index starts from 0)
+    const visibleItems = 5; // Number of items to show at once
+
+    // Update total items dynamically after content is rendered
+    function updateCarouselPosition() {
+        const items = document.querySelectorAll('.carousel-item');
+        const totalItems = items.length; // Get the total number of items after the DOM is fully loaded
+
+        if (totalItems === 0) return; // Do nothing if no items exist yet
+
+        const itemWidth = items[0].offsetWidth;  // Get the width of each item
+        const carouselContainerWidth = document.querySelector('.carousel-container').offsetWidth; // Width of the visible area
+
+        // Calculate how much to shift to center the focused item
+        const centerOffset = (carouselContainerWidth / 2) - (itemWidth / 2);
+        
+        // Adjust the carousel's offset based on the current index
+        const offset = -(currentIndex * itemWidth) + centerOffset;
+
+        // Update the position of the track to scroll it
+        track.style.transform = `translateX(${offset}px)`;
+
+        // Optionally: Add focus to the centered item (e.g. add a class to highlight it)
+        items.forEach(item => item.classList.remove('focused')); // Remove focus from all items
+        items[currentIndex].classList.add('focused'); // Add focus to the centered item
+    }
+
+    // Next button functionality
+    nextBt.addEventListener('click', () => {
+        const items = document.querySelectorAll('.carousel-item');
+        const totalItems = items.length; // Get total items dynamically
+
+        if (currentIndex < totalItems - 1) {
+            currentIndex += 1; // Move to the next item
+        }
+        updateCarouselPosition();
+    });
+
+    // Prev button functionality
+    prevBt.addEventListener('click', () => {
+        if (currentIndex > 0) {
+            currentIndex -= 1; // Move to the previous item
+        }
+        updateCarouselPosition();
+    });
+
+    // Fetch best sellers and load into the carousel
+    function fetchBestSellers() {
+        fetch('/best-seller-data')
+            .then(response => response.json())
+            .then(data => {
+                const carouselTrack = document.querySelector('.carousel-track');
+                carouselTrack.innerHTML = '';  // Clear existing carousel items
+
+                if (data.best_sellers && data.best_sellers.length > 0) {
+                    // Loop through the best sellers and append them to the carousel
+                    data.best_sellers.forEach(product => {
+                        const carouselItem = document.createElement('div');
+                        carouselItem.classList.add('carousel-item');
+
+                        // Construct HTML for each product with a link to the product detail page
+                        carouselItem.innerHTML = `
+                            <a href="/product/${product.product_id}"> <!-- Link to product detail page -->
+                                <img src="${product.product_image}" alt="${product.productName}">
+                                <p>${product.productName}</p>
+                            </a>
+                        `;
+
+                        // Append each product to the carousel
+                        carouselTrack.appendChild(carouselItem);
+                    });
+
+                    // Initialize the carousel position after loading the items
+                    updateCarouselPosition();
+                } else {
+                    // Display message if no best sellers found
+                    carouselTrack.innerHTML = '<p>No best sellers found.</p>';
+                }
+            })
+            .catch(error => console.error('Error fetching best sellers:', error));
+    }
+
+    // Call the function to load the best sellers when the page is loaded
+    fetchBestSellers();
+});
+
+
+
+</script>
+</body>
+</html>

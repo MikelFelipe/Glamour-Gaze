@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Detailed view of {{ product[1] }}. Buy now for the best price.">
+    <script src="https://kit.fontawesome.com/0dd07a1078.js" crossorigin="anonymous"></script>
+    <title>Product Detail</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/navbar.css')}}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Afacad+Flux:wght@100..1000&family=Concert+One&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/productpage.css') }}">
+
+</head>
+<body>
+    {% include 'navbar.html' %}
+
+ <!-- Modal for add-to-cart messages -->
+ <div id="addToCartModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeAddToCartModal()">&times;</span>
+        <div class="modal-body">
+            <!-- Dynamic Icon for Success or Error -->
+            <i id="modalCartIcon" class="modal-cart-icon fa-solid"></i> 
+            <!-- Dynamic Message -->
+            <p id="addToCartMessage">Item added to your cart successfully!</p>
+        </div>
+    </div>
+</div>
+    <div class="product-detail-container">
+        {% if product %}
+            <div class="detail-wrapper">
+                <div class="image-container">
+                    <div class="main-image-container">
+                        <img id="main-image" src="{{ url_for('static', filename='upload_images/' + product[7]) }}" alt="{{ product[2] }}" class="product-image"> <!-- Main Product Image -->
+                    </div>
+                    <div class="sub-images">
+                        <img class="sub-image" src="{{ url_for('static', filename='upload_images/' + product[7]) }}" alt="Sub Image 1" data-image="{{ url_for('static', filename='upload_images/' + product[7]) }}"> <!-- Sub Image 1 -->
+                        <img class="sub-image" src="{{ url_for('static', filename='upload_images/' + product[8]) }}" alt="Sub Image 2" data-image="{{ url_for('static', filename='upload_images/' + product[8]) }}"> <!-- Sub Image 2 -->
+                        <img class="sub-image" src="{{ url_for('static', filename='upload_images/' + product[9]) }}" alt="Sub Image 3" data-image="{{ url_for('static', filename='upload_images/' + product[9]) }}"> <!-- Sub Image 3 -->
+                        <img class="sub-image" src="{{ url_for('static', filename='upload_images/' + product[10]) }}" alt="Sub Image 4" data-image="{{ url_for('static', filename='upload_images/' + product[10]) }}"> <!-- Sub Image 4 -->
+                    </div>
+                </div>
+                <div class="product-details">
+                    <h1>{{ product[1] }}</h1> <!-- Product Name -->
+
+                    <!-- Average Rating Display -->
+                    {% if product_reviews %}
+                    <div class="rating-container">
+                        <p class="average-rating">{{ average_rating|round(1) }}</p>
+                        <div class="review-rating">
+                            {% for i in range(1, 6) %}
+                                <span class="star {% if i <= average_rating %}selected{% endif %}">&#9733;</span> <!-- Star -->
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% else %}
+                    <p>No ratings yet for this product.</p>
+                    {% endif %}
+
+
+                    <p>Mini Description: {{ product[3] }}</p> <!-- Mini Description -->
+                    <p class="price">{{ product[5] }}</p> <!-- Product Price -->
+
+                    <div class="quantity-container">
+                        <label for="quantity">Quantity:</label>
+                        <input type="number" id="quantity" name="quantity" value="1" min="1" max="{{product[12]}}" step="1" oninput="validateQuantityInput(this)">
+                        <p class="stock-available"> Stock Available: {{ product[6]}}</p>
+                    </div>
+                    
+                    <div class="button-container">
+                        <form action="{{ url_for('add_to_cart', product_id=product[0]) }}" class="add-to-cart-form" method="POST" onsubmit="setHiddenQuantity()">
+                            <input type="hidden" name="product_name" value="{{ product[1] }}">
+                            <input type="hidden" name="product_image" value="{{ url_for('static', filename='upload_images/' + product[7]) }}">
+                            <input type="hidden" name="product_price" value="{{ product[5] }}">
+                            <input type="hidden" name="quantity" id="hidden-quantity" value="1"> <!-- Updated to dynamically reflect quantity -->
+                            <button type="submit" class="add-to-cart-btn">Add to Cart</button>
+                        </form>
+                        
+                       <!-- Buy Now Form -->
+                        <form action="{{ url_for('checkout') }}" method="POST"  onsubmit="setHiddenQuantity()">
+                            <input type="hidden" name="product_name" value="{{ product[1] }}">
+                            <input type="hidden" name="product_image" value="{{ url_for('static', filename='upload_images/' + product[7]) }}">
+                            <input type="hidden" name="product_price" value="{{ product[5] }}">
+                            <input type="hidden" name="quantity" id="hidden-buy-quantity" value="1"> <!-- Quantity for Buy Now -->
+                            <input type="hidden" name="seller_id" value="{{ product[11] }}"> <!-- Pass seller_id here -->
+                            <input type="hidden" name="product_id" value="{{ product_id }}">
+                            <button type="submit" class="buy-btn">Buy Now</button>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <p>Product not found.</p>
+        {% endif %}
+    </div>
+
+    <div class="about-product">
+        <div class="seller-info">
+            <div class="shop-image">
+                <img src="{{ url_for('static', filename='src/logo.jpg') }}" alt="Shop Image" />
+            </div>
+            <div class="shop-info">
+                <h4>{{ product[13] }}</h4>
+            </div>
+        </div>
+        <div class="main-description">
+            <h2>Main Description</h2>
+            <p>{{ product[4] }}</p>
+        </div>
+    </div>
+
+
+    
+<div class="product-reviews-container">
+    <div class="product-reviews">
+        <div class="product-total-ratings">
+            <h2>Product Reviews</h2>
+            {% if product_reviews %}
+                <p>{{ average_rating|round(1) }} out of 5</p>
+                <div class="review-rating">
+                    {% for i in range(1, 6) %}
+                        <span class="star {% if i <= average_rating %}selected{% endif %}">&#9733;</span>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="no-reviews">No reviews yet for this product.</p>
+            {% endif %}
+        </div>
+        {% if product_reviews %}
+            <div class="reviews-container">
+                {% for review in product_reviews %}
+                    <div class="review-card">
+                        <div class="review-header">
+                            <div class="reviewer-info">
+                                <img src="..//static/src/logo.jpg" alt="Profile Picture" class="profile-pic">
+                                <span class="reviewer-name">{{ review.username }}</span>
+                            </div>
+                            <div class="review-rating">
+                                {% for i in range(1, 6) %}
+                                    <span class="star {% if i <= review.rating %}selected{% endif %}">&#9733;</span>
+                                {% endfor %}
+                                <span class="rating-text">{{ review.rating }} / 5</span>
+                            </div>
+                        </div>
+                        <p class="review-message">{{ review.message }}</p>
+                        <div class="review-images">
+                            {% if review.image_1 %}
+                                <img src="{{ url_for('static', filename=review.image_1) }}" alt="Review Image" class="review-image" data-image="{{ url_for('static', filename=review.image_1) }}">
+                            {% endif %}
+                            {% if review.image_2 %}
+                                <img src="{{ url_for('static', filename=review.image_2) }}" alt="Review Image" class="review-image" data-image="{{ url_for('static', filename=review.image_2) }}">
+                            {% endif %}
+                            {% if review.image_3 %}
+                                <img src="{{ url_for('static', filename=review.image_3) }}" alt="Review Image" class="review-image" data-image="{{ url_for('static', filename=review.image_3) }}">
+                            {% endif %}
+                            {% if review.image_4 %}
+                                <img src="{{ url_for('static', filename=review.image_4) }}" alt="Review Image" class="review-image" data-image="{{ url_for('static', filename=review.image_4) }}">
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        <div id="product-image-popup" class="product-image-popup">
+            <span class="product-close-btn">&times;</span>
+            <img class="product-popup-content" id="product-popup-image">
+        </div>
+    </div>
+</div>
+    
+    
+     
+    <script>
+    //para to sa pag click ng image sa review to zoom
+     document.addEventListener('DOMContentLoaded', () => {
+    const popup = document.getElementById('product-image-popup');
+    const popupImage = document.getElementById('product-popup-image');
+    const closeBtn = document.querySelector('.product-close-btn');
+
+    // Initially hide the popup
+    popup.style.display = 'none';
+
+    const reviewImages = document.querySelectorAll('.review-image');
+
+    reviewImages.forEach(image => {
+        image.addEventListener('click', function () {
+            const imageSrc = this.getAttribute('data-image');  // Get the correct image path
+            popupImage.src = imageSrc;  // Set the source of the image in the popup
+            popup.style.display = 'flex';  // Show the popup
+        });
+    });
+
+    // Close the popup when the close button is clicked
+    closeBtn.addEventListener('click', () => {
+        popup.style.display = 'none';
+    });
+
+    // Close the popup if the user clicks outside the image (on the background)
+    window.addEventListener('click', (event) => {
+        if (event.target === popup) {
+            popup.style.display = 'none';
+        }
+    });
+});
+
+
+    </script>
+    
+    
+    
+    
+    
+
+    <script>
+        document.querySelectorAll('.sub-image').forEach(subImage => {
+            subImage.addEventListener('click', function() {
+                const mainImage = document.getElementById('main-image');
+                mainImage.src = this.dataset.image;
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const subImages = document.querySelectorAll('.sub-image');
+            const mainImage = document.querySelector('.product-image');
+
+            subImages.forEach(subImage => {
+                subImage.addEventListener('click', function() {
+                    mainImage.src = this.src;
+                    subImages.forEach(img => img.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+        });
+
+        // Function to update hidden quantity values
+        function setHiddenQuantity() {
+            const quantity = document.getElementById('quantity').value;
+            document.getElementById('hidden-quantity').value = quantity;
+            document.getElementById('hidden-buy-quantity').value = quantity;
+        }
+    </script>
+
+
+<!-- for clicking add to cart kahit wala ka -->
+<script>
+    document.querySelectorAll('.add-to-cart-form').forEach(form => {
+     form.addEventListener('submit', function(event) {
+         event.preventDefault(); // Prevent default form submission
+ 
+         // Submit the form via AJAX
+         const formData = new FormData(form);
+         fetch(form.action, {
+             method: 'POST',
+             body: formData,
+         })
+         .then(response => response.json()) // Parse JSON response
+         .then(data => {
+             if (data.status === 'success') {
+                 // Show the modal with success message
+                 showAddToCartModal(true, data.message);
+                 updateCartCount();  // Optionally update cart count here
+             } else {
+                 // Show the modal with error message
+                 showAddToCartModal(false, data.message);
+             }
+         })
+         .catch(error => {
+             showAddToCartModal(false, "An error occurred while adding the item to your cart.");
+             console.error('Error:', error);
+         });
+     });
+ });
+ 
+ // Function to show the modal
+ function showAddToCartModal(isSuccess, message = '') {
+     const modal = document.getElementById('addToCartModal');
+     const modalContent = modal.querySelector('.modal-content');
+     const modalIcon = document.getElementById('modalCartIcon');
+     const modalMessage = document.getElementById('addToCartMessage');
+ 
+     modal.style.display = 'flex'; // Display the modal with flex layout
+     setTimeout(() => {
+         modal.style.opacity = '1'; // Fade-in effect for background
+         modalContent.classList.add('show'); // Apply zoom-in effect for content
+     }, 10);
+ 
+     // Update modal content based on success or error
+     if (isSuccess) {
+         modalIcon.classList.add('fa-check-circle');
+         modalMessage.textContent = message; // Success message
+     } else {
+         modalIcon.classList.add('fa-exclamation-circle');
+         modalMessage.textContent = message; // Error message, such as "Cart is full."
+     }
+ 
+     // Close the modal when the close button (×) is clicked
+     document.querySelector('.close-btn').onclick = function() {
+         closeAddToCartModal();
+     };
+ 
+     // Close the modal if the user clicks outside of it
+     window.onclick = function(event) {
+         if (event.target == modal) {
+             closeAddToCartModal();
+         }
+     };
+ }
+ 
+ // Function to hide the modal with transition
+ function closeAddToCartModal() {
+     const modal = document.getElementById('addToCartModal');
+     const modalContent = modal.querySelector('.modal-content');
+ 
+     modal.style.opacity = '0'; // Fade-out effect for background
+     modalContent.classList.remove('show'); // Remove zoom-in effect
+ 
+     // Wait for the transition to complete before hiding modal
+     setTimeout(() => {
+         modal.style.display = 'none';
+     }, 300); // Match this to the transition duration in CSS
+ }
+ 
+ </script>
+
+<script>
+    function validateQuantityInput(input) {
+    let min = parseInt(input.min) || 1;
+    let max = parseInt(input.max) || 9999;
+    let value = parseInt(input.value);
+
+    if (isNaN(value) || value < min) {
+        input.value = min;
+    } else if (value > max) {
+        input.value = max;
+    }
+}
+</script>
+
+
+</body>
+
+</html>

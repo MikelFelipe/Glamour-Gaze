@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Cart</title>
+    <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
+    <link rel="stylesheet" href="../static/css/cart_page.css">
+</head>
+<body>
+
+    {% include 'navbar.html' %}
+
+    <div class="main-container">
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>
+                            <input type="checkbox" id="select-all"> Select All
+                        </th>
+                        <th>Product</th>
+                        <th>Total</th>
+                        <th>Quantity</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% set current_seller = None %}
+                    {% for item in cart_items %}
+                        {% if current_seller != item[6] %}
+                            {% set current_seller = item[6] %}
+                            <!-- Seller header row -->
+                            <tr class="seller-row">
+                                <td colspan="5">
+                                    <input type="checkbox" class="seller-select" data-seller="{{ current_seller }}">
+                                    <span class="seller-name"><box-icon name='store'></box-icon> {{ current_seller }}</span>
+                                </td>
+                            </tr>
+                        {% endif %}
+                        <tr class="cart-item-row">
+                            <td>
+                                <input type="checkbox" class="select-checkbox" 
+                                    data-id="{{ item[0] }}" 
+                                    data-name="{{ item[1] }}" 
+                                    data-image="{{ url_for('static', filename='upload_images/' + item[5]) }}" 
+                                    data-price="{{ item[3] }}" 
+                                    data-quantity="{{ item[4] }}">
+                            </td>
+                            <td>
+                                <div class="image-wrapper">
+                                    <img src="{{ url_for('static', filename='upload_images/' + item[5]) }}" alt="{{ item[1] }}" class="product-image">
+                                    <div>
+                                        <span class="product-name">{{ item[1] }}</span>
+                                        <!-- Example: show offer or stock warning -->
+                                        {% if item[8] and item[8] < 5 %}
+                                            <div class="stock-warning">Only {{ item[8] }} left!</div>
+                                        {% endif %}
+                                        {% if item[9] %}
+                                            <div class="special-offer">{{ item[9] }}</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </td>
+                            <td id="total-price-{{ item[0] }}" data-price="{{ item[3] }}" class="cinter">
+                                {{ (item[3] * item[4]) | round(2) }}
+                            </td>
+                            <td class="cinter">
+                                <div class="quantity-container">
+                                    <button type="button" class="quantity-btn decrease" data-id="{{ item[0] }}">-</button>
+                                    <input type="number" class="quantity-input" id="quantity-{{ item[0] }}" value="{{ item[4] }}" min="1">
+                                    <button type="button" class="quantity-btn increase" data-id="{{ item[0] }}">+</button>
+                                </div>
+                            </td>
+                            <td class="cinter">
+                                <button class="delete-btn" data-id="{{ item[0] }}">
+                                    <box-icon name='trash'></box-icon>
+                                </button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="order-summary">
+            <h2>Order Summary</h2>
+            <p>Subtotal: <span id="subtotal">0.00</span></p>
+            <p>Shipping Fee: <span id="shipping-fee">50.00</span></p> <!-- Default shipping fee -->
+            <p>Total Amount: <span id="total-amount">0.00</span></p>
+            
+            <form action="{{ url_for('checkout') }}" method="POST">
+                <!-- Loop through selected items to pass product details dynamically -->
+                {% for item in cart_items %}
+                    <input type="hidden" name="product_id" value="{{ item[0] }}">
+                    <input type="hidden" name="product_name" value="{{ item[2] }}">
+                    <input type="hidden" name="product_image" value="{{ item[5] }}">
+                    <input type="hidden" name="product_price" value="{{ item[3] }}">
+                    <input type="hidden" name="total_quantity" value="{{ item[4] }}">
+                    <input type="hidden" name="seller_id" value="{{ item[7] }}">
+                {% endfor %}
+                
+                <button type="submit">Checkout</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
+
+        <script>
+            function setHiddenQuantityForCheckout() {
+                // If the form contains multiple products, loop through each checkbox and gather selected data
+                let selectedItems = document.querySelectorAll('.select-checkbox:checked');
+                
+                selectedItems.forEach(function(item) {
+                    let product_id = item.getAttribute('data-id');
+                    let quantity = item.getAttribute('data-quantity');
+                    // Dynamically add product IDs and quantities if necessary for submission
+                    document.querySelector("input[name='product_id']").value = product_id;
+                    document.querySelector("input[name='total_quantity']").value = quantity;
+                });
+            }
+            
+            // Update the checkout total when the form is submitted
+            document.querySelector('form').addEventListener('submit', function(event) {
+                event.preventDefault(); // Prevent form submission for now
+                let product_ids = [];
+                let quantities = [];
+        
+                document.querySelectorAll('.select-checkbox:checked').forEach(function(item) {
+                    product_ids.push(item.getAttribute('data-id'));
+                    quantities.push(item.getAttribute('data-quantity'));
+                });
+        
+                // You can now use product_ids and quantities for validation or to update hidden inputs for submission
+                // For now, you can just log them to the console to verify:
+                console.log(product_ids, quantities);
+            });
+        </script>
+        
+    
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+    $(document).ready(function() {
+        function updateOrderSummary() {
+            let subtotal = 0;
+
+            $('.select-checkbox:checked').each(function() {
+                const itemId = $(this).data('id');
+                const totalPrice = parseFloat($('#total-price-' + itemId).text());
+                if (!isNaN(totalPrice)) {
+                    subtotal += totalPrice;
+                }
+            });
+
+            $('#subtotal').text(subtotal.toFixed(2));
+            const shippingFee = subtotal > 0 ? 50.00 : 0.00; // Only charge shipping if there's a subtotal
+            $('#shipping-fee').text(shippingFee.toFixed(2));
+            $('#total-amount').text((subtotal + shippingFee).toFixed(2));
+        }
+
+        // Increase quantity
+        $('.increase').click(function() {
+            const itemId = $(this).data('id');
+            const quantityInput = $('#quantity-' + itemId);
+            let currentQuantity = parseInt(quantityInput.val(), 10);
+            currentQuantity += 1;
+            quantityInput.val(currentQuantity);
+            updateTotalPrice(itemId, currentQuantity);
+            updateOrderSummary();
+        });
+
+        // Decrease quantity
+        $('.decrease').click(function() {
+            const itemId = $(this).data('id');
+            const quantityInput = $('#quantity-' + itemId);
+            let currentQuantity = parseInt(quantityInput.val(), 10);
+            if (currentQuantity > 1) {
+                currentQuantity -= 1;
+                quantityInput.val(currentQuantity);
+                updateTotalPrice(itemId, currentQuantity);
+                updateOrderSummary();
+            }
+        });
+
+        // Update total price for the item
+        function updateTotalPrice(itemId, quantity) {
+            const pricePerItem = parseFloat($('#total-price-' + itemId).data('price'));
+            const newTotalPrice = (pricePerItem * quantity).toFixed(2);
+            $('#total-price-' + itemId).text(newTotalPrice);
+        }
+
+        // Delete item
+        $('.delete-btn').click(function() {
+            const itemId = $(this).data('id');
+            $(this).closest('tr').remove();
+            updateOrderSummary();
+        });
+
+        // Select all checkboxes
+        $('#select-all').change(function() {
+            $('.select-checkbox').prop('checked', this.checked);
+            updateOrderSummary(); // Update summary when selecting all
+        });
+
+        // Checkbox change event
+        $('.select-checkbox').change(function() {
+            updateOrderSummary(); // Update summary on individual checkbox change
+        });
+
+        // Initial update of the order summary
+        updateOrderSummary();
+    });
+    </script>
+
+<script>
+    document.querySelectorAll('.delete-btn').forEach(button => {
+    button.addEventListener('click', function() {
+        const itemId = this.getAttribute('data-id'); // Get the item ID from the button
+        fetch(`/api/cart/${itemId}`, {
+            method: 'DELETE'
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            alert(data.message || 'Item deleted successfully!');
+            // Optionally, remove the item from the DOM
+            // e.g., itemRow.remove(); if you have a reference to the row
+        })
+        .catch(error => {
+            console.error('Error deleting item from cart:', error);
+            alert('Failed to delete item from cart. Please try again.');
+        });
+    });
+});
+
+</script>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const decreaseBtns = document.querySelectorAll('.decrease');
+        const increaseBtns = document.querySelectorAll('.increase');
+        const quantityInputs = document.querySelectorAll('.quantity-input');
+
+        // Event listeners for the decrease buttons
+        decreaseBtns.forEach(button => {
+            button.addEventListener('click', function() {
+                const cartItemId = button.getAttribute('data-id');
+                const quantityInput = document.getElementById('quantity-' + cartItemId);
+                let currentQuantity = parseInt(quantityInput.value);
+
+                if (currentQuantity > 1) {
+                    currentQuantity -= 1;
+                    updateCartItemQuantity(cartItemId, currentQuantity);
+                }
+            });
+        });
+
+        // Event listeners for the increase buttons
+        increaseBtns.forEach(button => {
+            button.addEventListener('click', function() {
+                const cartItemId = button.getAttribute('data-id');
+                const quantityInput = document.getElementById('quantity-' + cartItemId);
+                let currentQuantity = parseInt(quantityInput.value);
+
+                // Fetch the current stock quantity from the backend
+                fetch(`/get_stock_quantity/${cartItemId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const stockQuantity = data.stock_quantity;
+
+                        if (currentQuantity < stockQuantity) {
+                            currentQuantity += 1;
+                            updateCartItemQuantity(cartItemId, currentQuantity);
+                        } else {
+                            alert("Cannot add more. Stock limit reached.");
+                            button.disabled = true;  // Disable the + button if quantity exceeds stock
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching stock quantity:', error);
+                    });
+            });
+        });
+
+        // Event listeners for manual input
+        quantityInputs.forEach(input => {
+            input.addEventListener('change', function() {
+                const cartItemId = input.getAttribute('id').split('-')[1];
+                let currentQuantity = parseInt(input.value);
+
+                if (isNaN(currentQuantity) || currentQuantity < 1) {
+                    alert("Please enter a valid quantity.");
+                    input.value = 1;  // Reset to 1 if invalid input
+                    return;
+                }
+
+                // Fetch the current stock quantity from the backend
+                fetch(`/get_stock_quantity/${cartItemId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const stockQuantity = data.stock_quantity;
+
+                        if (currentQuantity <= stockQuantity) {
+                            updateCartItemQuantity(cartItemId, currentQuantity);
+                        } else {
+                            alert("Cannot update quantity. Stock limit reached.");
+                            input.value = stockQuantity;  // Reset to max stock
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching stock quantity:', error);
+                    });
+            });
+        });
+
+        // Function to update the cart item quantity in the database via AJAX
+        function updateCartItemQuantity(cartItemId, newQuantity) {
+            fetch('/update_cart_quantity', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    cart_item_id: cartItemId,
+                    new_quantity: newQuantity
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update the UI to reflect the new quantity and total price
+                    const totalPriceElement = document.getElementById('total-price-' + cartItemId);
+                    const pricePerItem = parseFloat(totalPriceElement.getAttribute('data-price'));
+                    totalPriceElement.innerText = (pricePerItem * newQuantity).toFixed(2);
+                    document.getElementById('quantity-' + cartItemId).value = newQuantity;
+                } else {
+                    alert('Failed to update cart quantity');
+                }
+            });
+        }
+    });
+</script>
+
+
+<script>
+    document.querySelectorAll('.quantity-input').forEach(input => {
+    input.addEventListener('input', function() {
+        let min = parseInt(this.min) || 1;
+        let value = parseInt(this.value);
+        if (isNaN(value) || value < min) {
+            this.value = min;
+        }
+    });
+});
+</script>
+
+

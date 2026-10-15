@@ -1,0 +1,53 @@
+Literal na wala
+- Message
+- APT
+- Change Address na dinamn need
+- Buy Again Button
+
+
+Mikel To Do 
+- Admin and Seller Dashboard
+- Yung edit napunta sa dashboard tab
+- yung sa message sa email dapat raw May REASON BAKIT  NA REJECT YUNG NAG REREGISTER SA AS BUYER/SELLER
+- Salse and Report (Both)
+- last name/ first name / MN sa registration bukod bukod daw
+- show password (yung mata)
+- confirm Password
+- address(yung selection na may philippines/laguna/municipality/brgy
+(sa street manual na lang use ka nalang API)
+- dapat nasa registration na lahat ng info
+- voucher (sa sellers side)
+- commission 5% (nakalagay yata to sa admin or seller? di ko sure) 
+- yung sa stocks dapat pag 50 lang yung stocks tas 53 yung order dapat lalabas is yung limit lang ng stocks hindi dapaat mag aadd tocart)
+- TOTAL SALES(gross net) sa Dashboard yata to 
+- FILTER (BAN/approved) 
+- FRANK MESSAGES? (whelp😭 naka notes di ko na tanda)
+- YUNG VIEW ALL NG LAHAT NG PRODUCT MIKEL NOT NULL ADD MO 
+
+
+Lyndon To Do
+<!-- - Improve Overall design -->
+<!-- - Add Pop op sa lahat -->
+<!-- - yung designs nag ooverlapse ayusin (OK) -->
+<!-- - Yung Cart to Checkout and Placeorder -->
+- PUNYETANG ADDRESS NA MAY SARILING MUNDO
+- Change Address sa Placeorder Page
+<!-- - Our Best Seller Page  -->
+- View Shop Page
+<!-- - Notification for status of Order (Both) -->
+- Messages (Both)
+<!-- - Cancel Reason -->
+<!-- - RFEEDBACK AND REVIEW  -->
+<!-- - Retuen / refund -->
+<!-- - Limit cart by 25 -->
+<!-- - unlist and list function (idk kung sa seller to or admin) -->
+<!-- - Seller Profile Settings Design  -->
+
+irurs
+- view id
+- dapat di na nakakapag rekta checkout pag wala ng stockings
+
+
+
+
+ 

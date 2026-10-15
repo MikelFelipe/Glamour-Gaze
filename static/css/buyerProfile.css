@@ -1,0 +1,1269 @@
+/* Reset styles */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: "Afacad Flux", sans-serif;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    display: flex;
+    flex-direction: column; /* To ensure the nav and main-container stack */
+}
+
+/* Navbar styles */
+nav {
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent background */
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 100px; /* Fixed height for the navbar */
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 999;
+    backdrop-filter: blur(2px);
+}
+
+/* Main container */
+.main-container {
+    display: flex;
+    width: 100%;
+    margin-top: 100px; /* Account for the height of the navbar */
+    height: calc(100% - 100px); /* Adjust height */
+    flex: 1; /* Pushes content to fill available space */
+    overflow: hidden; /* Prevents extra space at the bottom */
+}
+
+/* Sidebar styles */
+.sidebar {
+    width: 200px;
+    background-color: white;
+    padding: 20px;
+    height: 100%; /* Ensures sidebar fills full container height */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    margin-left: 140px;
+}
+
+.logo .profile-picture {
+    width: 20px;  /* Adjust as needed */
+    height: 20px; /* Same as width for a perfect circle */
+    border-radius: 50%; /* Makes the image circular */
+    object-fit: cover; /* Ensures the image fills the circle */
+}
+
+.menu {
+    list-style-type: none;
+    padding: 0;
+    flex-grow: 1;
+}
+
+.menu li {
+    margin-bottom: 10px;
+}
+
+.menu a {
+    text-decoration: none;
+    color: black;
+    display: block;
+    padding: 10px;
+    border-radius: 5px;
+    transition: color 0.3s ease;
+}
+
+.menu a:hover {
+    color: #d37389;
+}
+
+.menu a.active {
+    color: #d37389; /* Changes the text color to red */
+    font-weight: bold; /* Optional: makes the active tab bold */
+}
+
+
+/* Content styles */
+.content {
+    flex: 1;
+    padding: 20px;
+    height: 100%; /* Ensures content takes up remaining space */
+    overflow-y: auto; /* Scroll content if too long */
+}
+
+.content h2 {
+    margin-top: 0;
+}
+
+.container-for-my-account{
+    margin: 0 5%;
+}
+
+.form-container {
+    display: flex;
+    justify-content: space-between; /* Keep space between the left and right sections */
+    margin: 20px;
+    height: auto; /* Change to auto to fit content */
+    padding: 40px; /* Add some padding */
+    font-size: larger;
+}
+
+.form-left {
+    flex: 6; /* 60% width */
+    padding-right: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-right {
+    flex: 4; /* 40% width */
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center-align the image and the button */
+}
+
+.form-group {
+    display: flex;
+    align-items: center; /* Align label and input */
+    margin-bottom: 30px;
+}
+
+.form-group label {
+    width: 150px; /* Fixed width for labels to align them */
+    margin-right: 30px; /* Space between label and input */
+    font-weight: bold;
+    text-align: right; /* Align label text to the right */
+}
+
+.form-group input,
+.form-group select {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.image-upload-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.profile-picture {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%; /* Make the image circular */
+    border: 2px solid #ccc;
+    object-fit: cover; /* Ensure the image fits within the circular shape */
+    margin-bottom: 15px;
+    cursor: pointer; /* Pointer cursor to indicate the image is clickable */
+    margin-top: 20px;
+}
+
+input[type="file"] {
+    display: none; /* Hide the default file input */
+}
+
+.save-button {
+    text-align: center;
+    cursor: pointer;
+
+}
+
+.saveBtn{
+    padding: 10px 15px;
+    background-color: #d37389;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    width: 200px;
+}
+
+.saveBtn:hover {
+    background-color: #dc3545;
+}
+
+
+
+/* Container for Addresses */
+.container-for-addresses {
+    max-width: 800px; /* Maximum width for the container */
+    margin: 0 5%;
+    padding: 20px; /* Padding inside the container */
+    border: 1px solid #ddd; /* Light gray border */
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Soft shadow */
+    background-color: #ffffff; /* White background */
+}
+
+/* Heading Styles */
+h2 {
+    font-size: 24px; /* Font size for main heading */
+    margin-bottom: 10px; /* Space below the heading */
+    color: #333; /* Dark color for the heading */
+}
+
+h3 {
+    font-size: 20px; /* Font size for subheadings */
+    margin-top: 20px; /* Space above the subheading */
+    color: #444; /* Slightly lighter color for subheadings */
+}
+
+/* Paragraph Styles */
+p {
+    font-size: 16px; /* Font size for paragraphs */
+    margin-bottom: 10px; /* Space below paragraphs */
+    color: #555; /* Medium gray color for text */
+}
+
+/* Button Styles */
+.add-address-button {
+    display: inline-block; /* Align button inline */
+    padding: 10px 15px; /* Padding inside the button */
+    margin-bottom: 20px; /* Space below the button */
+    background-color: #4CAF50; /* Green background */
+    color: white; /* White text */
+    border: none; /* No border */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    font-size: 16px; /* Font size for the button */
+    transition: background-color 0.3s ease; /* Smooth background color transition */
+}
+
+/* Button Hover Effect */
+.add-address-button:hover {
+    background-color: #45a049; /* Darker green on hover */
+}
+
+/* Address Card Styles */
+.address-card, .address-item {
+    padding: 15px; /* Padding inside the address card */
+    margin-bottom: 10px; /* Space below each address card */
+    border: 1px solid #ddd; /* Light gray border */
+    border-radius: 8px; /* Rounded corners */
+    background-color: #f9f9f9; /* Light gray background */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+/* Header Styles for the Address Management Section */
+.header {
+    display: flex; /* Use flexbox for layout */
+    justify-content: space-between; /* Space between heading and button */
+    align-items: center; /* Align items vertically centered */
+}
+
+/* Button Styles */
+.add-address-button, .edit-button, .set-default-button {
+    padding: 10px 15px; /* Padding for buttons */
+    background-color: #4CAF50; /* Green background */
+    color: white; /* White text */
+    border: none; /* No border */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    font-size: 16px; /* Font size for buttons */
+    transition: background-color 0.3s ease; /* Smooth background color transition */
+}
+
+/* Button Hover Effect */
+.add-address-button:hover {
+    background-color: #45a049; /* Darker green on hover */
+}
+
+/* Disable Button Styles */
+.edit-button:disabled, .set-default-button:disabled {
+    background-color: #ccc; /* Gray background for disabled buttons */
+    cursor: not-allowed; /* Not-allowed cursor */
+    color: #666; /* Darker gray text */
+}
+
+/* Address Card Styles */
+.address-card, .address-item {
+    padding: 15px; /* Padding inside the address card */
+    margin-bottom: 10px; /* Space below each address card */
+    border: 1px solid #ddd; /* Light gray border */
+    border-radius: 8px; /* Rounded corners */
+    background-color: #f9f9f9; /* Light gray background */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+/* Address Buttons Container */
+.address-buttons {
+    margin-top: 10px; /* Space above the buttons */
+}
+
+/* Additional Addresses Section */
+.additional-addresses ul {
+    list-style-type: none; /* Remove default bullet points */
+    padding: 0; /* Remove padding */
+}
+
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    .container-for-addresses {
+        padding: 15px; /* Less padding on smaller screens */
+    }
+
+    .add-address-button {
+        width: 100%; /* Full width button on mobile */
+    }
+}
+ 
+
+
+/* Modal Styles */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1000; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+}
+
+.modal-content {
+    background-color: #fefefe;
+    padding: 20px;
+    border: 1px solid #888;
+    border-radius: 8px; /* Rounded corners */
+    width: 90%; /* Width of the modal */
+    max-width: 500px; /* Maximum width */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow effect */
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+
+
+
+/* MY PURCHASE START */
+.container-for-my-purchase {
+    margin: 0 5%;
+}
+
+#my-purchase {
+    background-color: white;
+    padding: 30px;
+}
+
+#my-purchase .order-nav {
+    display: flex; /* Use Flexbox for horizontal alignment */
+    padding: 0; /* Remove any default padding */
+    margin-bottom: 15px;
+}
+
+#my-purchase .order-nav button {
+    flex: 1; /* Make each button take up equal space */
+    padding: 10px; /* Adjust padding for consistency */
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    background-color: rgb(247, 245, 245);
+    color: black;
+    text-align: center; /* Center the text in the button */
+    height: 50px; /* Set a fixed height for all buttons */
+    box-sizing: border-box; /* Include padding in the height */
+    position: relative; /* To position the border */
+    overflow: hidden; /* Hide overflow */
+}
+
+/* Remove margin to eliminate gaps between buttons */
+#my-purchase .order-nav button + button {
+    margin-left: 0; /* No margin for buttons next to each other */
+}
+
+#my-purchase .order-nav button:hover {
+    color: #dc3545;
+}
+
+#my-purchase .order-nav button:focus {
+    color: #dc3545;
+}
+
+/* Create a border effect */
+#my-purchase .order-nav button::after {
+    content: ''; /* Pseudo-element for the border */
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 2px; /* Height of the border */
+    background: #dc3545; /* Border color */
+    width: 100%; /* Full width */
+    transform: translateX(-100%); /* Start from the left, outside the button */
+    transition: transform 0.3s ease; /* Smooth transition for the border */
+}
+
+/* Show the border on hover and focus */
+#my-purchase .order-nav button:hover::after,
+#my-purchase.order-nav button:focus::after {
+    transform: translateX(0); /* Move into view from left to right */
+}
+
+#my-purchase .order-content-section {
+    display: none; /* Hide all order content sections by default */
+}
+
+#my-purchase .order-content-section.active-content {
+    display: block; /* Show only the active order content section */
+}
+
+
+
+
+
+/* Ensure the main content section takes full width */
+.order-content-section {
+    width: 100%;
+    padding: 0; /* Remove any padding that could restrict width */
+    margin: 0; /* Ensure no extra margin affects width */
+    box-sizing: border-box;
+}
+
+/* Completed orders body should also take full width */
+#completed-orders-body, 
+#to-pay-orders-body, 
+#to-ship-orders-body,
+#to-receive-orders-body,
+#cancelled-orders-body {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Order card styling */
+.order-card {
+    display: flex;
+    flex-direction: column;
+    width: 100%; /* Make the card span the full width of the parent */
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    padding: 15px; /* Add padding for spacing */
+    font-size: 20px;
+    position: relative;
+    box-sizing: border-box; 
+}
+
+/* Order details styling */
+.order-details {
+    display: flex;
+    justify-content: space-between; /* Ensure spacing between items */
+    gap: 20px; /* Space between each item */
+    margin-bottom: 10px; /* Space below order details */
+}
+
+/* Full-width header with business name and view shop link */
+.product-header {
+    position: relative; /* Allows absolute positioning for the status */
+    padding: 10px;
+    background-color: #f9f9f9;
+    width: 100%;
+}
+
+/* Business name styling */
+.business-name {
+    font-weight: bold;
+    font-size: 16px;
+    display: inline; /* Keep it inline for no extra spacing */
+}
+
+/* View shop link styling */
+.view-shop {
+    display: inline; /* Keep it inline */
+    font-size: 14px;
+    color: #d37389;
+    text-decoration: none;
+    margin-left: 5px; /* Small space between business name and link */
+}
+
+/* Order status positioning */
+.order-status {
+    position: absolute; /* Allows it to float to the right */
+    right: 10px; /* Adjust distance from the right */
+    top: 50%; /* Centers it vertically */
+    transform: translateY(-50%); /* Fine-tune vertical alignment */
+    font-weight: bold;
+    
+}
+
+
+.received-container {
+    position: absolute;
+    bottom: 16px;
+    right: 16px;
+}
+
+.mark-as-received-btn {
+    padding: 8px 16px;
+    background-color: #d37389;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+.mark-as-received-btn:hover {
+    background-color: #dc3545;
+}
+
+
+
+
+
+
+#refund-popup {
+    display: none;  
+    position: fixed;
+    z-index: 1; 
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);  
+    padding-top: 30px;  
+}
+
+
+#refund-popup .popup-content {
+    background-color: #fff;
+    margin: 5% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 600px;
+    position: relative;
+    border-radius: 8px; 
+}
+
+
+#refund-popup .popup-close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 30px;
+    font-weight: bold;
+    color: #aaa;
+    cursor: pointer;
+}
+
+
+#refund-popup .popup-close:hover,
+#refund-popup .popup-close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+#refund-popup #popup-product-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+#refund-popup #popup-product-container img {
+    margin-right: 15px;
+    width: 100px; 
+    height: 100px;
+}
+
+
+#refund-popup #popup-product-name {
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+
+#refund-popup #popup-product-description,
+#refund-popup #popup-product-quantity,
+#refund-popup #popup-product-total,
+#refund-popup #popup-product-payment-method {
+    font-size: 1em;
+    color: #555;
+    margin-bottom: 10px;
+}
+
+
+#refund-popup #popup-reason {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1em;
+    resize: vertical;
+}
+
+
+#refund-popup #popup-images input[type="file"] {
+    margin: 10px 0;
+    display: block;
+    font-size: 1em;
+    padding: 8px;  
+    border-radius: 4px;
+    border: 1px solid #ddd;  
+}
+
+
+#refund-popup .image-input {
+    margin-bottom: 15px;
+}
+
+#refund-popup .image-input label {
+    font-size: 1em;
+    font-weight: bold;
+    margin-bottom: 5px;
+    display: block;
+}
+
+
+#refund-popup .popup button {
+    padding: 10px 20px;
+    font-size: 1em;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+}
+
+#refund-popup .popup button:hover {
+    background-color: #45a049;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/* Buy Again Button */
+.buy-again-container {
+    display: flex; /* Keep it a flex container */
+    justify-content: flex-end; /* Align button to the right */
+    margin-top: 10px; /* Space above button */
+}
+
+.buy-again {
+    width: 100px; /* Set width to 100px */
+    padding: 10px; /* Add padding for size */
+    background-color: #d37389; /* Background color */
+    color: white; /* Text color */
+    border: none; /* Remove default border */
+    border-radius: 5px; /* Rounded corners */
+    font-size: 16px; /* Font size */
+    cursor: pointer; /* Pointer on hover */
+    transition: background-color 0.3s ease; /* Transition effect */
+}
+
+/* Button hover effect */
+.buy-again:hover {
+    background-color: #b55b76; /* Darker shade on hover */
+}
+
+/* Product info with image */
+.product-info {
+    display: flex;
+    padding: 15px;
+    gap: 15px;
+}
+
+.product-image {
+    width: 60px;
+    height: 60px;
+    border-radius: 5px;
+    object-fit: cover;
+}
+
+/* Product details with horizontal order details */
+.product-details {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+}
+
+.product-name {
+    font-size: 15px;
+    color: #333;
+}
+
+/* Order details styling */
+.order-details {
+    display: grid; /* Use grid for even spacing */
+    grid-template-columns: repeat(3, 1fr); /* Three equal columns */
+    gap: 10px; /* Space between each item */
+    align-items: center; /* Align items vertically in the center */
+    width: 100%; /* Full width */
+}
+
+/* Order details text styling */
+.order-quantity,
+.order-total,
+.payment-method {
+    font-size: 14px;
+    color: #555;
+    text-align: center; /* Center-align the text */
+}
+
+
+
+
+/* Star rating styles */
+.star {
+    font-size: 30px;
+    cursor: pointer;
+    color: #ccc; /* Unselected stars */
+}
+
+.star.selected {
+    color: gold; /* Selected stars */
+}
+
+.feedback-btn{
+    width: 140px; /* Set width to 100px */
+    padding: 5px; /* Add padding for size */
+    background-color: #d37389; /* Background color */
+    color: white; /* Text color */
+    border: none; /* Remove default border */
+    border-radius: 5px; /* Rounded corners */
+    font-size: 16px; /* Font size */
+    cursor: pointer; /* Pointer on hover */
+    transition: background-color 0.3s ease; /* Transition effect */
+}
+.feedback-btn:hover{
+    background-color: #dc3545;
+}
+
+/* Modal Feedback Styles */
+#feedback-modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+#feedback-modal .modal-content {
+    background-color: #fff;
+    padding: 15px; /* Reduced padding */
+    margin: 12% auto; /* Adjusted margin for more compactness */
+    width: 30%; /* Reduced width */
+    border-radius: 10px; /* Slightly smaller radius */
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    font-family: Arial, sans-serif;
+    max-width: 500px; /* Max width for larger screens */
+}
+
+#feedback-modal .close-btn {
+    font-size: 26px; /* Smaller close button */
+    color: #aaa;
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+#feedback-modal .close-btn:hover {
+    color: #333;
+}
+
+#feedback-modal h3 {
+    font-size: 18px; /* Reduced header size */
+    margin-bottom: 12px; /* Reduced margin */
+    font-weight: 600;
+    color: #333;
+    text-align: center;
+}
+
+.stars {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 8px; /* Reduced margin */
+}
+
+/* Star rating styles */
+.star {
+    font-size: 30px;
+    cursor: pointer;
+    color: #ccc; /* Unselected stars */
+}
+
+.star.selected {
+    color: gold; /* Selected stars */
+}
+
+#feedback-modal .star:hover {
+    transform: scale(1.1);
+}
+
+#feedback-modal textarea {
+    width: 100%;
+    height: 80px; /* Further reduced height */
+    margin-bottom: 10px; /* Reduced margin */
+    padding: 6px; /* Reduced padding */
+    font-size: 13px; /* Reduced font size */
+    border: 1px solid #ddd;
+    border-radius: 6px; /* Smaller border radius */
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+#feedback-modal textarea:focus {
+    border-color: #4CAF50;
+}
+
+#feedback-modal label {
+    font-size: 12px; /* Smaller font size */
+    margin-bottom: 4px; /* Reduced margin */
+    display: block;
+    font-weight: bold;
+}
+
+#feedback-modal .modal-content input[type="file"] {
+    display: block;
+    margin-top: 8px; /* Reduced margin */
+    margin-bottom: 10px; /* Reduced margin */
+    padding: 6px;
+    font-size: 12px; /* Smaller font size */
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    cursor: pointer;
+}
+
+#feedback-modal .modal-content input[type="file"]:focus {
+    border-color: #4CAF50;
+}
+
+#feedback-modal button#submit-feedback {
+    background-color: #4CAF50;
+    color: white;
+    padding: 8px 12px; /* Reduced padding */
+    font-size: 14px; /* Reduced font size */
+    border: none;
+    border-radius: 6px; /* Smaller border radius */
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.3s ease;
+    margin-bottom: 2px;
+    
+}
+
+#feedback-modal button#submit-feedback:hover {
+    background-color: #45a049;
+}
+
+#feedback-modal button#submit-feedback:active {
+    transform: scale(0.98);
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    #feedback-modal .modal-content {
+        width: 80%;
+        padding: 12px; /* Reduced padding for mobile */
+    }
+
+    #feedback-modal h3 {
+        font-size: 16px; /* Reduced font size for mobile */
+    }
+
+    #feedback-modal .star {
+        font-size: 20px; /* Reduced star size for mobile */
+    }
+
+    #feedback-modal textarea {
+        height: 70px; /* Reduced textarea height for mobile */
+    }
+
+    #feedback-modal button#submit-feedback {
+        font-size: 12px; /* Smaller button font */
+        padding: 6px 10px; /* Reduced button padding */
+    }
+}
+
+
+/* Cancel Button Styles */
+#feedback-modal .cancel-btn {
+    background-color: #f44336; /* Red background */
+    color: white;
+    padding: 8px 12px; 
+    font-size: 14px;
+    border: none;
+    border-radius: 6px; 
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.3s ease;
+}
+
+#feedback-modal .cancel-btn:hover {
+    background-color: #d32f2f; /* Darker red on hover */
+}
+
+#feedback-modal .cancel-btn:active {
+    transform: scale(0.98); /* Button shrink effect on click */
+}
+
+
+
+
+
+#chat-box {
+    position: fixed;
+    bottom: 0;
+    right: 20px;
+    width: 300px;
+    border: 1px solid #ccc;
+    background: #fff;
+    border-radius: 10px 10px 0 0;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    display: none;
+    z-index: 1000;
+}
+
+.chat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #007bff;
+    color: white;
+    padding: 10px;
+    border-radius: 10px 10px 0 0;
+}
+
+.chat-messages {
+    max-height: 200px;
+    overflow-y: auto;
+    padding: 10px;
+    background: #f9f9f9;
+}
+
+.chat-input-container {
+    display: flex;
+    padding: 10px;
+    gap: 5px;
+    border-top: 1px solid #ccc;
+}
+
+.chat-input {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+#send-chat-btn {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+
+
+
+
+
+
+.tab-buttons-container {
+    width: 100%; /* Full width of the container */
+}
+
+.tab-buttons {
+    display: flex; /* Display buttons in a row */
+    justify-content: space-between; /* Space buttons evenly */
+    width: 100%; /* Ensure the container is full width */
+}
+
+.tab-button {
+    flex: 1; /* Make each button take equal space */
+    padding: 10px 0; /* Vertical padding for better height */
+    margin: 0 5px; /* Small gap between buttons */
+    border: none; /* Remove button border */
+    background-color: white; /* Set button background color */
+    cursor: pointer; /* Cursor pointer on hover */
+    text-align: center; /* Center text within the button */
+    transition: background-color 0.3s; /* Smooth background color transition */
+}
+
+.tab-button:hover {
+    background-color: #f0f0f0; /* Background color on hover */
+}
+
+.tab-content {
+    border: 1px solid #ccc; /* Border for tab content */
+    padding: 15px; /* Padding for tab content */
+    border-radius: 5px; /* Rounded corners */
+    margin-top: 10px; /* Space above tab content */
+}
+
+
+/* Container */
+.change-password-container {
+    width: 100%;
+    max-width: 1000px;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+/* Title */
+.change-password-container h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+/* Paragraph */
+.change-password-container p {
+    font-size: 16px;
+    color: #555;
+    margin-bottom: 20px;
+}
+
+/* Labels */
+.change-password-container label {
+    font-weight: bold;
+    display: block;
+    text-align: left;
+    margin-bottom: 8px;
+    color: #333;
+}
+
+/* Input fields */
+.change-password-container input[type="email"],
+.change-password-container input[type="text"],
+.change-password-container input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    color: #333;
+}
+
+/* Disabled input styling */
+.change-password-container input[disabled] {
+    background-color: #f9f9f9;
+}
+
+/* Buttons */
+.change-password-container button {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 10px 15px;
+    background-color: #d37389;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.change-password-container button:disabled {
+    background-color: #e0e0e0;
+    cursor: not-allowed;
+}
+
+.change-password-container button:hover:not(:disabled) {
+    background-color: #dc3545;
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+    .change-password-container {
+        padding: 15px;
+    }
+
+    .change-password-container h2 {
+        font-size: 20px;
+    }
+}
+
+
+/* WISH KO LANG CSS DESIGIN START */
+.wishlist-container {
+    display: flex;
+    flex-direction: column; /* Stack items vertically */
+    gap: 15px; /* Space between items */
+    width: 100%; /* Make the container full width */
+    max-width: 1000px; /* Set a max width for the container */
+}
+
+.wishlist-item {
+    display: flex; /* Arrange items horizontally */
+    align-items: center; /* Align items to the start */
+    justify-content: space-between; /* Space items evenly */
+    padding: 10px; /* Padding around each item */
+    border: 1px solid #ddd; /* Light border around items */
+    border-radius: 5px; /* Slightly rounded corners */
+    background-color: #fff; /* White background for items */
+    width: 100%; /* Make each item take the full width of the container */
+    height: 150px;
+}
+
+.wishlist-item img {
+    width: 100px; /* Set image width */
+    height: 100px; /* Set image height */
+    margin-right: 15px; /* Right margin for spacing */
+}
+
+.product-details {
+    display: flex;
+    flex-direction: column; /* Stack product name and price vertically */
+    justify-content: center; /* Center align vertically */
+    margin-right: auto; /* Push details to the left */
+}
+
+.wishlist-item .product-name {
+    font-weight: bold;
+    font-size: 20px;
+    margin-bottom: 5px; /* Space between name and price */
+}
+
+.wishlist-item .product-price {
+    margin-top: 0; /* Reset margin */
+    font-size: 16px; /* Adjust font size if needed */
+}
+
+.wishlist-item .remove-item {
+    background-color: transparent; /* Transparent background */
+    border: none; /* No border */
+    color: red; /* Red color for remove icon */
+    cursor: pointer; /* Pointer cursor */
+    margin-right: 15px; /* Right margin for spacing */
+}
+
+.wishlist-item .add-to-cart {
+    display: flex; /* Flex display for button */
+    align-items: center; /* Center icon and text */
+    padding: 7px 15px; /* Button padding */
+    border: none; /* No border */
+    border-radius: 8px; /* Rounded corners */
+    background-color: #d37389; /* Green background */
+    color: white; /* White text color */
+    cursor: pointer; /* Pointer cursor */
+    margin-left: auto; /* Push button to the right */
+}
+
+.add-to-cart i, .add-to-cart box-icon {
+    color: white; /* Set color for icons in the add-to-cart button */
+    margin-right: 5px; /* Space between icon and text */
+}
+
+.wishlist-item .add-to-cart i {
+    margin-right: 5px; /* Space between icon and text */
+}
+
+/* Optional hover effects */
+.wishlist-item .add-to-cart:hover {
+    background-color: #dc3545; /* Darker green on hover */
+}
+
+.wishlist-item .remove-item:hover {
+    color: darkred; /* Darker red on hover */
+}
+
+.wishlist-header {
+    display: flex; /* Arrange items horizontally */
+    justify-content: space-between; /* Space out the header elements */
+    margin-bottom: 15px; /* Space between the header and wishlist items */
+    margin-top: 20px;
+}
+
+.wishlist-header input {
+    flex-grow: 1; /* Allow the input to take remaining space */
+    margin-right: 10px; /* Space between input and buttons */
+    padding: 8px; /* Padding inside the input */
+    border: none; /* No border */
+    outline: none; /* Remove default outline */
+    border-radius: 5px; /* Rounded corners */
+    background-color: #f9f9f9; /* Light background color */
+    transition: background-color 0.3s, box-shadow 0.3s; /* Smooth transition for changes */
+}
+
+/* Style when input is focused */
+.wishlist-header input:focus {
+    background-color: #fff; /* Change background color on focus */
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2); /* Add a subtle shadow on focus */
+}
+
+
+#search-button {
+    margin-right: 200px; /* Space between search button and delete all button */
+    border-radius: 10px;
+    border: none;
+    background-color: #d37389;
+    color: white;
+    font-size: 15px;
+    padding: 0 15px;
+}
+
+#search-button:hover{
+    background-color: #dc3545;
+    transition: background-color 0.6s;
+    cursor: pointer;
+}
+
+#delete-all-button{
+    padding: 0 10px;
+    border: none;
+    background-color: #d37389;
+    color: white;
+    font-size: 15px;
+    border-radius: 10px;
+}
+
+#delete-all-button:hover{
+    background-color: #dc3545;
+    transition: background-color 0.6s;
+    cursor: pointer;
+}
+

@@ -1,0 +1,1637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Settings</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/buyerProfile.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
+
+    <style>
+         .order-nav {
+     display: flex; /* Use Flexbox for horizontal alignment */
+     justify-content: flex-start; /* Align items to the start */
+     padding: 0; /* Remove any default padding */
+ }
+ 
+ .order-nav button {
+     margin: 0; /* Remove margin to eliminate gaps */
+     padding: 10px 15px;
+     cursor: pointer;
+     border: none;
+     border-radius: 5px;
+     background-color: #007BFF;
+     color: white;
+ }
+ 
+ .order-nav button:hover {
+     background-color: #0056b3;
+ }
+ 
+ .order-content-section {
+     display: none; /* Hide all order content sections by default */
+ }
+ 
+ .order-content-section.active-content {
+     display: block; /* Show only the active order content section */
+ }
+
+
+
+/* Add New Address Button */
+.add-address-button {
+    position: absolute; /* Positioning relative to the parent container */
+    top: 20px; /* Distance from the top */
+    right: 20px; /* Distance from the right */
+    padding: 10px 20px; /* Padding inside the button */
+    background-color: #4CAF50; /* Green background color */
+    color: white; /* White text */
+    border: none; /* Remove border */
+    border-radius: 4px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    font-size: 16px; /* Font size */
+    font-weight: bold; /* Bold text */
+    transition: background-color 0.3s; /* Smooth color transition */
+}
+
+.add-address-button:hover {
+    background-color: #45a049; /* Slightly darker green on hover */
+}
+
+#manage-address{
+    position: relative;
+}
+
+
+/* Modal Container and Design for add new address*/
+.modal-address {
+    display: none;
+    position: fixed;
+    z-index: 9999; /* Ensure it's above other content */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4); /* Semi-transparent background */
+    opacity: 0; /* Initially hidden */
+    transition: opacity 0.5s ease; /* Transition for opacity */
+    align-items: center; /* Vertically center the modal content */
+    justify-content: center; /* Horizontally center the modal content */
+}
+
+/* Modal Content - for the form */
+.modal-address-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    width: 80%;
+    max-width: 500px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transform: translateY(-100%); /* Start off-screen */
+    transition: transform 0.5s ease-out; /* Smooth slide down */
+}
+
+/* When modal slides down */
+.modal-address.slide-down .modal-address-content {
+    transform: translateY(0); /* Slide into view */
+}
+
+/* Close Button - positioned in the top-right */
+.modal-close {
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.modal-close:hover, .modal-close:focus {
+    color: black;
+}
+
+/* Form Elements inside the modal */
+.modal-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.modal-label {
+    font-weight: bold;
+}
+
+.modal-input {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+textarea.modal-input {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.modal-button-group {
+    display: flex;
+    gap: 10px;
+    justify-content: space-between;
+}
+
+.modal-submit-button, .modal-cancel-button {
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 48%; /* Both buttons take up half the space */
+}
+
+.modal-submit-button {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.modal-submit-button:hover {
+    background-color: #45a049;
+}
+
+.modal-cancel-button {
+    background-color: #f44336; /* Red color for cancel */
+    color: white;
+}
+
+.modal-cancel-button:hover {
+    background-color: #e53935;
+}
+
+
+/* Address buttons in Edit Additional Addresses */
+.address-buttons {
+    margin-top: 10px;
+    display: flex;
+    gap: 10px;
+}
+
+.address-buttons button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+.edit-button {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.edit-button:hover {
+    background-color: #45a049;
+}
+
+.set-default-button {
+    background-color: #008CBA; /* Blue color */
+    color: white;
+}
+
+.set-default-button:hover {
+    background-color: #007bb5;
+}
+
+
+
+    </style>
+</head>
+<body>
+
+    {% include 'navbar.html' %}
+
+    <div class="main-container">
+        <div class="sidebar">
+            <ul class="menu">
+                <li><a href="{{url_for('my_account')}}" data-tab="my-account" class="active">My Account</a></li>
+                <li><a href="#" data-tab="manage-address">Addresses</a></li>
+                <li><a href="#" data-tab="change-password">Change Password</a></li>
+                <li><a href="{{ url_for('to_pay_orders') }}" data-tab="my-purchase" class="{% if active_tab == 'my-purchase' %}active{% endif %}">My Purchase</a></li>
+                <li><a href="#" data-tab="wishlist">Wishlist</a></li>
+            </ul>
+        </div>
+
+       <!-- Content sections -->
+       <div class="content" id="my-account" style="display: block;">
+        <div class="container-for-my-account">
+            <h2>My Profile</h2>
+            <p>Manage your Account</p>
+            <form action="{{ url_for('my_account') }}" method="POST" enctype="multipart/form-data">
+                <div class="form-container">
+                    <div class="form-left">
+                        {% if user %}
+                            <div class="form-group">
+                                <label for="username">Username:</label>
+                                <input type="text" id="username" name="username" placeholder="Enter Username" value="{{ user[0] }}" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="firstname">First Name:</label>
+                                <input type="text" id="firstname" name="firstname" placeholder="Enter First Name" value="{{ user[6] }}" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="middlename">Middle Name:</label>
+                                <input type="text" id="middlename" name="middlename" placeholder="Enter Middle Name" value="{{ user[7] }}" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="lastname">Last Name:</label>
+                                <input type="text" id="lastname" name="lastname" placeholder="Enter Last Name" value="{{ user[8] }}" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email:</label>
+                                <input type="email" id="email" name="email" placeholder="Enter your email" value="{{ user[1] }}" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="number">Phone Number:</label>
+                                <input type="tel" id="number" name="phone_number" placeholder="Enter your Phone Number" value="{{ user[2] }}" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="gender">Gender:</label>
+                                <select id="gender" name="gender" required>
+                                    <option value="male" {% if user[3] == 'male' %}selected{% endif %}>Male</option>
+                                    <option value="female" {% if user[3] == 'female' %}selected{% endif %}>Female</option>
+                                    <option value="other" {% if user[3] == 'other' %}selected{% endif %}>Other</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="dob">Date of Birth:</label>
+                                <input type="date" id="dob" name="dob" value="{{ user[4] }}" required>
+                            </div>
+                            <div class="save-button">
+                                <button type="submit" class="saveBtn">Update</button>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="form-right">
+                        <h3>Profile Picture</h3>
+                        <div class="image-upload-container">
+                            <label for="image-upload">
+                                <img id="profile-picture-preview" 
+                                    src="{{ url_for('static', filename='profile_picture_uploads/' ~ (user[5] if user and user[5] else 'logo.jpg')) }}" 
+                                    alt="Profile Picture" 
+                                    class="profile-picture" 
+                                    style="cursor: pointer;">
+                            </label>
+                            <input type="file" id="image-upload" name="profile_picture" accept="image/*" onchange="previewImage(event)" style="display: none;">
+                        </div>
+                    </div>
+                </div>
+            </form>
+            
+        </div>
+    </div>
+
+
+     <!-- Additional content sections  DI PA NAGANA TO -->  
+     <div class="content" id="manage-address" style="display: none;">
+        
+       
+    </div>
+
+  <!-- HTML for the modal popup -->
+    <div id="addAddressModal" class="modal modal-address">
+        <div class="modal-content modal-address-content">
+            <span class="close-button modal-close" onclick="closeAddAddressModal()">&times;</span>
+            <h2>Add New Address</h2>
+            <form id="addAddressForm" class="modal-form">
+                <label for="newName" class="modal-label">Name:</label>
+                <input type="text" id="newName" name="name" required class="modal-input">
+
+                <label for="newPhoneNumber" class="modal-label">Phone Number:</label>
+                <input type="text" id="newPhoneNumber" name="phone_number" required class="modal-input">
+
+                <label for="newAddress" class="modal-label">Address:</label>
+                <textarea id="newAddress" name="address" required class="modal-input"></textarea>
+
+                <div class="button-group modal-button-group">
+                    <button type="submit" class="modal-submit-button">Add Address</button>
+                    <button type="button" class="modal-cancel-button" onclick="closeAddAddressModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+      
+    <div class="content" id="change-password" style="display: none;">
+        <div class="change-password-container">
+            <h2>Change Password</h2>
+            <p>To change your password, please verify your identity.</p>
+        
+            <!-- Step 1: Enter Email and Send OTP -->
+            <form id="send-otp-form" action="{{ url_for('send_change_password_otp') }}" method="POST">
+                <label for="email">Enter your email:</label>
+                <input type="email" id="email" name="email" required placeholder="Enter your email">
+                <button type="submit">Send OTP</button>
+            </form>
+        
+            <!-- Step 2: OTP Verification Form -->
+            <form id="otp-form" onsubmit="verifyOtp(event)">
+                <label for="otp">Enter OTP sent to your email:</label>
+                <input type="text" name="otp" required placeholder="Enter OTP">
+                <button type="submit">Verify OTP</button>
+            </form>
+                
+            <!-- Step 3: New Password Form (initially disabled) -->
+            <form id="change-password-form" action="{{ url_for('change_password') }}" method="POST" onsubmit="return validateNewPassword()">
+                <label for="new-password">New Password:</label>
+                <input type="password" id="new-password" name="new_password" required disabled>
+                <label for="confirm-password">Confirm New Password:</label>
+                <input type="password" id="confirm-password" name="confirm_password" required disabled>
+                <button type="submit" disabled>Change Password</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="content" id="my-purchase" style="display: none;">
+         <!-- Navigation buttons for filtering orders -->
+         <div class="order-nav">
+            <button onclick="showOrderContent('all')">All</button>
+            <button onclick="showOrderContent('to-ship')">To Ship</button>
+            <button onclick="showOrderContent('to-receive')">To Receive</button>
+            <button onclick="showOrderContent('completed')">Completed</button>
+            <button onclick="showOrderContent('cancelled')">Cancelled</button>
+            <button onclick="showOrderContent('refund')">Request/Refund</button>
+        </div>
+
+
+
+        <!-- To Pay Orders Section -->
+        <div class="order-content-section active-content" id="order-content-all">
+            <div id="to-pay-orders-body">
+
+            </div>
+        </div>
+
+
+
+
+         <!-- To Ship Orders Section -->
+        <div class="order-content-section" id="order-content-to-ship">
+           <div id="to-ship-orders-body">
+
+           </div>
+        </div>
+
+        <!-- To Receive Orders Section -->
+        <div class="order-content-section" id="order-content-to-receive">
+           <div id="to-receive-orders-body">
+
+           </div>
+        </div>
+
+        <!-- Completed Orders Section -->
+       <!-- Completed Orders Section -->
+        <div class="order-content-section" id="order-content-completed">
+            <div id="completed-orders-body">
+                <!-- Completed order cards will be populated here dynamically -->
+            </div>
+        </div>
+
+        <!-- Cancelled Orders Section -->
+        <div class="order-content-section" id="order-content-cancelled">
+            <div id="cancelled-orders-body">
+
+            </div>
+        </div>
+
+        <div class="order-content-section" id="order-content-refund">
+            <div id="refund-orders-body">
+    
+            </div>
+        </div>
+
+
+
+
+    </div>
+
+    <div class="content" id="wishlist" style="display: none;">
+        <h1>My Wishlist</h1>
+        <div id="wishlist-container" class="wishlist-container">
+            
+        </div>
+    </div>
+
+ <!-- Modal structure -->
+ <div id="feedback-modal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn">&times;</span>
+        <h3>Leave Your Feedback</h3>
+
+        <!-- Star Rating -->
+        <div class="stars">
+            <span class="star">☆</span>
+            <span class="star">☆</span>
+            <span class="star">☆</span>
+            <span class="star">☆</span>
+            <span class="star">☆</span>
+        </div>
+
+        <!-- Feedback Message -->
+        <textarea id="feedback-message" placeholder="Write your feedback here"></textarea>
+
+        <!-- Image Upload -->
+        <label for="feedback-image-1">Upload Image 1</label>
+        <input type="file" id="feedback-image-1" accept="image/*">
+
+        <label for="feedback-image-2">Upload Image 2</label>
+        <input type="file" id="feedback-image-2" accept="image/*">
+
+        <label for="feedback-image-3">Upload Image 3</label>
+        <input type="file" id="feedback-image-3" accept="image/*">
+
+        <label for="feedback-image-4">Upload Image 4</label>
+        <input type="file" id="feedback-image-4" accept="image/*">
+
+        <!-- Submit Feedback -->
+        <button id="submit-feedback" data-order-id="12345">Submit Feedback</button>  <!-- Example order ID -->
+        
+        <!-- Cancel Button -->
+        <button id="cancel-feedback" class="cancel-btn">Cancel</button>
+    </div>
+</div>
+
+<!-- Refund Popup -->
+<div id="refund-popup" class="popup">
+    <div class="popup-content">
+        <span class="popup-close" onclick="closeRefundPopup()">&times;</span>
+        <h3>Refund/Return Request</h3>
+        
+     
+        <div id="popup-product-container">
+            <img id="popup-product-image" src="" alt="Product Image" class="product-image">
+            <div>
+                <span id="popup-product-name"></span>
+                <div id="popup-product-description"></div>
+                <div>Quantity: <span id="popup-product-quantity"></span></div>
+                <div>Total: <span id="popup-product-total"></span></div>
+                <div>Payment Method: <span id="popup-product-payment-method"></span></div>
+            </div>
+        </div>
+     
+        <input type="hidden" id="popup-order-id">
+        
+     
+        <label for="popup-reason">Reason for Refund:</label>
+        <textarea id="popup-reason" rows="4" placeholder="Enter your reason..."></textarea>
+        
+    
+        <label for="popup-images">Upload Images (optional):</label>
+        
+        <div class="image-inputs">
+            <div class="image-input">
+                <label for="popup-image-1">Image 1:</label>
+                <input type="file" id="popup-image-1" accept="image/*">
+            </div>
+            <div class="image-input">
+                <label for="popup-image-2">Image 2:</label>
+                <input type="file" id="popup-image-2" accept="image/*">
+            </div>
+            <div class="image-input">
+                <label for="popup-image-3">Image 3:</label>
+                <input type="file" id="popup-image-3" accept="image/*">
+            </div>
+            <div class="image-input">
+                <label for="popup-image-4">Image 4:</label>
+                <input type="file" id="popup-image-4" accept="image/*">
+            </div>
+        </div>
+
+        <button onclick="submitRefundRequest()">Submit Refund Request</button>
+    </div>
+</div>
+
+
+
+    
+
+
+    <script>
+        // Updated script to send OTP with entered email
+        document.getElementById('send-otp-form').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent page reload
+            const email = document.getElementById('email').value;
+    
+            fetch("{{ url_for('send_change_password_otp') }}", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email: email })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('send-otp-form').style.display = 'none';
+                    document.getElementById('otp-form').style.display = 'block';
+                    alert('OTP sent to your email.');
+                } else {
+                    alert(data.message || 'Failed to send OTP.');
+                }
+            });
+        });
+    </script>
+
+    <script>
+        function verifyOtp(event) {
+            event.preventDefault(); // Prevent page reload
+            const otp = document.querySelector('#otp-form input[name="otp"]').value;
+
+            fetch("{{ url_for('verify_change_password_otp') }}", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ otp: otp })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('OTP verified successfully.');
+                    // Enable the new password fields and submit button
+                    document.getElementById('new-password').disabled = false;
+                    document.getElementById('confirm-password').disabled = false;
+                    document.querySelector('#change-password-form button[type="submit"]').disabled = false;
+                } else {
+                    alert(data.message || 'Failed to verify OTP.');
+                }
+            })
+            .catch(error => console.error('Error verifying OTP:', error));
+        }
+    </script>
+    
+    <script>
+     document.addEventListener('DOMContentLoaded', () => {
+    const menuLinks = document.querySelectorAll('.menu a');
+    const contents = document.querySelectorAll('.content');
+
+    // Set initial state - show only the active tab content
+    const activeTabId = document.querySelector('.menu a.active').getAttribute('data-tab');
+    document.getElementById(activeTabId).style.display = 'block';
+
+    menuLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+
+            // Remove 'active' class from all links and hide all content sections
+            menuLinks.forEach(item => item.classList.remove('active'));
+            contents.forEach(content => content.style.display = 'none');
+
+            // Add 'active' class to the clicked link and display the related content
+            link.classList.add('active');
+            const tabId = link.getAttribute('data-tab');
+            const contentToShow = document.getElementById(tabId);
+            if (contentToShow) {
+                contentToShow.style.display = 'block';
+            }
+
+            // Fetch addresses only if the Addresses tab is selected
+            if (tabId === 'manage-address') {
+                fetchUserAddresses();
+            }
+        });
+    });
+});
+
+    </script>
+
+    <script> //FOR CHANGING TAB IN MY PURCHASE
+        function changeTab(tabId) {
+            // Hide all tab contents
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(tab => {
+                tab.style.display = 'none';
+            });
+    
+            // Show the selected tab content
+            const selectedTab = document.getElementById(tabId);
+            if (selectedTab) {
+                selectedTab.style.display = 'block';
+            }
+        }
+    </script>
+    
+
+   
+    <script>
+        function openTab(event) {
+        const tabId = event.target.getAttribute('data-tab');
+        
+        document.querySelectorAll('.menu a').forEach(link => link.classList.remove('active'));
+        event.target.classList.add('active');
+
+        document.querySelectorAll('.content').forEach(section => section.style.display = 'none');
+        document.getElementById(tabId).style.display = 'block';
+    }
+
+    document.querySelectorAll('.menu a').forEach(link => {
+        link.addEventListener('click', function(event) {
+            event.preventDefault(); 
+            openTab(event);
+        });
+    });
+        // Preview image function for profile picture
+        function previewImage(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('profile-picture-preview').src = e.target.result;
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+    </script>
+
+
+
+    <script>
+         function showOrderContent(contentId) {
+            const sections = document.querySelectorAll('.order-content-section');
+            sections.forEach(section => section.classList.remove('active-content'));
+
+            const activeSection = document.getElementById(`order-content-${contentId}`);
+            if (activeSection) {
+                activeSection.classList.add('active-content');
+            }
+
+            // Fetch "To Ship" orders when clicking the "To Ship" tab
+            if (contentId === 'to-ship') {
+                fetchToShipOrders();
+            }
+        }
+    </script>
+
+
+<script>
+    function fetchToPayOrders() {
+        fetch('/to-pay-orders')  // Adjust this endpoint based on your route
+            .then(response => response.json())
+            .then(data => {
+                const tableBody = document.getElementById('to-pay-orders-body');
+                tableBody.innerHTML = ''; // Clear previous content
+
+                if (data.to_pay_orders && data.to_pay_orders.length > 0) {
+                    data.to_pay_orders.forEach(order => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            
+                                <div class="order-card">
+                                    <div class="product-header">
+                                        <div class="business-name">${order.business_name}</div>
+                                        <a href="#" class="view-shop">
+                                            <i class="fas fa-store shop-icon"></i> View Shop
+                                        </a>
+                                        <div class="order-status">${order.status}</div>
+                                    </div>
+
+                                    <div class="product-info">
+                                        <img src="${order.product_image}" alt="${order.productName}" class="product-image" style="width: 100px; height: 100px;">
+                                        <div class="product-details">
+                                            <span class="product-name">${order.productName}</span>
+                                            <div class="order-details">
+                                                <div class="order-quantity">Quantity: ${order.quantity}</div>
+                                                <div class="order-total">Total: ${order.total}</div>
+                                                <div class="payment-method">Payment: ${order.payment_method}</div>
+                                            </div>
+                                            <!-- Buy Again Button outside the order-details -->
+                                            <div class="buy-again-container">
+                                                <button class="buy-again" data-id="${order.id}">Cancel</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            
+                        `;
+                        tableBody.appendChild(row);
+                    });
+
+                    // Update event listeners for cancel buttons after adding them
+                    const cancelButtons = document.querySelectorAll('.buy-again');
+                    cancelButtons.forEach(button => {
+                        button.addEventListener('click', function(event) {
+                            event.preventDefault(); // Prevent default button behavior
+                            const orderId = this.getAttribute('data-id');
+                            updateOrderStatusToCancelled(orderId); // Make sure this function is defined
+                        });
+                    });
+                } else {
+                    tableBody.innerHTML = `<tr><td colspan="9">No orders to pay available.</td></tr>`;
+                }
+            })
+            .catch(error => console.error('Error fetching to pay orders:', error));
+    }
+
+    // Fetch "To Pay" orders initially
+    fetchToPayOrders();
+      
+    setInterval(() => {
+        fetchToPayOrders();
+    }, 1000); // Refresh every 1 sicinds
+</script>
+
+
+<script>
+    function updateOrderStatusToCancelled(orderId) {
+    fetch(`/cancel-order/${orderId}`, {  // Adjust the endpoint to your routing
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => {
+        if (response.ok) {
+            alert('Order cancelled successfully!');
+            fetchToPayOrders(); // Refresh the orders list
+        } else {
+            alert('Failed to cancel the order.');
+        }
+    })
+    .catch(error => console.error('Error cancelling order:', error));
+}
+
+
+</script>
+
+
+
+<script>
+    // Fetch and display user addresses
+    function fetchUserAddresses() {
+        fetch('/manage_addresses')
+            .then(response => response.json())
+            .then(data => {
+                const addressesContainer = document.getElementById('manage-address');
+                addressesContainer.innerHTML = ''; // Clear previous content
+
+                // Add "Add New Address" button
+                const addAddressButton = document.createElement('button');
+                addAddressButton.textContent = "Add New Address";
+                addAddressButton.classList.add('add-address-button'); // Add the class for styling
+                addAddressButton.onclick = openAddAddressModal;
+                addressesContainer.appendChild(addAddressButton);
+
+                // Populate addresses
+                if (data.default_address || (data.additional_addresses && data.additional_addresses.length > 0)) {
+                    addressesContainer.style.display = 'block';
+
+                    // Default Address Section
+                    if (data.default_address) {
+                        const defaultAddressDiv = document.createElement('div');
+                        defaultAddressDiv.classList.add('address-card');
+                        defaultAddressDiv.innerHTML = `
+                            <h3>Default Address</h3>
+                            <p><strong>${data.default_address.Username}</strong> - ${data.default_address.Phone_number}</p>
+                            <p><strong>Address:</strong> ${data.default_address.Address}</p>
+                            <div class="address-buttons">
+                                <button class="edit-button" onclick="openAddAddressModal()">Edit</button>
+                                <button class="set-default-button" disabled>Set as Default</button>
+                                <button class="delete-button" onclick="deleteAddress(${data.default_address.id})">Delete</button>
+                            </div>
+                        `;
+                        addressesContainer.appendChild(defaultAddressDiv);
+                    }
+
+                    // Additional Addresses Section
+                    if (data.additional_addresses && data.additional_addresses.length > 0) {
+                        const additionalAddressesDiv = document.createElement('div');
+                        additionalAddressesDiv.classList.add('additional-addresses');
+                        additionalAddressesDiv.innerHTML = '<h3>Additional Addresses</h3>';
+                        data.additional_addresses.forEach(address => {
+                            const addressItem = document.createElement('div');
+                            addressItem.classList.add('address-item');
+                            addressItem.innerHTML = `
+                                <p><strong>Name:</strong> ${address.name}</p>
+                                <p><strong>Phone Number:</strong> ${address.phone_number}</p>
+                                <p><strong>Address:</strong> ${address.address}</p>
+                                <div class="address-buttons">
+                                    <button class="edit-button" onclick="openEditAddressModal(${address.id})">Edit</button>
+                                    <button class="set-default-button" onclick="setAsDefault(${address.id})">Set as Default</button>
+                                    <button class="delete-button" onclick="deleteAddress(${address.id})">Delete</button>
+                                </div>
+                            `;
+                            additionalAddressesDiv.appendChild(addressItem);
+                        });
+                        addressesContainer.appendChild(additionalAddressesDiv);
+                    }
+                } else {
+                    addressesContainer.innerHTML = `<p>No addresses found.</p>`;
+                    addressesContainer.style.display = 'block';
+                }
+            })
+            .catch(error => console.error('Error fetching user addresses:', error));
+    }
+
+    // Function to delete an address
+    function deleteAddress(addressId) {
+        if (confirm('Are you sure you want to delete this address?')) {
+            fetch(`/delete_address/${addressId}`, { method: 'DELETE' })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        fetchUserAddresses(); // Refresh address list after deleting
+                    } else {
+                        alert("Failed to delete address.");
+                    }
+                })
+                .catch(error => console.error('Error deleting address:', error));
+        }
+    }
+
+    // Function to set an address as default
+    function setAsDefault(addressId) {
+        fetch(`/set_default_address/${addressId}`, { method: 'POST' })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    fetchUserAddresses(); // Refresh the address list after setting the default
+                } else {
+                    alert("Failed to set as default.");
+                }
+            })
+            .catch(error => console.error('Error setting address as default:', error));
+    }
+
+    // Open modal to edit address
+    function openEditAddressModal(addressId) {
+        // You can implement this function to open a modal and allow the user to edit the address
+        // For now, this function just logs the address ID
+        console.log('Editing address with ID:', addressId);
+        // You can populate the modal with the address data to edit it.
+    }
+
+    // Open modal for adding a new address
+    function openAddAddressModal() {
+        const modal = document.getElementById('addAddressModal');
+        modal.style.display = 'flex'; // Use flex to center the modal content
+        setTimeout(() => {
+            modal.classList.add('slide-down'); // Trigger slide-down animation
+            modal.style.opacity = 1; // Fade in after modal slides down
+        }, 0); // Start opacity transition immediately after slide-down
+    }
+
+    // Close modal
+    function closeAddAddressModal() {
+        const modal = document.getElementById('addAddressModal');
+        modal.classList.remove('slide-down'); // Remove slide down effect class
+        modal.style.opacity = 0; // Start fade-out transition
+        setTimeout(() => {
+            modal.style.display = 'none'; // Hide modal after opacity transition
+        }, 500); // Match this time to the CSS transition duration
+    }
+
+    // Submit new address
+    document.getElementById('addAddressForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const newAddressData = {
+            name: document.getElementById('newName').value,
+            phone_number: document.getElementById('newPhoneNumber').value,
+            address: document.getElementById('newAddress').value
+        };
+
+        fetch('/add_address', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(newAddressData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                closeAddAddressModal(); // Close the modal
+                fetchUserAddresses(); // Refresh address list
+            } else {
+                alert("Failed to add address.");
+            }
+        })
+        .catch(error => console.error('Error adding new address:', error));
+    });
+
+    // Fetch addresses on page load
+    document.addEventListener('DOMContentLoaded', () => {
+        const addressesContainer = document.getElementById('addresses');
+        if (addressesContainer) {
+            addressesContainer.style.display = 'block';
+            fetchUserAddresses();
+        }
+    });
+</script>
+
+
+
+<script>
+    function fetchToShipOrders() {
+        fetch('/buyer-ship-orders')  // Adjust this endpoint based on your new route
+            .then(response => response.json())
+            .then(data => {
+                const tableBody = document.getElementById('to-ship-orders-body');
+                tableBody.innerHTML = '';
+
+                if (data.to_ship_orders && data.to_ship_orders.length > 0) {
+                    data.to_ship_orders.forEach(order => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <div class="order-card">
+                                    <div class="product-header">
+                                        <div class="business-name">${order.business_name}</div>
+                                        <a href="#" class="view-shop">
+                                            <i class="fas fa-store shop-icon"></i> View Shop
+                                        </a>
+                                        <div class="order-status">${order.status}</div>
+                                    </div>
+
+                                    <div class="product-info">
+                                        <img src="${order.product_image}" alt="${order.productName}" class="product-image" style="width: 100px; height: 100px;">
+                                        <div class="product-details">
+                                            <span class="product-name">${order.productName}</span>
+                                            <div class="order-details">
+                                                <div class="order-quantity">Quantity: ${order.quantity}</div>
+                                                <div class="order-total">Total: ${order.total}</div>
+                                                <div class="payment-method">Payment: ${order.payment_method}</div>
+                                            </div>
+                
+                                        </div>
+                                    </div>
+                                </div>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+                } else {
+                    tableBody.innerHTML = `<tr><td colspan="8">No orders to ship available.</td></tr>`;
+                }
+            })
+            .catch(error => console.error('Error fetching to ship orders:', error));
+    }
+
+    // Fetch to ship orders initially
+    fetchToShipOrders();
+    setInterval(() => {
+        fetchToShipOrders();
+    }, 1000); // Refresh every 1 sicinds
+</script>
+
+<script>
+  // Fetch orders that need to be received
+function fetchToReceiveOrders() {
+    fetch('/buyer-receive-orders')
+        .then(response => response.json())
+        .then(data => {
+            const tableBody = document.getElementById('to-receive-orders-body');
+            tableBody.innerHTML = '';  // Clear existing content
+
+            if (data.to_receive_orders && data.to_receive_orders.length > 0) {
+                data.to_receive_orders.forEach(order => {
+                    // Create order row
+                    const row = document.createElement('tr');
+                    row.setAttribute('id', `order-row-${order.id}`); // Assign unique ID for row
+                    row.setAttribute('data-order-id', order.id); // Add an attribute to identify this order
+                    row.innerHTML = `
+                        <td colspan="8">
+                            <div class="order-card" id="order-card-${order.id}">
+                                <div class="product-header">
+                                    <div class="business-name">${order.business_name}</div>
+                                    <a href="#" class="view-shop">
+                                        <i class="fas fa-store shop-icon"></i> View Shop
+                                    </a>
+                                    <div class="order-status">${order.status}</div>
+                                </div>
+                                <div class="product-info">
+                                    <img src="${order.product_image}" alt="${order.productName}" class="product-image" style="width: 100px; height: 100px;">
+                                    <div class="product-details">
+                                        <span class="product-name">${order.productName}</span>
+                                        <div class="order-details">
+                                            <div class="order-quantity">Quantity: ${order.quantity}</div>
+                                            <div class="order-total">Total: ${order.total}</div>
+                                            <div class="payment-method">Payment: ${order.payment_method}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="received-container">
+                                    <button onclick="markAsCompleted(${order.id})" class="mark-as-received-btn">Order Received</button>
+                                    <button onclick="openRefundModal(${order.id}, '${order.productName}', '${order.product_description}', '${order.product_image}', ${order.quantity}, '${order.payment_method}', '${order.total}')" class="refund-request-btn">Return/Refund</button>
+                                </div>
+                            </div>
+                        </td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            } else {
+                // Display message if no orders to receive
+                tableBody.innerHTML = `<tr><td colspan="8">No orders to receive available.</td></tr>`;
+            }
+        })
+        .catch(error => console.error('Error fetching to receive orders:', error));
+}
+
+// Open the refund modal
+function openRefundModal(orderId, productName, productDescription, productImage, quantity, paymentMethod, total) {
+    // Set product details in the popup
+    document.getElementById('popup-product-name').innerText = productName;
+    document.getElementById('popup-product-description').innerText = productDescription;
+    document.getElementById('popup-product-image').src = productImage;
+    document.getElementById('popup-product-quantity').innerText = quantity;
+    document.getElementById('popup-product-total').innerText = total;
+    document.getElementById('popup-product-payment-method').innerText = paymentMethod;
+    
+    // Set orderId as a hidden input for submission
+    document.getElementById('popup-order-id').value = orderId;
+
+    // Show the popup
+    document.getElementById('refund-popup').style.display = 'block';
+}
+
+// Close the popup
+function closeRefundPopup() {
+    document.getElementById('refund-popup').style.display = 'none';
+}
+
+// Handle refund request submission
+function submitRefundRequest() {
+    const orderId = document.getElementById('popup-order-id').value;
+    const reason = document.getElementById('popup-reason').value;
+    const images = [
+        document.getElementById('popup-image-1').files[0],
+        document.getElementById('popup-image-2').files[0],
+        document.getElementById('popup-image-3').files[0],
+        document.getElementById('popup-image-4').files[0]
+    ];
+
+    // Prepare the form data to send to the server
+    const formData = new FormData();
+    formData.append('id', orderId);
+    formData.append('reason', reason);
+
+    // Append each image file if present
+    images.forEach((image, index) => {
+        if (image) {
+            formData.append(`popup-image-${index + 1}`, image);
+        }
+    });
+
+    // Send the refund request to the server
+    fetch('/submit-refund', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Handle server response
+        if (data.message) {
+            alert(data.message); // Show success message
+        } else if (data.error) {
+            alert(data.error); // Show error message
+        }
+
+        // Close the popup after submission
+        closeRefundPopup();
+    })
+    .catch(error => console.error('Error submitting refund request:', error));
+}
+
+
+    // Function to mark order as completed
+    function markAsCompleted(orderId) {
+        fetch(`/mark-as-completed/${orderId}`, { method: 'POST' })
+            .then(response => {
+                if (response.ok) {
+                    alert('Order marked as completed!');
+
+                    // Find and remove the completed order row from the table
+                    const orderRow = document.querySelector(`tr[data-order-id='${orderId}']`);
+                    if (orderRow) {
+                        orderRow.remove();
+                    }
+                } else {
+                    alert('Failed to mark order as completed.');
+                }
+            })
+            .catch(error => console.error('Error marking order as completed:', error));
+    }
+
+    // Initial fetch to load orders
+    fetchToReceiveOrders();
+   
+
+</script>
+
+
+
+<script>
+function fetchCompletedOrders() {
+    fetch('/buyer-completed-orders') 
+        .then(response => response.json())
+        .then(data => {
+            const tableBody = document.getElementById('completed-orders-body');
+            tableBody.innerHTML = '';
+
+            if (data.completed_orders && data.completed_orders.length > 0) {
+                data.completed_orders.forEach(order => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                    <div class="order-card">
+                        <div class="product-header">
+                            <div class="business-name">${order.business_name}</div>
+                            <a href="#" class="view-shop">
+                                <i class="fas fa-store shop-icon"></i> View Shop
+                            </a>
+                            <div class="order-status" style="color: #2ddf00;">${order.status}</div>
+                        </div>
+
+                        <div class="product-info">
+                            <img src="${order.product_image}" alt="${order.productName}" class="product-image" style="width: 100px; height: 100px;">
+                            <div class="product-details">
+                                <span class="product-name">${order.productName}</span>
+                                <div class="order-details">
+                                    <div class="order-quantity">Quantity: ${order.quantity}</div>
+                                    <div class="order-total">Total: ${order.total}</div>
+                                    <div class="payment-method">Payment: ${order.payment_method}</div>
+                                </div>
+                                <!-- Buy Again Button -->
+                                <div class="buy-again-container">
+                                    <button class="buy-again">Buy Again</button>
+                                </div>
+                                <!-- Feedback and Contact Seller Buttons -->
+                                <div class="feedback-container">
+                                    <button class="feedback-btn" data-order-id="${order.id}">Leave Feedback</button>
+                                    <button class="contact-seller-btn" 
+                                            data-seller-id="${order.seller_id}" 
+                                            data-order-id="${order.id}" 
+                                            data-business-name="${order.business_name}" 
+                                            data-product-name="${order.productName}" 
+                                            data-product-image="${order.product_image}" 
+                                            data-product-price="${order.total}">Contact Seller</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    `;
+                    tableBody.appendChild(row);
+
+                    // Add event listener to the feedback button
+                    const feedbackButton = row.querySelector('.feedback-btn');
+                    feedbackButton.addEventListener('click', (e) => {
+                        const orderId = e.target.getAttribute('data-order-id');
+                        openFeedbackModal(orderId);
+                    });
+
+                    // Add event listener to the contact seller button
+                    const contactSellerButton = row.querySelector('.contact-seller-btn');
+                    contactSellerButton.addEventListener('click', (e) => {
+                        const sellerId = e.target.getAttribute('data-seller-id');
+                        const orderId = e.target.getAttribute('data-order-id');
+                        const businessName = e.target.getAttribute('data-business-name');
+                        const productName = e.target.getAttribute('data-product-name');
+                        const productImage = e.target.getAttribute('data-product-image');
+                        const productPrice = e.target.getAttribute('data-product-price');
+                        contactSeller(sellerId, orderId, businessName, productName, productImage, productPrice);
+                    });
+                });
+            } else {
+                tableBody.innerHTML = `<tr><td colspan="8">No completed orders available.</td></tr>`;
+            }
+        })
+        .catch(error => console.error('Error fetching completed orders:', error));
+}
+
+// Function to handle "Contact Seller" button click
+function contactSeller(sellerId, orderId, businessName, productName, productImage, productPrice) {
+    console.log(`Contacting Seller:
+        Seller ID: ${sellerId},
+        Order ID: ${orderId},
+        Business Name: ${businessName},
+        Product Name: ${productName},
+        Product Image: ${productImage},
+        Product Price: ${productPrice}`);
+
+    // Redirect to chat page with query parameters
+    window.location.href = `/contact-seller?seller_id=${sellerId}&order_id=${orderId}&business_name=${encodeURIComponent(businessName)}&product_name=${encodeURIComponent(productName)}&product_image=${encodeURIComponent(productImage)}&product_price=${encodeURIComponent(productPrice)}`;
+}
+
+
+
+
+// Function to open the feedback modal
+function openFeedbackModal(orderId) {
+    const modal = document.getElementById('feedback-modal');
+    modal.style.display = 'flex'; // Show modal
+
+    const submitBtn = document.getElementById('submit-feedback');
+    submitBtn.setAttribute('data-order-id', orderId); // Store the order ID in the submit button for later
+
+    // Close the modal when clicking the close button
+    const closeBtn = document.querySelector('.close-btn');
+    closeBtn.addEventListener('click', () => {
+        modal.style.display = 'none'; // Hide modal
+    });
+
+    // Reset modal content (e.g., rating, message, and image input)
+    resetModal();
+}
+
+// Function to close the modal
+function closeModal() {
+    const modal = document.getElementById('feedback-modal');
+    modal.style.display = 'none'; // Hide modal
+}
+
+// Event listener for the "Close" button (×)
+document.querySelector('.close-btn').addEventListener('click', closeModal);
+
+// Event listener for the "Cancel" button
+document.getElementById('cancel-feedback').addEventListener('click', closeModal);
+
+// Function to open the modal (for demonstration, you can trigger this based on other actions)
+function openModal() {
+    const modal = document.getElementById('feedback-modal');
+    modal.style.display = 'block'; // Show modal
+}
+
+// Example: Triggering the modal for demonstration purposes
+document.getElementById('submit-feedback').addEventListener('click', openModal);
+
+
+// Function to handle feedback submission
+document.getElementById('submit-feedback').addEventListener('click', function () {
+    const selectedRating = getSelectedRating();  // Function to get the selected rating
+    const messageInput = document.getElementById('feedback-message').value.trim();  // Feedback message input
+
+    // Get the images from the file inputs
+    const images = [
+        document.getElementById('feedback-image-1').files[0],
+        document.getElementById('feedback-image-2').files[0],
+        document.getElementById('feedback-image-3').files[0],
+        document.getElementById('feedback-image-4').files[0]
+    ].filter(file => file !== undefined); // Remove undefined files
+
+    // Validation: Ensure rating and message are provided
+    if (selectedRating === 0) {
+        alert('Please select a rating.');
+        return;
+    }
+
+    if (messageInput === '') {
+        alert('Please enter your feedback message.');
+        return;
+    }
+
+    // Check the number of uploaded images
+    if (images.length > 4) {
+        alert('You can only upload up to 4 images.');
+        return;
+    }
+
+    // Prepare the data to be sent in FormData
+    const formData = new FormData();
+    formData.append('order_id', this.getAttribute('data-order-id'));  // Assuming order ID is stored in data-order-id
+    formData.append('rating', selectedRating);
+    formData.append('message', messageInput);
+
+    // Append each image to the form data
+    images.forEach((image, index) => {
+        formData.append(`image_${index + 1}`, image);  // Append image with a name like 'image_1', 'image_2', etc.
+    });
+
+    // Debugging log for the form data
+    console.log('Submitting feedback:', {
+        order_id: this.getAttribute('data-order-id'),
+        rating: selectedRating,
+        message: messageInput,
+        images: images.map(img => img.name)
+    });
+
+    // Send the data to the server
+    fetch('/submit-feedback', {
+        method: 'POST',
+        body: formData
+    })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Feedback Response:', data); // Log the server response
+            alert('Feedback submitted successfully!');
+            document.getElementById('feedback-modal').style.display = 'none';  // Close the modal
+            resetModal();  // Reset the modal fields
+        })
+        .catch(error => {
+            console.error('Error submitting feedback:', error);
+            alert('Failed to submit feedback. Please try again.');
+        });
+});
+
+// Function to reset modal contents after submission
+function resetModal() {
+    document.querySelectorAll('.star').forEach(star => star.classList.remove('selected'));  // Reset rating stars
+    document.getElementById('feedback-message').value = '';  // Clear feedback message input
+    document.querySelectorAll('input[type="file"]').forEach(input => input.value = '');  // Clear file inputs
+}
+
+
+// Function to get the selected rating (number of selected stars)
+function getSelectedRating() {
+    const selectedStars = document.querySelectorAll('.star.selected');
+    return selectedStars.length; // Return the number of selected stars
+}
+
+
+
+// Function to handle star click (rating stars)
+document.querySelectorAll('.star').forEach(star => {
+    star.addEventListener('click', () => {
+        // Remove 'selected' class from all stars
+        document.querySelectorAll('.star').forEach(star => star.classList.remove('selected'));
+
+        // Add 'selected' class to clicked star and all previous stars
+        let index = Array.from(star.parentElement.children).indexOf(star);
+        for (let i = 0; i <= index; i++) {
+            star.parentElement.children[i].classList.add('selected');
+        }
+    });
+});
+
+
+// Initialize completed orders
+fetchCompletedOrders();
+setInterval(() => {
+    fetchCompletedOrders(); // Refresh completed orders every 1 second
+}, 1000);
+
+</script>
+
+<script>
+    function fetchCancelledOrders() {
+        fetch('/buyer-cancelled-orders')  // Adjust this endpoint based on your new route
+            .then(response => response.json())
+            .then(data => {
+                const tableBody = document.getElementById('cancelled-orders-body');
+                tableBody.innerHTML = '';
+
+                if (data.cancelled_orders && data.cancelled_orders.length > 0) {
+                    data.cancelled_orders.forEach(order => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                           <div class="order-card">
+                                    <div class="product-header">
+                                        <div class="business-name">${order.business_name}</div>
+                                        <a href="#" class="view-shop">
+                                            <i class="fas fa-store shop-icon"></i> View Shop
+                                        </a>
+                                        <div class="order-status" style="color:red;">${order.status}</div>
+                                    </div>
+
+                                    <div class="product-info">
+                                        <img src="${order.product_image}" alt="${order.productName}" class="product-image" style="width: 100px; height: 100px;">
+                                        <div class="product-details">
+                                            <span class="product-name">${order.productName}</span>
+                                            <div class="order-details">
+                                                <div class="order-quantity">Quantity: ${order.quantity}</div>
+                                                <div class="order-total">Total: ${order.total}</div>
+                                                <div class="payment-method">Payment: ${order.payment_method}</div>
+                                            </div>
+                
+                                        </div>
+                                    </div>
+                                </div>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+                } else {
+                    tableBody.innerHTML = `<tr><td colspan="8">No cancelled orders available.</td></tr>`;
+                }
+            })
+            .catch(error => console.error('Error fetching cancelled orders:', error));
+    }
+
+    // Fetch cancelled orders initially
+    fetchCancelledOrders();
+    setInterval(() => {
+        fetchCancelledOrders();
+    }, 1000); // Refresh every 1 sicinds
+</script>
+
+
+
+<script>
+    function fetchRefundOrders() {
+    fetch('/buyer-refund-orders')  // Update this to match the backend route
+        .then(response => response.json())
+        .then(data => {
+            const tableBody = document.getElementById('refund-orders-body');
+            tableBody.innerHTML = ''; // Clear previous content
+
+            if (data.refund_orders && data.refund_orders.length > 0) {
+                data.refund_orders.forEach(order => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <div class="order-card">
+                            <div class="product-header">
+                                <div class="business-name">${order.business_name}</div>
+                                <a href="#" class="view-shop">
+                                    <i class="fas fa-store shop-icon"></i> View Shop
+                                </a>
+                                <div class="order-status">${order.status}</div>
+                            </div>
+
+                            <div class="product-info">
+                                <img src="${order.product_image}" alt="${order.productName}" class="product-image" style="width: 100px; height: 100px;">
+                                <div class="product-details">
+                                    <span class="product-name">${order.productName}</span>
+                                    <div class="order-details">
+                                        <div class="order-quantity">Quantity: ${order.quantity}</div>
+                                        <div class="order-total">Total: ${order.total}</div>
+                                        <div class="payment-method">Payment: ${order.payment_method}</div>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    tableBody.appendChild(row);
+                });
+
+                // Update event listeners for refund buttons after adding them
+                const refundButtons = document.querySelectorAll('.refund-button');
+                refundButtons.forEach(button => {
+                    button.addEventListener('click', function(event) {
+                        event.preventDefault(); // Prevent default button behavior
+                        const orderId = this.getAttribute('data-id');
+                        submitRefundRequest(orderId); // Call the function to submit the refund request
+                    });
+                });
+            } else {
+                tableBody.innerHTML = `<tr><td colspan="9">No refund orders available.</td></tr>`;
+            }
+        })
+        .catch(error => console.error('Error fetching refund orders:', error));
+}
+
+// Fetch "Refund" orders initially
+fetchRefundOrders();
+
+// Refresh the orders every 10 seconds
+setInterval(() => {
+    fetchRefundOrders();
+}, 10000); // Refresh every 10 seconds
+
+</script>
+
+
+<script>
+ // Fetch wishlist items on page load
+document.addEventListener('DOMContentLoaded', function () {
+    fetchWishlistItems();
+});
+
+function fetchWishlistItems() {
+    fetch('/wishlist')  // Adjust this endpoint based on your route
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            const wishlistContainer = document.getElementById('wishlist-container');
+
+            // Ensure the header remains intact
+            const headerHtml = `
+                <div class="wishlist-header">
+                    <input type="text" id="search-input" placeholder="Search in wishlist..." />
+                    <button id="search-button">Search</button>
+                    <button id="delete-all-button">Delete All</button>
+                </div>
+            `;
+            wishlistContainer.innerHTML = headerHtml; // Set the header HTML first
+
+            if (data.wishlist_items && data.wishlist_items.length > 0) {
+                data.wishlist_items.forEach(item => {
+                    console.log('Item Data:', item);  // Log the item data before creating the HTML
+                    const wishlistItem = document.createElement('div');
+                    wishlistItem.classList.add('wishlist-item');
+                    wishlistItem.innerHTML = `
+                        <button class="remove-item">X</button>
+                        <img src="${item.product_image}" alt="${item.product_name}" class="product-image">
+                        <div class="product-details">
+                            <span class="product-name">${item.product_name}</span>
+                            <span class="product-price">$${item.product_price}</span>
+                        </div>
+                        <button class="add-to-cart" 
+                                data-user-id="${item.user_id || ''}" 
+                                data-product-id="${item.product_id || ''}" 
+                                data-name="${item.product_name || ''}" 
+                                data-price="${item.product_price || ''}" 
+                                data-image="${item.product_image.split('/').pop() || ''}"> <!-- Save only the filename -->
+                            <box-icon name='cart-alt' color='#faf8f8'></box-icon> Add
+                        </button>
+                    `;
+                    wishlistContainer.appendChild(wishlistItem); // Append each item
+
+                    // Add event listener for the remove button
+                    const removeButton = wishlistItem.querySelector('.remove-item');
+                    removeButton.addEventListener('click', function() {
+                        const productId = item.product_id; // Get the product ID from the item
+
+                        // Send the request to remove the item from the wishlist
+                        fetch(`/api/wishlist/${productId}`, {
+                            method: 'DELETE'
+                        })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Network response was not ok');
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            console.log('Item removed from wishlist:', data);
+                            alert('Item removed from wishlist successfully!');
+                            // Optionally remove the item from the DOM
+                            wishlistItem.remove();
+                        })
+                        .catch(error => {
+                            console.error('Error removing item from wishlist:', error);
+                            alert('Error removing item from wishlist. Please try again.');
+                        });
+                    });
+                });
+
+                // Add event listeners for the add-to-cart buttons
+                const addToCartButtons = wishlistContainer.querySelectorAll('.add-to-cart');
+                addToCartButtons.forEach(button => {
+                    button.addEventListener('click', function() {
+                        // Retrieve product information from data attributes
+                        const product = {
+                            user_id: this.getAttribute('data-user-id'),
+                            product_id: this.getAttribute('data-product-id'),
+                            name: this.getAttribute('data-name'),
+                            price: this.getAttribute('data-price'),
+                            // Only use the filename when adding to the cart
+                            image: this.getAttribute('data-image') // This will now be just the filename
+                        };
+
+                        // Send the product to the Flask API
+                        fetch('/api/cart', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(product)
+                        })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Network response was not ok');
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            console.log('Item added to cart:', data);
+                            alert('Item added to cart successfully!');
+                        })
+                        .catch(error => {
+                            console.error('Error adding item to cart:', error);
+                            alert('Error adding item to cart. Please try again.');
+                        });
+                    });
+                });
+
+                // Add event listener for the "Delete All" button
+                const deleteAllButton = document.getElementById('delete-all-button');
+                deleteAllButton.addEventListener('click', function() {
+                    // Send the request to remove all items from the wishlist
+                    fetch('/api/wishlist', {
+                        method: 'DELETE'  // Assuming your Flask route handles DELETE requests for all items
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log('All items removed from wishlist:', data);
+                        alert('All items removed from wishlist successfully!');
+                        // Clear the wishlist container
+                        wishlistContainer.innerHTML = headerHtml + '<p>Your wishlist is empty.</p>';
+                    })
+                    .catch(error => {
+                        console.error('Error removing all items from wishlist:', error);
+                        alert('Error removing items from wishlist. Please try again.');
+                    });
+                });
+            } else {
+                wishlistContainer.innerHTML += '<p>Your wishlist is empty.</p>'; // Append empty message below header
+            }
+        })
+        .catch(error => console.error('Error fetching wishlist items:', error));
+}
+
+</script>
+
+
+
+</body>
+</html>

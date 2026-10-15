@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Courier Dashboard</title>
+    <link rel="stylesheet" href="../static/css/courier.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script> 
+    <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
+    <script src="https://kit.fontawesome.com/0dd07a1078.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+  
+</head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Courier Dashboard</title>
+    <link rel="stylesheet" href="../static/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
+    <script src="../static/script.js" defer></script>
+</head>
+<body>
+    <!-- Navbar -->
+    <div class="navbar">
+        <span id="current-tab" class="current-tab">Dashboard</span>
+        <div class="icons">
+            <div class="icon">
+                <box-icon name="bell" class="notification"></box-icon>
+            </div>
+            <div class="icon">
+                <box-icon name="message"></box-icon>
+            </div>
+            <div class="profile" id="profile-btn">
+                <i class="fa-regular fa-user"></i> Welcome, {{ session['user'] }}
+                <div class="profile-dropdown">
+                    <a href="#"><i class="fas fa-user-circle"></i> Profile</a>
+                    <a href="#"><i class="fas fa-cog"></i> Settings</a>
+                    <a href="/logout"><i class="fas fa-sign-out-alt"></i> Log Out</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo">
+            <img src="../static/src/logo design.png" alt="Logo">
+        </div>
+        <ul class="menu">
+            <li>
+                <a href="#" class="active" onclick="openTab('infoDashboard', 'Dashboard')">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" onclick="openTab('deliveries', 'My Deliveries')">
+                    <i class="fas fa-shipping-fast"></i>
+                    <span>My Deliveries</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" onclick="openTab('available', 'Available Deliveries')">
+                    <i class="fas fa-box-open"></i>
+                    <span>Available</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" onclick="openTab('earnings', 'Earnings')">
+                    <i class="fas fa-money-bill-wave"></i>
+                    <span>Earnings</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" onclick="openTab('messages', 'Messages')">
+                    <i class="fas fa-envelope"></i>
+                    <span>Messages</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content-wrapper">
+
+        <!-- Dashboard -->
+        <div id="infoDashboard" class="content">
+            <div class="info-dashboard-container-courier" id="InfoDash">
+                <h2>Delivery Overview</h2>
+                <div class="status-row">
+                    <div class="status-item-container">
+                        <div class="status-item">
+                            <p id="todays-delivery-count">0</p>
+                            <span>Today's Delivery</span>
+                        </div>
+                    </div>
+                    <div class="status-item-container">
+                        <div class="status-item">
+                            <p id="completed-delivery-count">0</p>
+                            <span>Completed</span>
+                        </div>
+                    </div>
+                    <div class="status-item-container">
+                        <div class="status-item">
+                            <p id="in-progress-count">0</p>
+                            <span>In Progress</span>
+                        </div>
+                    </div>
+                    <div class="status-item-container">
+                        <div class="status-item">
+                            <p id="todays-earnings-amount">₱0.00</p>
+                            <span>Today's Earnings</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="map-container">
+                <iframe src="https://www.google.com/maps/embed?pb=..." allowfullscreen="" loading="lazy"></iframe>
+            </div>
+        </div>
+
+        <!-- My Deliveries -->
+        <div id="deliveries" class="content">
+            <div class="order-nav">
+                <button onclick="showCourierOrderContent('all')">All</button>
+                <button onclick="showCourierOrderContent('to-ship')">To Ship</button>
+                <button onclick="showCourierOrderContent('to-receive')">To Receive</button>
+                <button onclick="showCourierOrderContent('delivered')">Delivered</button>
+                <button onclick="showCourierOrderContent('completed')">Completed</button>
+                <button onclick="showCourierOrderContent('cancelled')">Cancelled</button>
+            </div>
+            <div class="order-content-section active-content" id="courier-order-content-all">
+                <table class="delivery-table">
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Product Image</th>
+                            <th>Customer</th>
+                            <th>Product Name</th>
+                            <th>Pickup Location</th>
+                            <th>Status</th>
+                            <th>Product Price</th>
+                            <th>Delivery Fee</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Delivery rows go here -->
+                    </tbody>
+                </table>
+                <div class="pagination" id="deliveries-pagination"></div>
+            </div>
+            <!-- Repeat for each tab, or use JS to switch content dynamically -->
+        </div>
+
+        <!-- Available Deliveries -->
+        <div id="available" class="content">
+            <h2>Available Deliveries</h2>
+            <table class="delivery-table">
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Product Image</th>
+                            <th>Customer</th>
+                            <th>Product Name</th>
+                            <th>Pickup Location</th>
+                            <th>Status</th>
+                            <th>Product Price</th>
+                            <th>Delivery Fee</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                <tbody>
+                    <!-- Available delivery rows go here -->
+                </tbody>
+            </table>
+            <div class="pagination" id="available-pagination"></div>
+        </div>
+
+        <!-- Earnings -->
+        <div id="earnings" class="content">
+            <h2>My Earnings</h2>
+            <div class="status-row">
+                <div class="status-item-container">
+                    <div class="status-item">
+                        <p id="earnings-week">₱0.00</p>
+                        <span>This Week</span>
+                    </div>
+                </div>
+                <div class="status-item-container">
+                    <div class="status-item">
+                        <p id="earnings-month">₱0.00</p>
+                        <span>This Month</span>
+                    </div>
+                </div>
+                <div class="status-item-container">
+                    <div class="status-item">
+                        <p id="earnings-alltime">₱0.00</p>
+                        <span>All Time</span>
+                    </div>
+                </div>
+            </div>
+
+            <h3>Recent Transactions</h3>
+            <table class="delivery-table">
+                <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Product Image</th>
+                            <th>Customer</th>
+                            <th>Product Name</th>
+                            <th>Pickup Location</th>
+                            <th>Status</th>
+                            <th>Product Price</th>
+                            <th>Delivery Fee</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                <tbody>
+                    <!-- Completed deliveries go here -->
+                </tbody>
+            </table>
+            <div class="pagination" id="earnings-pagination"></div>
+            
+        </div>
+
+        <!-- Messages -->
+        <div id="messages" class="content">
+            <div class="chat-container">
+                <div class="chat-sidebar">
+                    <div class="chat-search-bar">
+                        <input type="text" class="chat-search-input" placeholder="Search" id="search-user">
+                    </div>
+                    <ul class="chat-list" id="chat-list">
+                        <!-- Chat user list -->
+                    </ul>
+                </div>
+                <div class="chat-main-area">
+                    <div class="chat-header">
+                        <h4 class="chat-business-name" id="business-name"></h4>
+                        <div class="chat-options">
+                            <i class="fas fa-phone chat-option-icon"></i>
+                            <i class="fas fa-video chat-option-icon"></i>
+                            <i class="fas fa-ellipsis-v chat-option-icon"></i>
+                        </div>
+                    </div>
+                    <div class="chat-messages-container" id="chat-messages"></div>
+                    <div class="chat-input-container">
+                        <input type="text" class="chat-input-field" placeholder="Type your message..." id="message-input">
+                        <div class="chat-input-options">
+                            <i class="fas fa-paper-plane chat-send-btn" id="send-message-btn"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+   <div id="proof-modal" style="display:none;">
+        <div class="proof-modal-content">
+            <button class="proof-modal-close" onclick="closeProofModal()">&times;</button>
+            <div id="proof-modal-body"></div>
+        </div>
+    </div>
+</body>
+
+</html>
+
+    <script src="../static/js/courier.js"></script>
+</body>
+</html>

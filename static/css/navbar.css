@@ -1,0 +1,660 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+*{
+  font-family: 'Poppins', sans-serif;
+  font-size: 15px;
+}
+/* NAVIGATION CONTAINER */
+nav {
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.488);
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 99999;
+  backdrop-filter: blur(2px);
+  height: 100px;
+}
+
+/* Logo styling */
+.logo {
+  margin-left: 100px;
+}
+
+
+.logo img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  transform: scale(3.4) translateY(5px); /* Adjust the translateY value as needed */
+  transform-origin: center; /* Keeps the image scaling from the center */
+}
+
+/* SEARCH BAR STYLING */
+.search-bar {
+  display: flex;
+  flex-grow: 0;
+  justify-content: flex-start; /* Align left */
+  width: 600px;
+}
+
+/* Input container */
+.input-container {
+  display: flex;
+  position: relative;
+  width: 100%; /* Set to full width */
+  max-width: 3300px; /* Optional: limit the max width */
+}
+
+#search-form{
+  width: 100%;
+}
+
+.input-container input {
+  width: 100%; /* Full width for the input */
+  padding: 10px;
+  border: 1px solid #EFD5D0;
+  border-radius: 20px;
+  font-size: 16px;
+  padding-right: 50px; /* Extra space to fit button without overlap */
+}
+
+.input-container .search-button {
+  position: absolute;
+  right: 10px; /* Adjust to align button within container */
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: #e891a5;
+  color: white;
+  border: none;
+  padding: 5px 15px;
+  border-radius: 15px;
+  cursor: pointer;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  height: auto;
+}
+
+.input-container .search-button:hover {
+  background-color: #d37389;
+}
+
+
+/* Flex container for cart and profile next to search bar */
+.cart-and-account {
+  display: flex;
+  align-items: center; /* Align items vertically */
+  margin-left: 15px; /* Small space between search and cart */
+  justify-content: flex-end;
+}
+
+/* Cart styles */
+.cart {
+  margin-right: 10px; /* Small space between cart and profile */
+  cursor: pointer;
+  margin-top: 5px;
+  position: relative;
+  display: inline-block;
+}
+
+#cart-count {
+  background-color: #d37389;
+  color: white;
+  border-radius: 50%;
+  padding: 0px 5px;
+  font-size: 10px;
+  font-weight: bold;
+  position: absolute;
+  top: -10px; /* Adjust as needed */
+  right: -10px; /* Adjust as needed */
+  min-width: 12px;
+  min-height: 15px;
+  text-align: center;
+  line-height: 20px; /* Adjust based on height */
+  display: none; /* Initially hide the badge */
+}
+
+#cart-count.visible {
+  display: inline-block; /* Show when there's an item in the cart */
+}
+
+#cart-count:empty {
+  display: none; 
+}
+
+
+.notification{
+  margin: 0 10px 0 5px;
+}
+/* Optional: Remove default styling from links */
+.account a {
+  text-decoration: none;
+  margin-left: 10px;
+  color: inherit;
+ 
+}
+
+/* PROFILE STYLES */
+.profile {
+  position: relative; /* Make it relative to hold the dropdown */
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 15px;
+}
+
+.profile i{
+  margin-right: 5px;
+}
+
+/* PROFILE DROPDOWN */
+.profile-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: #fff; /* Dropdown background */
+  border-radius: 5px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  display: none; /* Initially hidden */
+  flex-direction: column;
+  width: 150px; /* Adjust width as needed */
+  z-index: 9999;
+  opacity: 0; /* Hidden by default */
+  transition: opacity 0.5s ease, transform 0.5s ease; /* Slower transition */
+  transform: translateY(100px); /* Slight offset to animate up */
+  
+}
+
+/* PROFILE DROPDOWN LINKS */
+.profile-dropdown a {
+  padding: 10px;
+  text-decoration: none;
+  color: #333;
+  border-bottom: 1px solid #f0f0f0;
+  transition: background-color 0.3s ease; /* Slightly faster hover effect on links */
+  font-size: 15px;
+}
+
+.profile-dropdown a:hover {
+  background-color: #f5f5f5;
+  color: #dc3545;
+  font-size: 15px;
+}
+
+/* HOVER EFFECT FOR DROPDOWN */
+.profile:hover .profile-dropdown {
+  display: flex; /* Show dropdown */
+  opacity: 1; /* Make visible */
+  transform: translateY(0); /* Slide into view */
+}
+
+/* Remove border from the last dropdown link */
+.profile-dropdown a:last-child {
+  border-bottom: none;
+}
+
+
+
+
+
+
+
+
+/* Notification container Design start */
+.notification-wrapper {
+  position: relative;
+}
+
+/* Notification dropdown styling */
+.notification-dropdown {
+  display: none;
+  position: absolute;
+  top: 50px;
+  right: 0;
+  background-color: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  width: 400px;
+  height: 400px;
+  max-height: 800px; /* Limit dropdown height */
+  overflow-y: auto; /* Enable scrolling if content exceeds height */
+  padding: 10px;
+  z-index: 999;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* Dropdown visibility toggled by JavaScript */
+.notification-dropdown.visible {
+  display: block;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Styling for individual notification item */
+.notification-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+  transition: background-color 0.2s ease;
+}
+
+.notification-item:hover {
+  background-color: #f9f9f9; /* Highlight on hover */
+}
+
+
+
+/* Product details container */
+.product-details {
+  display: flex;
+  align-items: flex-start; /* Align items at the top */
+  gap: 10px;
+}
+
+/* Image container */
+.image-wrapper {
+  width: 70px; /* Adjusted image size */
+  height: 70px;
+  overflow: hidden;
+ 
+}
+
+.image-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Product name styling */
+.product-name {
+  font-weight: bold;
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 5px; /* Space between product name and message */
+}
+
+/* Notification message styling */
+.notification-message {
+  font-size: 14px;
+  color: #555;
+  margin: 0; /* Remove unnecessary margin */
+}
+
+/* Adjusting spacing between notification items */
+.notification-item:last-child {
+  border-bottom: none;
+}
+
+/* Scrollbar styling for dropdown */
+.notification-dropdown::-webkit-scrollbar {
+  width: 6px;
+}
+
+.notification-dropdown::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 10px;
+}
+
+.notification-dropdown::-webkit-scrollbar-track {
+  background-color: #f5f5f5;
+}
+
+/* Notification count badge styling */
+.notification-count {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background-color: #d37389; /* Red badge color */
+  color: #fff;
+  font-size: 12px; /* Adjust font size */
+  font-weight: bold;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center; /* Centers text horizontally */
+  line-height: 18px; /* Centers text vertically */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  z-index: 10;
+}
+
+
+.cart-and-account {
+  display: flex;
+  align-items: center;
+}
+
+.cart, .notification-wrapper, .message {
+  position: relative;
+  margin-left: 15px;
+}
+
+
+
+
+.message {
+  position: relative;
+  display: inline-block;
+}
+
+.message-icon {
+  cursor: pointer;
+  font-size: 24px;
+}
+
+.message-dropdown {
+  position: absolute;
+  top: 40px;
+  right: 0;
+  width: 400px;
+  height: 800px;
+  max-height: 400px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: none;
+}
+
+.message-item {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #f0f0f0;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.message-item:hover {
+  background-color: #f9f9f9;
+}
+
+.message-profile {
+  flex-shrink: 0;
+  margin-right: 10px;
+}
+
+.profile-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.message-content {
+  flex: 1;
+  overflow: hidden;
+}
+
+.message-header {
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.message-body {
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.message-time {
+  font-size: 12px;
+  color: #aaa;
+}.message-dropdown {
+  position: absolute;
+  top: 40px;
+  right: 0;
+  width: 400px;
+  max-height: 500px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: none;
+  flex-direction: column;
+}
+
+.message-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  text-align: center;
+  padding: 10px;
+  margin: 0;
+  border-bottom: 1px solid #f0f0f0;
+  background-color: #f9f9f9;
+}
+
+.message-list {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.message-item {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #f0f0f0;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.message-item:hover {
+  background-color: #f9f9f9;
+}
+
+.message-profile {
+  flex-shrink: 0;
+  margin-right: 10px;
+}
+
+.profile-icon {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.message-content {
+  flex: 1;
+  overflow: hidden;
+}
+
+.message-header {
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.message-body {
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.message-time {
+  font-size: 12px;
+  color: #aaa;
+}
+
+.message-search {
+  padding: 10px;
+  border-top: 1px solid #f0f0f0;
+  background-color: #f9f9f9;
+}
+
+.message-search input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  outline: none;
+}
+
+.message-search input:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 4px rgba(0, 123, 255, 0.3);
+}
+
+
+/* Chatbox Styling */
+.chatbox {
+  display: none;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 350px;
+  max-height: 500px;
+  background-color: #f9f9f9;
+  border: 1px solid #ccc;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  z-index: 101;
+  overflow: hidden;
+  font-family: Arial, sans-serif;
+}
+
+/* Header Section */
+.chat-header {
+  background-color: #007bff;
+  color: white;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 10px 10px 0 0;
+}
+
+.chat-header-left {
+  display: flex;
+  align-items: center;
+}
+
+.chat-profile-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+#close-chatbox {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  margin-left: auto;
+}
+
+/* Chat History Section */
+.chat-history {
+  max-height: 350px;
+  overflow-y: auto;
+  padding: 10px;
+  background-color: #ffffff;
+}
+
+/* Message Styling */
+.chat-message {
+  margin-bottom: 10px;
+  display: flex;
+  align-items: flex-start;
+}
+
+/* Add Profile Icon to each chat message */
+.chat-message .chat-profile-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-right: 10px; /* Space between profile icon and message */
+}
+
+.chat-message .message-content {
+  max-width: 80%;
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-size: 14px;
+}
+
+.chat-message.sent .message-content {
+  background-color: #007bff;
+  color: white;
+  margin-left: auto;
+  border-top-right-radius: 0;
+}
+
+.chat-message.received .message-content {
+  background-color: #f1f1f1;
+  color: #333;
+  border-top-left-radius: 0;
+}
+
+/* Chat Input Section */
+.chat-input {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background-color: #f9f9f9;
+  border-top: 1px solid #ccc;
+}
+
+.chat-input textarea {
+  width: 85%;
+  height: 50px;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  resize: none;
+  font-size: 14px;
+}
+
+.chat-input button {
+  width: 50px;
+  height: 50px;
+  background-color: #007bff;
+  border: none;
+  border-radius: 50%;
+  margin-left: 10px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.chat-input button:hover {
+  background-color: #0056b3;
+}
+
+
+
+
+
+

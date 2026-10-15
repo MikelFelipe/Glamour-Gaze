@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{{url_for('static', filename='css/navbar.css')}}">
+    <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
+    <script src="https://kit.fontawesome.com/0dd07a1078.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Afacad+Flux:wght@100..1000&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- navbar.html -->
+    <nav>
+        <div class="logo">
+            <a href="{{url_for('buyer_homepage')}}">
+                <img src="../static/src/logo design.png" alt="Logo">
+            </a>
+        </div>
+    
+        <div class="search-bar">
+            <div class="input-container">
+                <form id="search-form" action="{{ url_for('search_products') }}" method="GET">
+                    <input type="text" id="search-input" name="query" placeholder="Type something..." required>
+                    <button type="submit" class="search-button">Search</button>
+                </form>
+            </div>
+        </div>
+    
+        <div class="cart-and-account">
+            <!-- Cart Section -->
+            <div class="cart">
+                <a href="{{ url_for('cart') }}">
+                    <box-icon name='cart-alt'></box-icon>
+                    <span id="cart-count">0</span>
+                </a>
+            </div>
+    
+          <!-- Message Section -->
+                    
+            <div class="message">
+                <a href="{{url_for('inbox')}}"><box-icon name="message" class="message-icon"></box-icon></a>
+            </div>
+
+
+
+
+    
+            <!-- Notification Section -->
+            <div class="notification-wrapper">
+                <box-icon name="bell" class="notification"></box-icon>
+                <span class="notification-count" id="notification-count">{{ notifications|length }}</span>
+                <div class="notification-dropdown">
+                    <ul id="notification-list">
+                        {% for notification in notifications %}
+                            <li class="notification-item">
+                                <span>Your order #{{ notification.order_id }} has been shipped!</span>
+                                <div class="product-details">
+                                    <div class="image-wrapper">
+                                        <img src="{{ url_for('static', filename='upload_images/' + notification.product_image) }}" alt="Product Image">
+                                    </div>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+    
+            <!-- Account Section -->
+            <div class="account">
+                {% if user_is_logged_in %}
+                    <div class="profile">
+                        <i class="fa-regular fa-user"></i> Welcome, {{ username }}
+                        <div class="profile-dropdown">
+                            <a href="/my_account">My Account</a>
+                            <a href="/my-purchase">My Purchases</a>
+                            <a href="/logout">Log Out</a>
+                        </div>
+                    </div>
+                {% else %}
+                    <a href="{{url_for('buyer_register')}}">SIGN UP</a>
+                    <a href="{{url_for('login')}}">LOG IN</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+
+<!-- Chatbox Section -->
+<div class="chatbox" style="display: none;">
+    <div class="chat-header">
+        <div class="chat-header-left">
+            <img src="../static/src/logo.jpg" alt="User" class="chat-profile-icon">
+            <span id="chat-username">Chat with User</span>
+        </div>
+        <button id="close-chatbox" class="close-btn">
+            <box-icon name="x" color="white"></box-icon>
+        </button>
+    </div>
+    <div class="chat-history" id="chat-history">
+        <!-- Messages will dynamically populate here -->
+    </div>
+    <div class="chat-input">
+        <textarea id="chat-message" placeholder="Type your message..."></textarea>
+        <button id="send-message">
+            <box-icon name="send" color="white"></box-icon>
+        </button>
+    </div>
+</div>
+
+        
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        // Function to update cart count
+        function updateCartCount() {
+            $.getJSON('/cart/count', function(data) {
+                console.log("Cart count from server: ", data.count);  // Debug: Log count to console
+                $('#cart-count').text(data.count);  // Update the cart count on the page
+                
+                // If there are items in the cart, show the count
+                if (data.count > 0) {
+                    $('#cart-count').addClass('visible');  // Make it visible if it has items
+                } else {
+                    $('#cart-count').removeClass('visible');  // Hide if the cart is empty
+                }
+            });
+        }
+
+        // Automatically update cart count when an item is added or removed
+        // Add listeners for cart actions (like adding/removing items)
+        $(document).ready(function() {
+            updateCartCount();  // Initial count fetch
+
+            // Example of updating the count when an item is added (replace with actual button click logic)
+            $(document).on('click', '.add-to-cart-btn', function() {
+                // Trigger the update
+                updateCartCount();
+            });
+
+            // Similarly, add event listener when an item is removed
+            $(document).on('click', '.remove-from-cart-btn', function() {
+                // Trigger the update
+                updateCartCount();
+            });
+
+            // Poll for cart count update every 5 seconds (if you want to keep it fresh)
+            setInterval(updateCartCount, 5000);  // Update cart count every 5 seconds
+        });
+    </script>
+
+
+   <script>
+ document.addEventListener('DOMContentLoaded', () => {
+    const bellIcon = document.querySelector('.notification');
+    const notificationDropdown = document.querySelector('.notification-dropdown');
+    const notificationList = document.querySelector('#notification-list');
+    const notificationCount = document.getElementById('notification-count');  // Notification count badge
+
+    // Fetch unread notification count when page loads
+    function updateNotificationCount() {
+        fetch('/fetch_unread_notification_count')
+            .then((response) => response.json())
+            .then((data) => {
+                if (data.success) {
+                    const unreadCount = data.unread_count;
+                    notificationCount.textContent = unreadCount;
+
+                    // Hide the count if it's 0, show otherwise
+                    if (unreadCount === 0) {
+                        notificationCount.style.display = 'none';
+                    } else {
+                        notificationCount.style.display = 'inline-block';
+                    }
+                } else {
+                    notificationCount.style.display = 'none';  // Hide the count if fetch fails
+                }
+            })
+            .catch((error) => {
+                console.error('Error fetching unread notification count:', error);
+                notificationCount.style.display = 'none';  // Hide the count on error
+            });
+    }
+
+    // Call the function to update notification count on page load
+    updateNotificationCount();
+
+    // Toggle dropdown visibility on bell icon click
+    bellIcon.addEventListener('click', () => {
+        notificationDropdown.classList.toggle('visible');
+
+        // Fetch notifications only when dropdown is opened
+        if (notificationDropdown.classList.contains('visible')) {
+            fetch('/fetch_notifications')
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.success) {
+                        notificationList.innerHTML = ''; // Clear existing notifications
+
+                        // Populate dropdown with new notifications
+                        data.notifications.forEach((notification) => {
+                            const notificationItem = document.createElement('li');
+                            notificationItem.className = 'notification-item';
+                            notificationItem.innerHTML = `
+                                <div class="product-details">
+                                    <div class="image-wrapper">
+                                        <img src="${notification.product_image}" alt="${notification.product_name}">
+                                    </div>
+                                    <div>
+                                        <div class="product-name">${notification.product_name}</div>
+                                        <span class="notification-message">${notification.message}</span>
+                                    </div>
+                                </div>
+
+                            `;
+                            notificationList.appendChild(notificationItem);
+                        });
+
+                        // Mark notifications as read after the dropdown is opened
+                        fetch('/mark_notifications_read', {
+                            method: 'POST',
+                        })
+                        .then((response) => response.json())
+                        .then((data) => {
+                            if (data.success) {
+                                // Update the notification count badge after marking as read
+                                notificationCount.textContent = data.unread_count;
+
+                                // Hide the count if it's zero, show otherwise
+                                if (data.unread_count === 0) {
+                                    notificationCount.style.display = 'none';
+                                } else {
+                                    notificationCount.style.display = 'inline-block';
+                                }
+                            } else {
+                                console.error('Error marking notifications as read');
+                            }
+                        })
+                        .catch((error) => {
+                            console.error('Error marking notifications as read:', error);
+                        });
+                    } else {
+                        notificationList.innerHTML = `<li>No notifications available.</li>`;
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error fetching notifications:', error);
+                    notificationList.innerHTML = `<li>Error fetching notifications.</li>`;
+                });
+        }
+    });
+
+    // Close dropdown if clicking outside
+    document.addEventListener('click', (event) => {
+        if (!bellIcon.contains(event.target) && !notificationDropdown.contains(event.target)) {
+            notificationDropdown.classList.remove('visible');
+        }
+    });
+});
+</script>
+
+
+
+</body>
+</html>

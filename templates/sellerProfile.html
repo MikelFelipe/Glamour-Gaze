@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seller Account</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='sellerProfile.css') }}"> <!-- Link to the external CSS file -->
+    <script src="https://kit.fontawesome.com/0dd07a1078.js" crossorigin="anonymous"></script>
+    <style>
+
+body{
+    font-family: 'Poppins', sans-serif;
+    font-size: 18px;
+}
+        /* Sidebar styling */
+.sidebar {
+    width: 200px;
+    background-color: #f4f4f4;
+    padding: 20px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+}
+
+.sidebar .menu {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar .menu li {
+    margin-bottom: 15px;
+}
+
+.sidebar .menu li a {
+    display: block;
+    text-decoration: none;
+    color: #333;
+    padding: 10px;
+    border-radius: 4px;
+    transition: color 0.3s ease, background-color 0.3s ease; /* Smooth transition for color and background */
+}
+
+.sidebar .menu li a.active {
+    color: #dc3545;
+    background-color: #f5f5f5; /* Optional: Add a subtle background change */
+}
+
+
+.back-icon {
+    display: flex;
+    align-items: center;
+    padding: 10px 20px; /* Adjust spacing */
+    border-bottom: 1px solid #ddd; /* Optional: Divider line */
+}
+
+.back-icon a {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: #333; /* Adjust text color */
+    font-size: 16px; /* Text size */
+    font-weight: 500; /* Font weight */
+}
+
+.back-icon i {
+    margin-right: 10px; /* Space between icon and text */
+    font-size: 18px; /* Adjust icon size */
+}
+
+
+/* Main content area styling */
+/* Main Content Area */
+.main-content {
+    margin: 0; /* Remove any default margin */
+    padding: 0; /* Remove any default padding */
+    width: 100%; /* Make it span the full width of the container */
+    box-sizing: border-box; /* Ensure padding is included in width calculations */
+    display: flex; /* Add flexbox for alignment if needed */
+    justify-content: center; /* Center align the child content horizontally */
+}
+
+
+
+
+.container-for-my-account {
+    margin: 0 5%;
+}
+
+.form-container {
+    display: flex;
+    justify-content: space-between;
+    margin: 20px;
+    padding: 40px;
+}
+
+.form-left {
+    flex: 7;
+    padding-right: 20px;
+    margin-right: 250px;
+    width: 100%;
+}
+
+.form-right {
+    flex: 3;
+    text-align: center;
+}
+
+.form-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.form-group label {
+    width: 150px;
+    margin-right: 30px;
+    font-weight: bold;
+    text-align: right;
+}
+
+.form-group input,
+.form-group select {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 300px;
+}
+
+.save-button {
+    text-align: center;
+}
+
+.saveBtn {
+    padding: 10px 15px;
+    background-color: #d37389;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    width: 200px;
+    transition: background-color 0.3s ease; /* Smooth transition for background and optional hover effect */
+}
+
+.saveBtn:hover {
+    background-color: #dc3545;
+    
+}
+
+
+.image-upload-container {
+    position: relative;
+}
+
+.profile-picture {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    border: 2px solid #ccc;
+    object-fit: cover;
+    margin-bottom: 15px;
+}
+
+/* Change Password styling */
+.header-change-pass{
+    margin-left: 280px;
+}
+
+.change-password-container {
+    margin: 0 auto; /* Center align the container */
+    padding: 20px; /* Add some padding around the container */
+    max-width: 600px; /* Limit the width of the container */
+    box-sizing: border-box; /* Include padding in the width calculation */
+}
+
+/* Form Styling */
+.change-password-container form {
+    display: flex;
+    flex-direction: column; /* Stack inputs and buttons vertically */
+    gap: 15px; /* Add space between form elements */
+    margin: 0; /* Remove default margin */
+    padding: 0; /* Remove extra padding */
+}
+
+/* Form Input Fields */
+.change-password-container input {
+    width: 100%; /* Make inputs span the container width */
+    padding: 10px; /* Add some padding inside inputs */
+    border: 1px solid #ccc; /* Add border for visibility */
+    border-radius: 4px; /* Rounded corners */
+    box-sizing: border-box; /* Include padding in width */
+}
+
+/* Buttons */
+.change-password-container button {
+    width: 30%; /* Buttons span the container width */
+    padding: 10px; /* Add padding to buttons */
+    background-color: #d37389; /* Primary button color */
+    color: white; /* White text for contrast */
+    border: none; /* Remove default border */
+    border-radius: 4px; /* Rounded corners */
+    cursor: pointer; /* Indicate clickable button */
+    font-size: 16px; /* Improve readability */
+    margin: 0 auto;
+    margin-bottom: 10px;
+    transition: background-color 0.3s ease;
+}
+
+/* Button Hover Effect */
+.change-password-container button:hover {
+    background-color: #dc3545; /* Darker shade for hover effect */
+}
+
+/* Headings and Paragraphs */
+.change-password-container h2 {
+    text-align: center; /* Center the heading */
+    margin-bottom: 10px;
+}
+
+.change-password-container p {
+    text-align: center; /* Center-align the description text */
+    margin-bottom: 20px;
+    color: #555; /* Subtle text color */
+    font-size: 14px;
+}
+
+
+    </style>
+</head>
+<body>
+
+<div class="main-container">
+    <!-- Sidebar -->
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <!-- Back Icon -->
+        <div class="back-icon">
+            <a href="{{ url_for('seller_homepage') }}">
+                <i class="fas fa-arrow-left"></i> Back
+            </a>
+        </div>
+
+        <!-- Menu -->
+        <ul class="menu">
+            <li><a href="#" data-tab="my-account" class="active">My Account</a></li>
+            <li><a href="#" data-tab="change-password">Change Password</a></li>
+        </ul>
+    </div>
+
+
+
+    <div class="main-content">
+        <!-- Tabbed Content -->
+        <div class="content" id="my-account" style="display: block;">
+            <div class="container-for-my-account">
+                <h2>Seller Information</h2>
+    
+                <form action="{{ url_for('seller_my_account') }}" method="POST" enctype="multipart/form-data">
+                    <div class="form-container">
+                        <!-- Left Form Section (Seller Info) -->
+                        <div class="form-left">
+                            <div class="form-group">
+                                <label for="username">Username</label>
+                                <input type="text" id="username" name="username" value="{{ username }}" readonly>
+                            </div>
+    
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="email" id="email" name="email" value="{{ seller[1] }}">
+                            </div>
+    
+                            <div class="form-group">
+                                <label for="business_name">Business Name</label>
+                                <input type="text" id="business_name" name="business_name" value="{{ seller[0] }}">
+                            </div>
+    
+                            <div class="form-group">
+                                <label for="phone_number">Phone Number</label>
+                                <input type="tel" id="phone_number" name="phone_number" value="{{ seller[2] }}">
+                            </div>
+    
+                            <div class="form-group">
+                                <label for="gender">Gender</label>
+                                <select id="gender" name="gender">
+                                    <option value="male" {% if seller[3] == 'male' %}selected{% endif %}>Male</option>
+                                    <option value="female" {% if seller[3] == 'female' %}selected{% endif %}>Female</option>
+                                    <option value="other" {% if seller[3] == 'other' %}selected{% endif %}>Other</option>
+                                </select>
+                            </div>
+    
+                            <div class="form-group">
+                                <label for="date_of_birth">Date of Birth</label>
+                                <input type="date" id="date_of_birth" name="dob" value="{{ seller[4] }}">
+                            </div>
+    
+                            <div class="save-button">
+                                <button type="submit" class="saveBtn">Update Information</button>
+                            </div>
+                        </div>
+    
+                        <!-- Right Section for Profile Picture -->
+                        <div class="form-right">
+                            <h3>Profile Picture</h3>
+    
+                            <!-- Display profile picture if available -->
+                            {% if seller[5] %}
+                                <img src="{{ url_for('static', filename='profile_picture_uploads/' + seller[5]) }}" alt="Profile Picture" width="150">
+                            {% endif %}
+    
+                            <!-- Profile Picture Upload -->
+                            <div class="image-upload-container">
+                                <label for="profile_picture">
+                                    <img id="profile-picture-preview" 
+                                        src="{{ url_for('static', filename='profile_picture_uploads/' + (seller[5] if seller[5] else 'default_profile.jpg')) }}" 
+                                        alt="Profile Picture" 
+                                        class="profile-picture" 
+                                        style="cursor: pointer;">
+                                </label>
+                                <input type="file" id="profile_picture" name="profile_picture" accept="image/*" style="display: none;">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="content" id="change-password" style="display: none;">
+        <div class="header-change-pass">
+            <h2>Change Password</h2>
+            <p>To change your password, please verify your identity.</p>
+        </div>
+        <div class="change-password-container">
+            <!-- Step 1: Enter Email and Send OTP -->
+            <form id="send-otp-form" action="{{ url_for('send_change_password_otp') }}" method="POST">
+                <label for="email">Enter your email:</label>
+                <input type="email" id="email" name="email" required placeholder="Enter your email">
+                <button type="submit">Send OTP</button>
+            </form>
+        
+            <!-- Step 2: OTP Verification Form -->
+            <form id="otp-form" onsubmit="verifyOtp(event)">
+                <label for="otp">Enter OTP sent to your email:</label>
+                <input type="text" name="otp" required placeholder="Enter OTP">
+                <button type="submit">Verify OTP</button>
+            </form>
+                
+            <!-- Step 3: New Password Form (initially disabled) -->
+            <form id="change-password-form" action="{{ url_for('change_password') }}" method="POST" onsubmit="return validateNewPassword()">
+                <label for="new-password">New Password:</label>
+                <input type="password" id="new-password" name="new_password" required disabled>
+                <label for="confirm-password">Confirm New Password:</label>
+                <input type="password" id="confirm-password" name="confirm_password" required disabled>
+                <button type="submit" disabled>Change Password</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript for tab switching -->
+<script>
+    // Get all the tab links and content sections
+    const tabs = document.querySelectorAll('.sidebar .menu li a');
+    const contentSections = document.querySelectorAll('.content');
+
+    document.querySelectorAll('.menu a').forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+
+            // Remove 'active' class from all links
+            document.querySelectorAll('.menu a').forEach(item => {
+                item.classList.remove('active');
+            });
+
+            // Add 'active' class to clicked link
+            this.classList.add('active');
+
+            // Hide all content sections
+            document.querySelectorAll('.content').forEach(content => {
+                content.style.display = 'none';
+            });
+
+            // Show the content section that corresponds to the clicked tab
+            const tabName = this.getAttribute('data-tab');
+            document.getElementById(tabName).style.display = 'block';
+        });
+    });
+</script>
+
+</body>
+</html>

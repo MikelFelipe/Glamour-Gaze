@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify OTP</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login-signup.css') }}">
+
+    <style>
+    /* General container styling for the form */
+/* General container styling for the form */
+form {
+    background-color: #f9f9f9; /* Light background */
+    border: 1px solid #ddd; /* Light border */
+    border-radius: 8px; /* Rounded corners */
+    padding: 20px;
+    width: 400px; /* Fixed width */
+    height: 350px; /* Fixed height */
+    margin: 20px auto; /* Center the form on the page */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    overflow-y: auto; /* Allow scrolling if content overflows vertically */
+}
+
+
+/* Style for headings */
+h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* Style for form labels */
+form label {
+    display: block; /* Make the label a block-level element */
+    margin-bottom: 5px;
+    color: #555;
+    font-size: 14px;
+}
+
+/* Style for input fields */
+form input[type="email"],
+form input[type="text"] {
+    width: 100%;
+    padding: 6px;
+    margin-top: 4px;
+    margin-bottom: 15px; /* Add margin-bottom to provide space below the input fields */
+    border: none; /* Remove all borders */
+    border-bottom: 2px solid #ccc; /* Only bottom border */
+    font-size: 0.8rem;
+    transition: border-color 0.3s ease;
+    box-sizing: border-box;
+}
+
+/* Focus effect for bottom border */
+form input[type="email"]:focus,
+form input[type="text"]:focus {
+    border-bottom-color: #dc3545; /* Green color on focus */
+    outline: none; /* Remove outline to focus on bottom border */
+}
+
+/* Button styling */
+form button {
+    width: 100%;
+    padding: 10px;
+    background-color: #d37389;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 10px;
+}
+
+form button:hover {
+    background-color:  #dc3545;
+}
+
+/* Style for the "Resend OTP" link */
+form p {
+    text-align: center;
+    margin-top: 15px;
+    font-size: 0.9rem;
+}
+
+form a {
+    color:  #dc3545;
+    text-decoration: none;
+}
+
+form a:hover {
+    text-decoration: underline;
+}
+
+/* Styling for error or success messages */
+.messages {
+    background-color: #f8d7da; /* Red background for error messages */
+    color: #721c24; /* Dark red text */
+    border: 1px solid #f5c6cb; /* Lighter red border */
+    border-radius: 4px;
+    padding: 10px;
+    margin: 15px 0;
+    list-style-type: none; /* Remove bullet points */
+    text-align: center;
+}
+
+.messages li {
+    font-size: 0.9rem;
+}
+
+/* Responsive styling for smaller screens */
+@media (max-width: 600px) {
+    form {
+        padding: 15px;
+    }
+
+    form button,
+    form input[type="email"],
+    form input[type="text"] {
+        font-size: 0.9rem; /* Slightly smaller font size */
+    }
+
+    h2 {
+        font-size: 1.5rem; /* Slightly smaller heading */
+    }
+}
+
+
+ /* Modal Styles */
+ #flashMessageModal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+            opacity: 0; /* Start with invisible modal */
+            transition: opacity 0.5s ease; /* Transition effect for opacity */
+        }
+
+        #flashMessageContent {
+            background-color: white; /* Light red background for the message */
+            color: #721c24; /* Dark red color for the text */
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #f5c6cb; /* Light red border */
+            width: 80%;
+            max-width: 400px;
+            text-align: center;
+            border-radius: 8px; /* Rounded corners */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+            opacity: 0; /* Start with invisible content */
+            transform: translateY(-50px); /* Start above */
+            transition: opacity 0.5s ease, transform 0.5s ease; /* Transition for fade and slide */
+        }
+
+        .close {
+            color: #721c24;
+            font-size: 28px;
+            font-weight: bold;
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #f5c6cb;
+            text-decoration: none;
+        }
+
+        #flashMessageText {
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">
+            <a href="{{url_for('buyer_homepage')}}"><img src="{{ url_for('static', filename='src/logo design.png') }}" alt=""></a>
+            <div class="separator"></div> <!-- Vertical separator -->
+            <h4>LOG IN</h4>
+        </div>
+    </nav>
+    
+    <div class="main-content">
+        <div class="left">
+            <div class="logos">
+                <img src="{{ url_for('static', filename='src/login-image/ecommerce-website-banners.jpg') }}" alt="">
+            </div>
+        </div>
+
+        <div class="right">
+            <form action="/verify_otp" method="POST"> 
+
+                <h2>Verify OTP</h2>
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+
+                <label for="otp">OTP:</label>
+                <input type="text" id="otp" name="otp" required>
+
+                <button type="submit">Verify</button>
+                <p>Didn't receive the OTP? <a href="/register">Resend OTP</a></p>
+
+            </form>     
+        </div>
+        
+    </div>
+
+     <!-- Hidden element to store the flash message -->
+     <div id="flashMessage" style="display: none;">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {{ messages[0][1] }}  <!-- Flash message content -->
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <!-- Modal for Flash Message -->
+    <div id="flashMessageModal">
+        <div id="flashMessageContent">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <p id="flashMessageText"></p>
+        </div>
+    </div>
+
+    <script>
+        // Function to show the modal with transition
+        function showModal(message) {
+            var modal = document.getElementById("flashMessageModal");
+            var messageElement = document.getElementById("flashMessageText");
+            var modalContent = document.getElementById("flashMessageContent");
+
+            messageElement.innerHTML = message; // Set the message content
+            modal.style.display = "block"; // Make modal visible
+            setTimeout(function() {
+                modal.style.opacity = 1; // Fade in the modal
+                modalContent.style.opacity = 1; // Fade in the content
+                modalContent.style.transform = "translateY(0)"; // Slide content into view
+            }, 10); // Allow the browser to register the display change before transitioning
+        }
+
+        // Function to close the modal with transition
+        function closeModal() {
+            var modal = document.getElementById("flashMessageModal");
+            var modalContent = document.getElementById("flashMessageContent");
+
+            modal.style.opacity = 0; // Fade out the modal
+            modalContent.style.opacity = 0; // Fade out the content
+            modalContent.style.transform = "translateY(-50px)"; // Slide content out
+
+            // Wait for the fade-out animation to complete before hiding the modal
+            setTimeout(function() {
+                modal.style.display = "none"; // Hide the modal
+            }, 500); // Matches the transition duration
+        }
+
+        // Check if there's a flash message and show the modal
+        window.onload = function() {
+            var flashMessage = document.getElementById("flashMessage").innerText;
+            if (flashMessage.trim() !== "") {
+                showModal(flashMessage);  // Show the message in the modal
+            }
+        }
+    </script>
+    
+
+    {% include 'footer.html' %}
+</body>
+</html>

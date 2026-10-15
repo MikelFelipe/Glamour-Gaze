@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Checkout Page</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-P9yyCtuYhjI80+QOV7k6Sgt98NLGE0tx0C3MIH2I3QRYnt2Dqu1c2onRMuQa0vPRkwnRWb4Y4yzG9IHKVfBUhA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Afacad+Flux:wght@100..1000&family=Concert+One&display=swap" rel="stylesheet">
+    <style>
+        *{
+            font-family: "Afacad Flux", sans-serif;
+            font-size: 8px;
+
+        }
+        body {
+            background-color: #f2f2f2; 
+        }
+        .checkout-page-container {
+            margin-top: 130px;
+        }
+        .checkout-page-container h1 {
+            margin-left: 50px;
+            margin-bottom: 15px;
+            font-size: 22px;
+        }
+        .checkout-container {
+            display: flex;
+            justify-content: space-between;
+            max-width: 1400px; /* Maximum width */
+            margin: 0 auto; /* Center the container */
+            padding: 0 20px; /* Padding inside the container for reduced space */
+        }
+        .left-section {
+            width: 65%;
+            margin-right: 30px; /* Adjusted margin */
+        } 
+        .right-section {
+            width: 35%;
+            background-color: white; /* White background for contrast */
+            padding: 20px; /* Padding around the section */
+            box-shadow: 2px 2px 15px rgba(0, 0, 0, 0.1); /* Subtle box shadow */
+            border-radius: 5px; /* Rounded corners */
+        }
+        .product-info {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        .product-info th {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            height: 60px; /* Increased row height */
+            background-color: #f2f2f2;
+        }
+        .product-info td {
+            padding: 20px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            height: 100px; /* Increased row height */
+        }
+        .shipping-details {
+            box-shadow: 2px 2px 25px rgba(94, 93, 93, 0.1); /* Box shadow */
+            background-color: white; /* Light background color for better contrast */
+            padding: 15px; /* Add some padding */
+            border-radius: 5px; /* Optional: rounded corners */
+            margin-bottom: 20px; /* Space below the shipping details */
+        }
+        .shipping-details h2 {
+            color: #d37389;
+        }
+        .shipping-info {
+            margin-bottom: 20px;
+            display: flex; /* Use flexbox for horizontal alignment */
+            align-items: center; /* Center items vertically */
+        }
+        .shipping-info p {
+            margin-right: 15px;
+        }
+        .change-btn {
+            background-color: white;
+            color: black; /* White text */
+            border: 1px solid #ccc;
+            padding: 2px 12px; /* Button padding */
+            cursor: pointer; /* Pointer on hover */
+            border-radius: 4px; /* Rounded corners */
+        }
+        .product-table {
+            background-color: white;
+            padding: 15px;
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+        select, input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+        }
+        .business-name {
+            display: flex; /* Use flexbox for alignment */
+            align-items: center; /* Center items vertically */
+            margin: 0; /* Reset margin for better spacing */
+            margin-bottom: 10px; /* Space below the business name */
+        }
+        .product-item {
+            display: flex; /* Use flexbox for layout */
+            align-items: center; /* Center items vertically */
+        }
+        .product-item img {
+            margin-right: 10px; /* Space between image and name */
+        }
+        .product-item span {
+            font-weight: bold; /* Bold product name */
+            font-size: 18px;
+        }
+        /* Button styling */
+        .place-order-btn {
+            background-color: #d37389; /* Button background color */
+            color: white; /* White text */
+            border: none; /* Remove border */
+            padding: 10px; /* Padding inside button */
+            cursor: pointer; /* Pointer on hover */
+            border-radius: 4px; /* Rounded corners */
+            width: 100%; /* Full width */
+            font-size: 16px; /* Font size */
+        }
+        .place-order-btn:hover {
+            background-color: #c05270; /* Darker shade on hover */
+        }
+        /* Order summary styles */
+        .order-summary p {
+            margin: 5px 0; /* Margin for paragraphs */
+            display: flex; /* Use flex for alignment */
+            justify-content: space-between; /* Space out label and value */
+        }
+         
+   /* Modal Background */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4); /* Semi-transparent background */
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.3s ease; /* Smooth fade transition */
+}
+
+/* Modal Content */
+.modal-content {
+    background-color: #ffffff;
+    border-radius: 10px;
+    padding: 30px;
+    text-align: center;
+    max-width: 400px;
+    width: 80%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transform: translateY(-30px);
+    opacity: 0;
+    transition: opacity 0.4s ease, transform 0.4s ease; /* Smooth fade and slide transition */
+    border-top: 4px solid #d37389;
+}
+
+/* Show state for smooth fade-in and slide-down */
+.modal.show {
+    opacity: 1;
+}
+
+.modal.show .modal-content {
+    transform: translateY(0); /* Slide-down effect */
+    opacity: 1;
+}
+
+/* Icon Styling */
+.modal-icon i {
+    font-size: 80px;
+    color: #d37389; /* Green color */
+    margin-bottom: 15px;
+}
+
+/* Close "X" Icon */
+.close {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 24px;
+    font-weight: bold;
+    color: #888;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.close:hover {
+    color: #333;
+}
+
+/* Close Button */
+.close-modal-btn {
+    background-color: #d37389;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+.close-modal-btn:hover {
+    background-color: #c05270;
+}
+
+
+
+
+
+.back-icon {
+    display: flex;
+    align-items: center;
+    padding: 10px 20px; /* Adjust spacing */
+    width: 100px;
+    margin-left: 30px;
+}
+
+.back-icon a {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: #333; /* Adjust text color */
+    font-size: 16px; /* Text size */
+    font-weight: 500; /* Font weight */
+}
+
+.back-icon i {
+    margin-right: 10px; /* Space between icon and text */
+    font-size: 18px; /* Adjust icon size */
+}
+
+
+    </style>
+</head>
+    </style>
+</head>
+<body>
+
+    {% include 'navbar.html' %}
+
+     <!-- Order Confirmation Modal -->
+    <div id="orderModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <div class="modal-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h2>Order Placed Successfully!</h2>
+            <p>Your order has been placed and is being processed. Thank you for shopping with us!</p>
+        </div>
+    </div>
+
+
+    <div class="checkout-page-container">
+    
+
+    <!-- Back Icon -->
+        <div class="back-icon">
+            <a href="{{ url_for('buyer_homepage') }}">
+                <i class="fas fa-arrow-left"></i> Back 
+            </a>
+        </div>
+
+
+        <h1>Checkout</h1>
+        <form method="POST" action="/place-order">
+            <div class="checkout-container">
+                <!-- Left Section: Shipping Information and Product Details -->
+                <div class="left-section">
+                    <div class="shipping-details">
+                        <h2>
+                            <i class="fas fa-map-marker-alt" style="margin-right: 8px;"></i> Shipping Address
+                        </h2>
+                        <div class="shipping-info">
+                            <p><strong>{{ Username }} (+63) {{ phone_number }}</strong></p>
+                            <p>{{ full_address }}</p>
+                            <button class="change-btn">Change</button> <!-- Change Button -->
+                        </div>
+                    </div>
+        
+                    
+                    <div class="product-table">
+                        <h2>Product Details</h2>
+                        <table class="product-info">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Price</th>
+                                    <th>Quantity</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td style="vertical-align: middle;">
+                                        <div>
+                                            <p class="business-name">
+                                                <box-icon name='store' style="margin-right: 8px;"></box-icon>
+                                                {{ Business_name }}
+                                            </p> <!-- Business name on top -->
+                                            <div class="product-item"> <!-- Flexbox for image and product name -->
+                                                <img src="{{ product_image }}" alt="{{ product_name }}" width="90"> <!-- Image -->
+                                                <span>{{ product_name }}</span> <!-- Product name next to image -->
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>{{ product_price }}</td>
+                                    <td>{{ quantity }}</td>
+                                    <td>{{ product_price | float * quantity | int }}</td> <!-- Calculated total -->
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="right-section">
+                    <div class="payment-method">
+                        <h2>Select Payment Method</h2>
+                        <label for="payment-method">Payment Method</label>
+                        <select id="payment-method" name="payment_method">
+                            <option value="Cash on Delivery">Cash on Delivery</option>
+                            <option value="ShopeePay">ShopeePay</option>
+                            <option value="payLater">payLater</option>
+                        </select>
+                    </div>
+
+                    <label for="voucher-dropdown">Apply Voucher:</label>
+                    <select name="voucher_code" id="voucher-dropdown">
+                        <option value="" selected disabled>Select a voucher</option>
+                        <option value="" data-discount="0">No voucher (Clear)</option> <!-- Clear option -->
+                        {% if vouchers %}
+                            {% for voucher in vouchers %}
+                                <option value="{{ voucher[1] }}" data-discount="{{ voucher[2] }}">
+                                    {{ voucher[0] }} (Code: {{ voucher[1] }}, {{ voucher[2] }} off)
+                                </option>
+                            {% endfor %}
+                        {% else %}
+                            <option>No vouchers available</option>
+                        {% endif %}
+                    </select>
+
+
+                    <div class="order-summary">
+                        <h2>Order Summary</h2>
+                        <p><strong>Subtotal:</strong> <span id="subtotal">₱ {{ product_price * quantity }}</span></p>
+                        <p><strong>Shipping Fee:</strong> 
+                            <span id="shipping-fee">₱ 50</span>
+                            <span id="free-shipping" style="display: none; color: green; font-weight: bold;">Free</span>
+                        </p>                                               
+                        <p><strong>Total:</strong> <span id="total">₱ {{ product_price * quantity + 50 }}</span></p>
+                    </div>
+
+                    <input type="hidden" name="first_name" value="{{ first_name }}">
+                    <input type="hidden" name="middle_name" value="{{ middle_name }}">
+                    <input type="hidden" name="last_name" value="{{ last_name }}">
+                    <input type="hidden" name="username" value="{{ Username }}">
+                    <input type="hidden" name="phone_number" value="{{ phone_number }}">
+                    <input type="hidden" name="address" value="{{ address }}">
+                    <input type="hidden" name="business_name" value="{{ Business_name }}"> <!-- Keep only one business_name -->
+                    <input type="hidden" name="product_image" value="{{ product_image }}">
+                    <input type="hidden" name="product_name" value="{{ product_name }}">
+                    <input type="hidden" name="product_price" value="{{ product_price }}">
+                    <input type="hidden" name="quantity" value="{{ quantity }}">
+                    <input type="hidden" name="seller_id" value="{{ seller_id }}">
+                    <input type="hidden" name="payment_method" value="{{ payment_method }}">
+                    <input type="hidden" name="product_id" value="{{ product_id }}">
+                    <input type="hidden" name="barangay" value="{{ barangay }}">
+                    <input type="hidden" name="municipality" value="{{ municipality }}">
+                    <input type="hidden" name="province" value="{{ province }}">
+
+                                        
+                    <button type="submit" class="place-order-btn" id="placeOrderButton" onclick="openModal()">Place Order</button>
+                    
+                    
+                </div>
+            </div>
+        </form>
+    </div>
+
+
+    <script>
+       // Function to open modal with smooth transition
+function openModal() {
+    const modal = document.getElementById("orderModal");
+    modal.style.display = "flex";
+    setTimeout(() => {
+        modal.classList.add("show");
+    }, 10); // Slight delay to trigger transition
+}
+
+// Function to close modal with smooth transition
+function closeModal() {
+    const modal = document.getElementById("orderModal");
+    modal.classList.remove("show");
+    setTimeout(() => {
+        modal.style.display = "none";
+    }, 400); // Delay to complete the fade-out and slide-up transition
+}
+
+document.getElementById('placeOrderButton').addEventListener('click', function() {
+    const formData = new FormData(document.getElementById('orderForm'));
+
+    fetch('/place-order', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => {
+        if (response.status === 204) {  // Check if the response is 204 No Content
+            // Show success pop-up without redirecting or displaying any data
+            document.getElementById('successPopup').style.display = 'block';
+        } else {
+            // Handle error (display error message or alert)
+            alert('Error placing order. Please try again.');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+});
+
+function closePopup() {
+    document.getElementById('successPopup').style.display = 'none';
+}
+
+
+    </script>
+
+
+
+<script>
+    document.getElementById('voucher-dropdown').addEventListener('change', function() {
+        // Get selected voucher's discount
+        var selectedOption = this.options[this.selectedIndex];
+        var discount = selectedOption.getAttribute('data-discount');
+        
+        // Get the product price and quantity from the DOM
+        var productPrice = parseFloat("{{ product_price }}");
+        var quantity = parseInt("{{ quantity }}");
+        var shippingFee = 50; // Fixed shipping fee
+
+        // Get the shipping fee element and free shipping label
+        var shippingFeeElement = document.getElementById('shipping-fee');
+        var freeShippingText = document.getElementById('free-shipping');
+
+        // Calculate the subtotal (product price * quantity)
+        var subtotal = productPrice * quantity;
+
+        // Apply free shipping if the voucher code is 'FREESHIP50'
+        if (selectedOption.value === 'FREESHIP50') {
+            shippingFee = 0;
+            shippingFeeElement.style.textDecoration = 'line-through'; // Cross out the original fee
+            freeShippingText.style.display = 'inline'; // Show "Free" text
+        } else {
+            shippingFeeElement.style.textDecoration = 'none'; // Keep the shipping fee normal
+            freeShippingText.style.display = 'none'; // Hide "Free" text
+        }
+
+        // Calculate the total (subtotal + shipping fee)
+        var total = subtotal + shippingFee;
+
+        // Update the DOM with new values
+        document.getElementById('subtotal').textContent = "₱ " + subtotal.toFixed(2);
+        document.getElementById('shipping-fee').textContent = "₱ " + shippingFee.toFixed(2);
+        document.getElementById('total').textContent = "₱ " + total.toFixed(2);
+    });
+</script>
+
+</body>
+</html>
